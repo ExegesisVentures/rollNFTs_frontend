@@ -4,8 +4,12 @@
 import axios from 'axios';
 
 // Use relative path for Vercel proxy (HTTPS), fallback to direct HTTP for local dev
+// Check if running on localhost
+const isLocalhost = typeof window !== 'undefined' && 
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
 const API_URL = import.meta.env.VITE_API_URL || (
-  import.meta.env.PROD ? '/api' : 'http://147.79.78.251:5058/api'
+  isLocalhost ? 'http://147.79.78.251:5058/api' : '/api'
 );
 
 const api = axios.create({
