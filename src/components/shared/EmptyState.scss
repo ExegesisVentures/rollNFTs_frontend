@@ -1,0 +1,46 @@
+@import '../../styles/_constants.scss';
+
+.empty-state {
+  @include flex-center;
+  flex-direction: column;
+  padding: $spacing-4xl $spacing-lg;
+  text-align: center;
+  
+  &__icon {
+    font-size: 4rem;
+    margin-bottom: $spacing-lg;
+    opacity: 0.5;
+  }
+  
+  &__title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.5rem;
+    font-weight: $font-semibold;
+    color: $primaryWhite;
+    margin-bottom: $spacing-sm;
+  }
+  
+  &__description {
+    color: $slate;
+    font-size: 1rem;
+    margin-bottom: $spacing-xl;
+    max-width: 400px;
+  }
+  
+  &__action {
+    padding: $spacing-md $spacing-xl;
+    background: $gradientBlue;
+    color: $primaryWhite;
+    border: none;
+    border-radius: $radius-md;
+    font-weight: $font-semibold;
+    cursor: pointer;
+    transition: all $transition-normal;
+    
+    &:hover {
+      box-shadow: $shadowGlowBlue;
+      transform: translateY(-2px);
+    }
+  }
+}
+

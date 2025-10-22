@@ -1,0 +1,363 @@
+@import '../styles/_constants.scss';
+
+.home {
+  min-height: 100vh;
+  
+  &__hero {
+    background: $gradientDark;
+    position: relative;
+    overflow: hidden;
+    
+    // Animated gradient overlay
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(77, 156, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.15) 0%, transparent 50%);
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    &-content {
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: $spacing-4xl $spacing-xl;
+      
+      @include tablet {
+        padding: 5rem $spacing-xl;
+      }
+    }
+    
+    &-inner {
+      max-width: 800px;
+    }
+    
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      font-weight: $font-bold;
+      margin-bottom: $spacing-lg;
+      
+      @include tablet {
+        font-size: 3.5rem;
+      }
+      
+      @include desktop {
+        font-size: 4.5rem;
+      }
+      
+      background: $gradientPurple;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    p {
+      font-size: 1.125rem;
+      color: $slate;
+      margin-bottom: $spacing-2xl;
+      line-height: 1.7;
+      
+      @include tablet {
+        font-size: 1.25rem;
+      }
+    }
+    
+    &-actions {
+      display: flex;
+      gap: $spacing-lg;
+      flex-wrap: wrap;
+    }
+    
+    &-btn {
+      padding: $spacing-md $spacing-2xl;
+      border-radius: $radius-md;
+      font-weight: $font-semibold;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 1rem;
+      position: relative;
+      transform-style: preserve-3d;
+      
+      // Top highlight for 3D effect
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 70%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+        border-radius: 50%;
+        filter: blur(1px);
+        opacity: 0.7;
+        pointer-events: none;
+      }
+      
+      &--primary {
+        background: $gradientBlue;
+        color: $primaryWhite;
+        box-shadow: 
+          0 6px 16px rgba(77, 156, 255, 0.3),
+          0 3px 6px rgba(0, 0, 0, 0.2),
+          inset 0 1px 2px rgba(255, 255, 255, 0.15),
+          inset 0 -3px 10px rgba(0, 0, 0, 0.15);
+        
+        &:hover {
+          box-shadow: 
+            0 10px 30px rgba(77, 156, 255, 0.5),
+            0 5px 10px rgba(0, 0, 0, 0.3),
+            0 0 40px rgba(77, 156, 255, 0.4),
+            inset 0 1px 3px rgba(255, 255, 255, 0.2),
+            inset 0 -4px 15px rgba(0, 0, 0, 0.2);
+          transform: translate3d(0, -5px, 0) scale(1.03);
+        }
+        
+        &:active {
+          transform: translate3d(0, -2px, 0) scale(0.98);
+        }
+      }
+      
+      &--secondary {
+        background: transparent;
+        color: $purple;
+        border: 2px solid $purple;
+        box-shadow: 
+          0 3px 8px rgba(168, 85, 247, 0.2),
+          inset 0 1px 1px rgba(255, 255, 255, 0.05);
+        
+        &:hover {
+          background: $purple;
+          color: $primaryWhite;
+          box-shadow: 
+            0 8px 20px rgba(168, 85, 247, 0.4),
+            0 4px 8px rgba(0, 0, 0, 0.3),
+            0 0 35px rgba(168, 85, 247, 0.3),
+            inset 0 1px 2px rgba(255, 255, 255, 0.15),
+            inset 0 -3px 10px rgba(0, 0, 0, 0.15);
+          transform: translate3d(0, -5px, 0) scale(1.03);
+        }
+        
+        &:active {
+          transform: translate3d(0, -2px, 0) scale(0.98);
+        }
+      }
+    }
+  }
+  
+  &__stats {
+    background: $cardBg;
+    border-bottom: 1px solid $borderDefault;
+    position: relative;
+    
+    // Subtle glow effect
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 100%;
+      background: radial-gradient(ellipse at center, rgba(37, 214, 149, 0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    
+    &-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: $spacing-2xl $spacing-xl;
+      position: relative;
+      z-index: 1;
+    }
+    
+    &-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: $spacing-xl;
+      text-align: center;
+      
+      @include tablet {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    &-item {
+      padding: $spacing-lg;
+      border-radius: $radius-lg;
+      background: rgba(16, 18, 22, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      box-shadow: $shadowNeumorphic;
+      
+      // Depth layer
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: $radius-lg;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, transparent 50%, rgba(0, 0, 0, 0.05) 100%);
+        pointer-events: none;
+      }
+      
+      &:hover {
+        transform: translate3d(0, -6px, 0) scale(1.03);
+        border-color: rgba(37, 214, 149, 0.3);
+        box-shadow: 
+          0 12px 30px rgba(0, 0, 0, 0.3),
+          0 0 0 1px rgba(37, 214, 149, 0.2),
+          0 0 25px rgba(37, 214, 149, 0.2),
+          inset 0 1px 2px rgba(255, 255, 255, 0.1),
+          inset 0 -2px 10px rgba(0, 0, 0, 0.15);
+      }
+      
+      &-value {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2rem;
+        font-weight: $font-bold;
+        background: $gradientGreen;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: $spacing-xs;
+        transition: transform 0.3s ease;
+        
+        @include tablet {
+          font-size: 2.5rem;
+        }
+      }
+      
+      &:hover &-value {
+        transform: scale(1.05);
+      }
+      
+      &-label {
+        color: $slate;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: $font-medium;
+      }
+    }
+  }
+  
+  &__nfts {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: $spacing-3xl $spacing-xl;
+    
+    &-header {
+      @include flex-between;
+      margin-bottom: $spacing-2xl;
+      flex-wrap: wrap;
+      gap: $spacing-lg;
+    }
+    
+    &-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      font-weight: $font-bold;
+      color: $primaryWhite;
+      
+      @include tablet {
+        font-size: 2.5rem;
+      }
+    }
+    
+    &-filter {
+      padding: $spacing-sm $spacing-lg;
+      background: $cardBg;
+      border: 1px solid $borderDefault;
+      border-radius: $radius-md;
+      color: $primaryWhite;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all $transition-normal;
+      
+      &:hover {
+        border-color: $borderHover;
+      }
+      
+      &:focus {
+        outline: none;
+        border-color: $borderFocus;
+        box-shadow: $shadowGlow;
+      }
+    }
+    
+    &-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: $spacing-xl;
+      
+      @include tablet-sm {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      @include desktop-sm {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      @include desktop {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    &-loading {
+      @include flex-center;
+      padding: $spacing-4xl 0;
+    }
+    
+    &-spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid $borderDefault;
+      border-top-color: $blue;
+      border-radius: $radius-full;
+      animation: spin 1s linear infinite;
+    }
+    
+    &-empty {
+      text-align: center;
+      padding: $spacing-4xl 0;
+      
+      &-text {
+        color: $slate;
+        font-size: 1.125rem;
+        margin-bottom: $spacing-lg;
+      }
+      
+      &-btn {
+        padding: $spacing-md $spacing-xl;
+        background: $gradientBlue;
+        color: $primaryWhite;
+        border: none;
+        border-radius: $radius-md;
+        font-weight: $font-semibold;
+        cursor: pointer;
+        transition: all $transition-normal;
+        
+        &:hover {
+          box-shadow: $shadowGlowBlue;
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+

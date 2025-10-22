@@ -1,0 +1,201 @@
+@import '../styles/_constants.scss';
+
+.nft-card {
+  @include neumorphic-card;
+  cursor: pointer;
+  overflow: hidden;
+  border: 1px solid rgba(77, 156, 255, 0.2);
+  
+  // Add depth glow effect
+  &::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(77, 156, 255, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  
+  &:hover {
+    @include neumorphic-hover;
+    border-color: rgba(77, 156, 255, 0.5);
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(77, 156, 255, 0.3),
+      0 0 40px rgba(77, 156, 255, 0.4),
+      inset 0 0 30px rgba(77, 156, 255, 0.05);
+    
+    &::after {
+      opacity: 1;
+    }
+    
+    .nft-card__image img {
+      transform: scale(1.1);
+    }
+    
+    .nft-card__badge {
+      transform: translate3d(0, 0, 10px) scale(1.05);
+    }
+  }
+  
+  &__image {
+    aspect-ratio: 1;
+    background: $pitch;
+    position: relative;
+    overflow: hidden;
+    border-radius: $radius-md;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform $transition-slow;
+    }
+    
+    &--placeholder {
+      @include flex-center;
+      color: $slate;
+      font-size: 0.875rem;
+    }
+  }
+  
+  &__badge {
+    position: absolute;
+    top: $spacing-sm;
+    right: $spacing-sm;
+    background: $gradientGreen;
+    color: $primaryWhite;
+    padding: $spacing-xs $spacing-md;
+    border-radius: $radius-full;
+    font-size: 0.75rem;
+    font-weight: $font-bold;
+    box-shadow: 
+      0 4px 12px rgba(37, 214, 149, 0.3),
+      0 2px 4px rgba(0, 0, 0, 0.2),
+      inset 0 1px 2px rgba(255, 255, 255, 0.2),
+      inset 0 -2px 6px rgba(0, 0, 0, 0.15);
+    text-transform: uppercase;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+    z-index: 10;
+    
+    &--sold {
+      background: $gradientRed;
+      box-shadow: 
+        0 4px 12px rgba(216, 29, 60, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.2),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.15);
+    }
+  }
+  
+  &__details {
+    padding: $spacing-lg;
+    padding-bottom: $spacing-md;
+  }
+  
+  &__name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: $font-semibold;
+    font-size: 1.125rem;
+    color: $primaryWhite;
+    margin-bottom: $spacing-xs;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  &__collection {
+    font-size: 0.875rem;
+    color: $slate;
+    margin-bottom: $spacing-lg;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: $spacing-md;
+  }
+  
+  &__price {
+    &-label {
+      font-size: 0.75rem;
+      color: $slate;
+      margin-bottom: $spacing-xs;
+    }
+    
+    &-value {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: $font-bold;
+      font-size: 1.125rem;
+      background: $gradientBlue;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+  
+  &__buy-btn {
+    padding: $spacing-sm $spacing-lg;
+    background: $gradientBlue;
+    color: $primaryWhite;
+    border: none;
+    border-radius: $radius-md;
+    font-weight: $font-semibold;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    box-shadow: 
+      0 4px 12px rgba(77, 156, 255, 0.25),
+      0 2px 4px rgba(0, 0, 0, 0.2),
+      inset 0 1px 2px rgba(255, 255, 255, 0.15),
+      inset 0 -2px 8px rgba(0, 0, 0, 0.15);
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+      border-radius: 50%;
+      filter: blur(1px);
+      opacity: 0.7;
+    }
+    
+    &:hover {
+      box-shadow: 
+        0 8px 24px rgba(77, 156, 255, 0.4),
+        0 4px 8px rgba(0, 0, 0, 0.3),
+        0 0 30px rgba(77, 156, 255, 0.3),
+        inset 0 1px 3px rgba(255, 255, 255, 0.2),
+        inset 0 -3px 12px rgba(0, 0, 0, 0.2);
+      transform: translate3d(0, -4px, 0) scale(1.02);
+    }
+    
+    &:active {
+      transform: translate3d(0, -2px, 0) scale(0.98);
+    }
+  }
+  
+  &__owner {
+    margin-top: $spacing-md;
+    padding-top: $spacing-md;
+    border-top: 1px solid $borderDefault;
+    font-size: 0.75rem;
+    color: $slate;
+    font-family: 'Courier New', monospace;
+  }
+}
+

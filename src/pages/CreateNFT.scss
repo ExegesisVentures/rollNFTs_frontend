@@ -1,0 +1,179 @@
+@import '../styles/_constants.scss';
+
+.create-nft {
+  min-height: 100vh;
+  
+  &__container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: $spacing-3xl $spacing-xl;
+  }
+  
+  &__title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2.5rem;
+    font-weight: $font-bold;
+    background: $gradientGreen;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: $spacing-sm;
+  }
+  
+  &__subtitle {
+    color: $slate;
+    font-size: 1.125rem;
+    margin-bottom: $spacing-3xl;
+  }
+  
+  &__form {
+    @include card;
+  }
+  
+  &__field {
+    margin-bottom: $spacing-xl;
+  }
+  
+  &__label {
+    display: block;
+    color: $primaryWhite;
+    font-weight: $font-semibold;
+    margin-bottom: $spacing-sm;
+  }
+  
+  &__input {
+    width: 100%;
+    padding: $spacing-md;
+    background: $pitch;
+    border: 1px solid $borderDefault;
+    border-radius: $radius-md;
+    color: $primaryWhite;
+    font-size: 1rem;
+    transition: border-color $transition-fast;
+    
+    &:focus {
+      outline: none;
+      border-color: $borderFocus;
+      box-shadow: $shadowGlow;
+    }
+    
+    &--error {
+      border-color: $red;
+    }
+  }
+  
+  &__textarea {
+    @extend .create-nft__input;
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  &__error {
+    display: block;
+    color: $red;
+    font-size: 0.875rem;
+    margin-top: $spacing-xs;
+  }
+  
+  &__hint {
+    display: block;
+    color: $slate;
+    font-size: 0.875rem;
+    margin-top: $spacing-xs;
+  }
+  
+  &__image-upload {
+    border: 2px dashed $borderDefault;
+    border-radius: $radius-md;
+    overflow: hidden;
+    transition: border-color $transition-normal;
+    
+    &:hover {
+      border-color: $borderHover;
+    }
+  }
+  
+  &__upload-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-3xl;
+    cursor: pointer;
+    transition: background $transition-normal;
+    
+    &:hover {
+      background: $pitch;
+    }
+  }
+  
+  &__upload-icon {
+    font-size: 3rem;
+    margin-bottom: $spacing-md;
+  }
+  
+  &__upload-text {
+    color: $primaryWhite;
+    font-weight: $font-medium;
+    margin-bottom: $spacing-xs;
+  }
+  
+  &__upload-hint {
+    color: $slate;
+    font-size: 0.875rem;
+  }
+  
+  &__image-preview {
+    position: relative;
+    aspect-ratio: 1;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  
+  &__image-remove {
+    position: absolute;
+    top: $spacing-md;
+    right: $spacing-md;
+    width: 32px;
+    height: 32px;
+    border-radius: $radius-full;
+    background: rgba(0, 0, 0, 0.8);
+    color: $primaryWhite;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: background $transition-fast;
+    
+    &:hover {
+      background: $red;
+    }
+  }
+  
+  &__price-input {
+    position: relative;
+  }
+  
+  &__price-currency {
+    position: absolute;
+    right: $spacing-md;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $slate;
+    font-weight: $font-semibold;
+    pointer-events: none;
+  }
+  
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-md;
+    margin-top: $spacing-2xl;
+    padding-top: $spacing-xl;
+    border-top: 1px solid $borderDefault;
+  }
+}
+

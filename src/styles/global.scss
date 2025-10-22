@@ -1,0 +1,320 @@
+@import './_constants.scss';
+
+// CSS Reset & Normalize
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 12px;
+  
+  @include tablet {
+    font-size: 14px;
+  }
+  
+  @include desktop {
+    font-size: 16px;
+  }
+}
+
+body {
+  font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: $font-normal;
+  line-height: 1.5;
+  color: $primaryWhite;
+  background: $solid;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  
+  // Performance optimizations
+  text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#root {
+  min-height: 100vh;
+  width: 100%;
+}
+
+// Typography
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Space Grotesk', 'Noto Sans', sans-serif;
+  font-weight: $font-medium;
+  line-height: 1.2;
+  margin: 0;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: $font-bold;
+  
+  @include tablet {
+    font-size: 3rem;
+  }
+  
+  @include desktop {
+    font-size: 4rem;
+  }
+}
+
+h2 {
+  font-size: 2rem;
+  
+  @include tablet {
+    font-size: 2.5rem;
+  }
+}
+
+h3 {
+  font-size: 1.5rem;
+  
+  @include tablet {
+    font-size: 1.75rem;
+  }
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: $green;
+  text-decoration: none;
+  transition: color $transition-fast;
+  
+  &:hover {
+    color: $green1;
+  }
+}
+
+// Custom Scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $pitch;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $primaryBlack;
+  border-radius: $radius-full;
+  
+  &:hover {
+    background: $secondaryBlack;
+  }
+}
+
+// Utility Classes
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 $spacing-md;
+  
+  @include tablet {
+    padding: 0 $spacing-lg;
+  }
+  
+  @include desktop {
+    padding: 0 $spacing-xl;
+  }
+}
+
+.text-gradient {
+  background: $gradientGreen;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-blue {
+  background: $gradientBlue;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-purple {
+  background: $gradientPurple;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glow {
+  box-shadow: $shadowGlow;
+}
+
+.glow-blue {
+  box-shadow: $shadowGlowBlue;
+}
+
+.glow-purple {
+  box-shadow: $shadowGlowPurple;
+}
+
+.card {
+  @include card;
+}
+
+.glass {
+  @include glass;
+}
+
+// Animations - Optimized for Performance
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(37, 214, 149, 0.3), 0 0 40px rgba(37, 214, 149, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(37, 214, 149, 0.5), 0 0 60px rgba(37, 214, 149, 0.25);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s linear infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+// Loading States
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    $pitch 0%,
+    $primaryBlack 50%,
+    $pitch 100%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s ease-in-out infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// Button Styles
+.btn {
+  padding: $spacing-md $spacing-xl;
+  border-radius: $radius-md;
+  font-weight: $font-semibold;
+  border: none;
+  cursor: pointer;
+  transition: all $transition-normal;
+  font-size: 1rem;
+  
+  &-primary {
+    background: $gradientGreen;
+    color: $primaryWhite;
+    
+    &:hover {
+      box-shadow: $shadowGlow;
+      transform: translateY(-2px);
+    }
+  }
+  
+  &-secondary {
+    background: transparent;
+    color: $green;
+    border: 2px solid $green;
+    
+    &:hover {
+      background: $green;
+      color: $primaryWhite;
+    }
+  }
+  
+  &-blue {
+    background: $gradientBlue;
+    color: $primaryWhite;
+    
+    &:hover {
+      box-shadow: $shadowGlowBlue;
+      transform: translateY(-2px);
+    }
+  }
+  
+  &-purple {
+    background: $gradientPurple;
+    color: $primaryWhite;
+    
+    &:hover {
+      box-shadow: $shadowGlowPurple;
+      transform: translateY(-2px);
+    }
+  }
+}
+

@@ -1,0 +1,306 @@
+// Wallet Modal Styles
+// File: src/components/WalletModal.scss
+
+@import '../styles/_constants.scss';
+
+.wallet-modal {
+  &__content {
+    min-height: 300px;
+  }
+
+  &__description {
+    color: $slate;
+    margin-bottom: $spacing-xl;
+    font-size: 0.938rem;
+    line-height: 1.6;
+  }
+
+  &__wallet-list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    margin-bottom: $spacing-xl;
+  }
+
+  &__wallet-button {
+    display: flex;
+    align-items: center;
+    gap: $spacing-lg;
+    padding: $spacing-lg;
+    background: $pitch;
+    border: 1px solid rgba(77, 156, 255, 0.15);
+    border-radius: $radius-lg;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+    text-align: left;
+    position: relative;
+    box-shadow: 
+      0 3px 8px rgba(0, 0, 0, 0.2),
+      inset 0 1px 1px rgba(255, 255, 255, 0.03);
+    
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: $radius-lg;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, transparent 50%, rgba(0, 0, 0, 0.05) 100%);
+      pointer-events: none;
+    }
+
+    &:hover:not(:disabled) {
+      background: rgba($blue, 0.05);
+      border-color: rgba($blue, 0.4);
+      transform: translate3d(0, -3px, 0) scale(1.01);
+      box-shadow: 
+        0 6px 16px rgba(77, 156, 255, 0.25),
+        0 3px 6px rgba(0, 0, 0, 0.2),
+        0 0 20px rgba(77, 156, 255, 0.15),
+        inset 0 1px 2px rgba(255, 255, 255, 0.05);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    &--loading {
+      border-color: rgba($blue, 0.4);
+      background: rgba($blue, 0.05);
+
+      .wallet-modal__wallet-arrow {
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+    }
+    
+    &:active:not(:disabled) {
+      transform: translate3d(0, -1px, 0) scale(0.99);
+    }
+  }
+
+  &__wallet-icon {
+    font-size: 2rem;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $cardBg;
+    border-radius: $radius-md;
+    flex-shrink: 0;
+    box-shadow: 
+      0 3px 8px rgba(77, 156, 255, 0.15),
+      inset 0 1px 1px rgba(255, 255, 255, 0.05),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &__wallet-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__wallet-name {
+    font-weight: $font-semibold;
+    font-size: 1rem;
+    color: $primaryWhite;
+  }
+
+  &__wallet-status {
+    font-size: 0.813rem;
+    color: $blue;
+  }
+
+  &__wallet-arrow {
+    font-size: 1.5rem;
+    color: $slate;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+  
+  &__wallet-button:hover &__wallet-icon {
+    box-shadow: 
+      0 4px 12px rgba(77, 156, 255, 0.25),
+      inset 0 1px 2px rgba(255, 255, 255, 0.08),
+      inset 0 -3px 6px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+  }
+  
+  &__wallet-button:hover &__wallet-arrow {
+    transform: translateX(4px);
+  }
+
+  &__error {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-md;
+    padding: $spacing-lg;
+    background: rgba($red, 0.1);
+    border: 1px solid rgba($red, 0.3);
+    border-radius: $radius-md;
+    margin-bottom: $spacing-xl;
+    box-shadow: 
+      0 3px 8px rgba(216, 29, 60, 0.15),
+      inset 0 1px 1px rgba(255, 255, 255, 0.03);
+  }
+
+  &__error-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    color: $red;
+  }
+
+  &__error-text {
+    font-size: 0.875rem;
+    color: $primaryWhite;
+    line-height: 1.5;
+  }
+
+  &__info {
+    padding: $spacing-lg;
+    background: rgba($blue, 0.05);
+    border-radius: $radius-md;
+    border: 1px solid rgba($blue, 0.15);
+    box-shadow: 
+      0 2px 6px rgba(77, 156, 255, 0.1),
+      inset 0 1px 1px rgba(255, 255, 255, 0.03);
+  }
+
+  &__info-title {
+    font-weight: $font-semibold;
+    margin-bottom: $spacing-sm;
+    color: $primaryWhite;
+    font-size: 0.938rem;
+  }
+
+  &__info-text {
+    font-size: 0.875rem;
+    color: $slate;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  // No wallets state
+  &__no-wallets {
+    text-align: center;
+    padding: $spacing-2xl 0;
+  }
+
+  &__no-wallets-icon {
+    font-size: 4rem;
+    margin-bottom: $spacing-lg;
+    opacity: 0.5;
+  }
+
+  &__no-wallets-title {
+    font-size: 1.5rem;
+    font-weight: $font-bold;
+    margin-bottom: $spacing-sm;
+    color: $primaryWhite;
+  }
+
+  &__no-wallets-text {
+    color: $slate;
+    margin-bottom: $spacing-2xl;
+    font-size: 0.938rem;
+    line-height: 1.6;
+  }
+
+  &__install-list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    margin-bottom: $spacing-xl;
+  }
+
+  &__install-button {
+    display: flex;
+    align-items: center;
+    gap: $spacing-lg;
+    padding: $spacing-lg;
+    background: $pitch;
+    border: 1px solid rgba($green, 0.15);
+    border-radius: $radius-lg;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    box-shadow: 
+      0 3px 8px rgba(0, 0, 0, 0.2),
+      inset 0 1px 1px rgba(255, 255, 255, 0.03);
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: $radius-lg;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, transparent 50%, rgba(0, 0, 0, 0.05) 100%);
+      pointer-events: none;
+    }
+
+    &:hover {
+      background: rgba($green, 0.05);
+      border-color: rgba($green, 0.4);
+      transform: translate3d(0, -3px, 0) scale(1.01);
+      box-shadow: 
+        0 6px 16px rgba(37, 214, 149, 0.25),
+        0 3px 6px rgba(0, 0, 0, 0.2),
+        0 0 20px rgba(37, 214, 149, 0.15),
+        inset 0 1px 2px rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  &__install-icon {
+    font-size: 2rem;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $cardBg;
+    border-radius: $radius-md;
+    flex-shrink: 0;
+    box-shadow: 
+      0 3px 8px rgba(37, 214, 149, 0.15),
+      inset 0 1px 1px rgba(255, 255, 255, 0.05),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.15);
+  }
+
+  &__install-name {
+    flex: 1;
+    font-weight: $font-semibold;
+    font-size: 1rem;
+    color: $primaryWhite;
+    text-align: left;
+  }
+
+  &__install-arrow {
+    font-size: 1.5rem;
+    color: $slate;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+
+  &__install-button:hover &__install-arrow {
+    transform: translateX(4px);
+  }
+
+  &__install-hint {
+    font-size: 0.813rem;
+    color: $carbon;
+    font-style: italic;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+

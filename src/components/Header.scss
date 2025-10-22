@@ -1,0 +1,338 @@
+@import '../styles/_constants.scss';
+
+.header {
+  @include glass;
+  position: sticky;
+  top: 0;
+  z-index: $z-sticky;
+  border-bottom: 1px solid $borderDefault;
+  
+  &__nav {
+    @include flex-between;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: $spacing-lg $spacing-xl;
+  }
+  
+  &__logo {
+    @include flex-center;
+    gap: $spacing-md;
+    text-decoration: none;
+    transition: transform $transition-normal;
+    
+    &:hover {
+      transform: scale(1.05);
+    }
+    
+    &-icon {
+      width: 40px;
+      height: 40px;
+      background: $gradientBlue;
+      border-radius: $radius-md;
+      @include flex-center;
+      font-weight: $font-bold;
+      font-size: 1.5rem;
+      color: $primaryWhite;
+      box-shadow: 
+        0 4px 12px rgba(77, 156, 255, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.2),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.15);
+      position: relative;
+      transform-style: preserve-3d;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: $radius-md;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(0, 0, 0, 0.1) 100%);
+        pointer-events: none;
+      }
+    }
+    
+    &-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: $font-bold;
+      font-size: 1.25rem;
+      background: $gradientPurple;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+  
+  &__links {
+    display: none;
+    gap: $spacing-2xl;
+    
+    @include tablet {
+      display: flex;
+    }
+    
+    a {
+      color: $carbon;
+      font-weight: $font-medium;
+      transition: all $transition-normal;
+      position: relative;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: $gradientBlue;
+        transition: width $transition-normal;
+      }
+      
+      &:hover {
+        color: $blue;
+        
+        &::after {
+          width: 100%;
+        }
+      }
+    }
+  }
+  
+  &__wallet {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    position: relative;
+    
+    &-connected {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+    }
+
+    &-balance {
+      display: none;
+      padding: $spacing-sm $spacing-md;
+      background: rgba($blue, 0.1);
+      border-radius: $radius-md;
+      font-size: 0.875rem;
+      font-weight: $font-semibold;
+      color: $blue;
+      border: 1px solid rgba($blue, 0.2);
+
+      @include tablet {
+        display: block;
+      }
+    }
+
+    &-address-btn {
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      padding: $spacing-sm $spacing-md;
+      background: $cardBg;
+      border-radius: $radius-md;
+      border: 1px solid $borderDefault;
+      cursor: pointer;
+      transition: all $transition-normal;
+      color: $primaryWhite;
+      font-size: 0.875rem;
+
+      &:hover {
+        border-color: $blue;
+        background: rgba($blue, 0.05);
+      }
+    }
+
+    &-type {
+      display: none;
+      font-weight: $font-semibold;
+      color: $slate;
+
+      @include tablet {
+        display: block;
+      }
+    }
+    
+    &-address {
+      color: $slate;
+      font-size: 0.875rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    &-chevron {
+      font-size: 0.625rem;
+      color: $carbon;
+      transition: transform $transition-normal;
+    }
+
+    &-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 200px;
+      background: $cardBg;
+      border: 1px solid $borderDefault;
+      border-radius: $radius-md;
+      padding: $spacing-sm;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      animation: slideDown 0.2s ease;
+    }
+
+    &-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+      width: 100%;
+      padding: $spacing-md;
+      background: transparent;
+      border: none;
+      border-radius: $radius-sm;
+      color: $primaryWhite;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all $transition-normal;
+      text-align: left;
+
+      &:hover {
+        background: rgba($blue, 0.1);
+      }
+
+      &--danger {
+        color: $red;
+
+        &:hover {
+          background: rgba($red, 0.1);
+        }
+      }
+    }
+
+    &-dropdown-icon {
+      font-size: 1rem;
+    }
+
+    &-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 999;
+    }
+    
+    &-btn {
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      padding: $spacing-sm $spacing-lg;
+      border-radius: $radius-md;
+      font-weight: $font-semibold;
+      border: none;
+      cursor: pointer;
+      transition: all $transition-normal;
+      font-size: 0.875rem;
+      
+      &-icon {
+        font-size: 1rem;
+      }
+
+      &--connect {
+        background: $gradientBlue;
+        color: $primaryWhite;
+        position: relative;
+        box-shadow: 
+          0 3px 10px rgba(77, 156, 255, 0.25),
+          0 2px 4px rgba(0, 0, 0, 0.2),
+          inset 0 1px 2px rgba(255, 255, 255, 0.15),
+          inset 0 -2px 6px rgba(0, 0, 0, 0.15);
+        
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 60%;
+          height: 1px;
+          background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+          border-radius: 50%;
+          filter: blur(0.5px);
+        }
+        
+        &:hover {
+          box-shadow: 
+            0 6px 18px rgba(77, 156, 255, 0.4),
+            0 3px 6px rgba(0, 0, 0, 0.3),
+            0 0 25px rgba(77, 156, 255, 0.3),
+            inset 0 1px 2px rgba(255, 255, 255, 0.2),
+            inset 0 -3px 8px rgba(0, 0, 0, 0.2);
+          transform: translate3d(0, -3px, 0) scale(1.02);
+        }
+      }
+      
+      &--disconnect {
+        background: $gradientRed;
+        color: $primaryWhite;
+        position: relative;
+        box-shadow: 
+          0 3px 10px rgba(216, 29, 60, 0.25),
+          0 2px 4px rgba(0, 0, 0, 0.2),
+          inset 0 1px 2px rgba(255, 255, 255, 0.15),
+          inset 0 -2px 6px rgba(0, 0, 0, 0.15);
+        
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 60%;
+          height: 1px;
+          background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+          border-radius: 50%;
+          filter: blur(0.5px);
+        }
+        
+        &:hover {
+          box-shadow: 
+            0 6px 18px rgba(216, 29, 60, 0.4),
+            0 3px 6px rgba(0, 0, 0, 0.3),
+            0 0 25px rgba(216, 29, 60, 0.3),
+            inset 0 1px 2px rgba(255, 255, 255, 0.2),
+            inset 0 -3px 8px rgba(0, 0, 0, 0.2);
+          transform: translate3d(0, -3px, 0) scale(1.02);
+        }
+      }
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  // Mobile menu button
+  &__mobile-menu {
+    display: block;
+    background: none;
+    border: none;
+    color: $primaryWhite;
+    cursor: pointer;
+    padding: $spacing-sm;
+    
+    @include tablet {
+      display: none;
+    }
+  }
+}
+
+
+
+

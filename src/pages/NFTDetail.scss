@@ -1,0 +1,230 @@
+@import '../styles/_constants.scss';
+
+.nft-detail {
+  min-height: 100vh;
+  padding: $spacing-3xl 0;
+  
+  &__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 $spacing-xl;
+  }
+  
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-3xl;
+    
+    @include desktop-sm {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  &__image-section {
+    position: sticky;
+    top: 100px;
+    align-self: start;
+  }
+  
+  &__image-container {
+    @include card;
+    aspect-ratio: 1;
+    overflow: hidden;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  
+  &__info-section {
+    @include card;
+  }
+  
+  &__collection {
+    color: $blue;
+    font-size: 0.875rem;
+    font-weight: $font-semibold;
+    margin-bottom: $spacing-sm;
+    text-decoration: none;
+    display: inline-block;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  &__title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2.5rem;
+    font-weight: $font-bold;
+    color: $primaryWhite;
+    margin-bottom: $spacing-md;
+  }
+  
+  &__owner {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    margin-bottom: $spacing-xl;
+    padding-bottom: $spacing-xl;
+    border-bottom: 1px solid $borderDefault;
+    
+    &-label {
+      color: $slate;
+      font-size: 0.875rem;
+    }
+    
+    &-address {
+      color: $primaryWhite;
+      font-family: 'Courier New', monospace;
+      font-size: 0.875rem;
+    }
+  }
+  
+  &__price-section {
+    background: $pitch;
+    border: 1px solid $borderDefault;
+    border-radius: $radius-md;
+    padding: $spacing-xl;
+    margin-bottom: $spacing-xl;
+    
+    &-label {
+      color: $slate;
+      font-size: 0.875rem;
+      margin-bottom: $spacing-sm;
+    }
+    
+    &-value {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      font-weight: $font-bold;
+      background: $gradientBlue;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+  
+  &__actions {
+    display: flex;
+    gap: $spacing-md;
+    margin-bottom: $spacing-xl;
+  }
+  
+  &__description {
+    margin-bottom: $spacing-xl;
+    
+    &-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: $font-semibold;
+      color: $primaryWhite;
+      margin-bottom: $spacing-md;
+    }
+    
+    &-text {
+      color: $carbon;
+      line-height: 1.7;
+    }
+  }
+  
+  &__properties {
+    &-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: $font-semibold;
+      color: $primaryWhite;
+      margin-bottom: $spacing-md;
+    }
+    
+    &-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: $spacing-md;
+      
+      @include tablet {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    &-item {
+      background: $pitch;
+      border: 1px solid $borderDefault;
+      border-radius: $radius-md;
+      padding: $spacing-md;
+      text-align: center;
+      
+      &-label {
+        color: $slate;
+        font-size: 0.75rem;
+        margin-bottom: $spacing-xs;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      
+      &-value {
+        color: $primaryWhite;
+        font-weight: $font-semibold;
+      }
+    }
+  }
+  
+  &__details {
+    margin-top: $spacing-xl;
+    padding-top: $spacing-xl;
+    border-top: 1px solid $borderDefault;
+    
+    &-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: $font-semibold;
+      color: $primaryWhite;
+      margin-bottom: $spacing-md;
+    }
+    
+    &-item {
+      display: flex;
+      justify-content: space-between;
+      padding: $spacing-md 0;
+      border-bottom: 1px solid $borderDefault;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      &-label {
+        color: $slate;
+      }
+      
+      &-value {
+        color: $primaryWhite;
+        font-family: 'Courier New', monospace;
+        font-size: 0.875rem;
+      }
+    }
+  }
+  
+  &__status-badge {
+    display: inline-block;
+    padding: $spacing-xs $spacing-md;
+    border-radius: $radius-full;
+    font-size: 0.75rem;
+    font-weight: $font-bold;
+    text-transform: uppercase;
+    
+    &--listed {
+      background: rgba(37, 214, 149, 0.15);
+      color: $green;
+      border: 1px solid rgba(37, 214, 149, 0.3);
+    }
+    
+    &--sold {
+      background: rgba(216, 29, 60, 0.15);
+      color: $red;
+      border: 1px solid rgba(216, 29, 60, 0.3);
+    }
+  }
+}
+

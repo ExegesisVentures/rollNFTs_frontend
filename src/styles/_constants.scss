@@ -1,0 +1,217 @@
+// RollNFTs Design System
+// Based on CoreumDash/ShieldNEST styling
+
+// Primary Colors - Vibrant Palette
+$primaryRed: #d81d3c;
+$red: #dc2626;
+$green: #25d695;
+$green1: #03b47a;
+$green2: #08c184;
+$yellow: #ffbb29;
+$blue: #4d9cff;
+$purple: #a855f7;
+$violet: #7c3aed;
+$orange: #ff8c42;
+$cyan: #06b6d4;
+
+// Background Colors
+$solid: #0e0e0e;
+$primaryBlack: #2d2d2d;
+$secondaryBlack: #262626;
+$night: #121212;
+$pitch: #141414;
+$cardBg: #101216;
+$dark: #1a1a1a;
+
+// Text Colors
+$primaryWhite: #ffffff;
+$secondaryWhite: #fdfdfd;
+$offWhite: #eeeeee;
+$carbon: #c3c3c3;
+$dim: #ddd;
+$slate: #94a3b8;
+$text-secondary: #94a3b8;
+
+// Border Colors
+$borderDefault: #1b1d23;
+$borderFocus: #25d695;
+$borderHover: #2d3339;
+
+// Gradients - Colorful Variations
+$gradientRed: linear-gradient(270deg, #d81d3c 0%, #981329 49.52%, #d81d3c 100%);
+$gradientGreen: linear-gradient(225deg, #25d695 0%, #179b69 100%);
+$gradientGreenAlt: linear-gradient(270deg, #08c184 0%, #007e59 49.87%, #08c184 100%);
+$gradientBlue: linear-gradient(225deg, #4d9cff 0%, #3b82f6 100%);
+$gradientPurple: linear-gradient(225deg, #a855f7 0%, #7c3aed 100%);
+$gradientOrange: linear-gradient(225deg, #ff8c42 0%, #f97316 100%);
+$gradientCyan: linear-gradient(225deg, #06b6d4 0%, #0891b2 100%);
+$gradientLight: linear-gradient(180deg, #fff 0%, #878787 100%);
+$gradientDark: linear-gradient(180deg, #121212 0%, #1a1a1a 25.15%, #121212 100%);
+$gradientCard: linear-gradient(135deg, #101216 0%, #1a1d24 100%);
+$gradientHero: linear-gradient(135deg, rgba(37, 214, 149, 0.1) 0%, rgba(37, 214, 149, 0) 100%);
+
+// Shadows - Enhanced 3D Neumorphic
+$shadowSm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+$shadowMd: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+$shadowLg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+$shadowXl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+
+// Neumorphic Shadows with Inset
+$shadowNeumorphic: 
+  0 4px 12px rgba(0, 0, 0, 0.3),
+  0 2px 4px rgba(0, 0, 0, 0.2),
+  inset 0 1px 2px rgba(255, 255, 255, 0.1),
+  inset 0 -2px 8px rgba(0, 0, 0, 0.2);
+
+$shadowNeumorphicHover: 
+  0 8px 24px rgba(0, 0, 0, 0.35),
+  0 4px 8px rgba(0, 0, 0, 0.3),
+  inset 0 1px 3px rgba(255, 255, 255, 0.2),
+  inset 0 -3px 12px rgba(0, 0, 0, 0.25);
+
+// Glow Shadows - Enhanced
+$shadowGlow: 0 0 20px rgba(37, 214, 149, 0.3), 0 0 40px rgba(37, 214, 149, 0.15);
+$shadowGlowRed: 0 0 20px rgba(216, 29, 60, 0.3), 0 0 40px rgba(216, 29, 60, 0.15);
+$shadowGlowBlue: 0 0 20px rgba(77, 156, 255, 0.3), 0 0 40px rgba(77, 156, 255, 0.15);
+$shadowGlowPurple: 0 0 20px rgba(168, 85, 247, 0.3), 0 0 40px rgba(168, 85, 247, 0.15);
+$shadowGlowOrange: 0 0 20px rgba(255, 140, 66, 0.3), 0 0 40px rgba(255, 140, 66, 0.15);
+$shadowGlowCyan: 0 0 20px rgba(6, 182, 212, 0.3), 0 0 40px rgba(6, 182, 212, 0.15);
+$shadowGlowYellow: 0 0 20px rgba(255, 187, 41, 0.3), 0 0 40px rgba(255, 187, 41, 0.15);
+
+// Spacing
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-2xl: 48px;
+$spacing-3xl: 64px;
+$spacing-4xl: 80px;
+
+// Border Radius
+$radius-sm: 6px;
+$radius-md: 10px;
+$radius-lg: 16px;
+$radius-xl: 24px;
+$radius-full: 9999px;
+
+// Transitions
+$transition-fast: 0.15s ease;
+$transition-normal: 0.3s ease;
+$transition-slow: 0.5s ease;
+
+// Font Weights
+$font-light: 300;
+$font-normal: 400;
+$font-medium: 500;
+$font-semibold: 600;
+$font-bold: 700;
+
+// Z-Index
+$z-base: 1;
+$z-dropdown: 100;
+$z-sticky: 200;
+$z-modal: 1000;
+$z-toast: 2000;
+
+// Breakpoints
+$breakpoint-sm: 480px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1440px;
+$breakpoint-2xl: 1920px;
+
+// Mixins
+@mixin mobile {
+  @media (max-width: #{$breakpoint-sm - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet-sm {
+  @media (min-width: $breakpoint-sm) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: $breakpoint-md) {
+    @content;
+  }
+}
+
+@mixin desktop-sm {
+  @media (min-width: $breakpoint-lg) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: $breakpoint-xl) {
+    @content;
+  }
+}
+
+@mixin desktop-lg {
+  @media (min-width: $breakpoint-2xl) {
+    @content;
+  }
+}
+
+// Utility Mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin card {
+  background: $cardBg;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadowMd;
+}
+
+@mixin glass {
+  background: rgba(16, 18, 22, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+// Neumorphic 3D Effect Mixin
+@mixin neumorphic-card {
+  background: $cardBg;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: $shadowNeumorphic;
+  transform-style: preserve-3d;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: $radius-lg;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%, rgba(0, 0, 0, 0.1) 100%);
+    pointer-events: none;
+  }
+}
+
+@mixin neumorphic-hover {
+  transform: translate3d(0, -8px, 0) scale(1.02);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(37, 214, 149, 0.2),
+    0 0 30px rgba(37, 214, 149, 0.3),
+    inset 0 1px 3px rgba(255, 255, 255, 0.15),
+    inset 0 -3px 12px rgba(0, 0, 0, 0.2);
+}
+
