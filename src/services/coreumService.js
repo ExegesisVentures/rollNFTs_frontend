@@ -56,8 +56,8 @@ class CoreumService {
         uri: collectionData.uri || '', // IPFS metadata URL
         uriHash: '', // Optional
         data: '', // Optional
-        features: [], // Features like burning, freezing, etc.
-        royaltyRate: '0', // Can be set later
+        features: collectionData.features || [], // Features: [1=burning, 2=freezing, 3=whitelisting, 4=disable_sending]
+        royaltyRate: collectionData.royaltyRate || '0', // Royalty in basis points (e.g., "1000" = 10%)
       };
 
       const msgCreateClass = {
@@ -83,10 +83,13 @@ class CoreumService {
         throw new Error(`Transaction failed: ${result.rawLog}`);
       }
 
+      // Generate classId (Coreum format: symbol-issuerAddress)
+      const classId = `${collectionData.symbol.toLowerCase()}-${senderAddress}`;
+
       toast.success('Collection created successfully!');
       return {
         success: true,
-        classId: `${collectionData.symbol.toLowerCase()}-${senderAddress}`,
+        classId: classId,
         txHash: result.transactionHash,
       };
     } catch (error) {
