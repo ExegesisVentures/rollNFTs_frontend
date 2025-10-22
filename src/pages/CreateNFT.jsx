@@ -1,5 +1,6 @@
-// Create NFT Page
+// Create NFT Page - UPDATED WITH REAL MINTING
 // File: src/pages/CreateNFT.jsx
+// Replace your existing CreateNFT.jsx with this file
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -9,17 +10,23 @@ import Button from '../components/shared/Button';
 import EmptyState from '../components/shared/EmptyState';
 import { validateNFTMetadata, validateImageFile } from '../utils/validation';
 import toast, { Toaster } from 'react-hot-toast';
+import imageService from '../services/imageService';
+import coreumService from '../services/coreumService';
+import marketplaceService from '../services/marketplaceService';
+import { nftsAPI } from '../services/api';
 import './CreateNFT.scss';
 
 const CreateNFT = () => {
   const navigate = useNavigate();
-  const { isConnected } = useWalletStore();
+  const { isConnected, address } = useWalletStore();
   const [showWalletModal, setShowWalletModal] = useState(false);
   
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
+    listForSale: false,
+    payWithRoll: false,
     image: null
   });
   const [imagePreview, setImagePreview] = useState(null);
@@ -61,21 +68,120 @@ const CreateNFT = () => {
 
     try {
       setMinting(true);
+      const toastId = toast.loading('Uploading to IPFS...');
+
+      // Step 1: Upload image to IPFS via Pinata
+      const imageUpload = await imageService.uploadToIPFS(formData.image, {
+        name: formData.name,
+        keyvalues: {
+          collection: 'default', // Or selected collection
+          creator: address,
+        },
+      });
+
+      if (!imageUpload.success) {
+        throw new Error('Failed to upload image to IPFS');
+      }
+
+      toast.loading('Creating metadata...', { id: toastId });
+
+      // Step 2: Create metadata JSON
+      const metadata = {
+        name: formData.name,
+        description: formData.description,
+        image: `ipfs://${imageUpload.ipfsHash}`,
+        external_url: window.location.origin,
+        attributes: [], // Add attributes if any
+        properties: {
+          category: 'image',
+          files: [
+            {
+              uri: `ipfs://${imageUpload.ipfsHash}`,
+              type: formData.image.type,
+            },
+          ],
+        },
+      };
+
+      // Step 3: Upload metadata to IPFS
+      const metadataUpload = await imageService.uploadMetadataToIPFS(metadata);
+
+      if (!metadataUpload.success) {
+        throw new Error('Failed to upload metadata to IPFS');
+      }
+
+      toast.loading('Minting NFT on Coreum...', { id: toastId });
+
+      // Step 4: Get wallet (Keplr, Leap, or Cosmostation)
+      const wallet = window.keplr || window.leap || window.cosmostation?.providers?.keplr;
+      if (!wallet) {
+        throw new Error('Wallet not found. Please install Keplr, Leap, or Cosmostation');
+      }
+
+      // Step 5: Mint NFT on Coreum blockchain
+      const tokenId = `nft_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
-      // TODO: Implement actual minting logic
-      // 1. Upload image to IPFS
-      // 2. Create metadata JSON
-      // 3. Upload metadata to IPFS
-      // 4. Mint NFT on blockchain
-      
-      // Simulate minting
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
-      toast.success('NFT minted successfully!');
-      navigate('/my-nfts');
+      const mintResult = await coreumService.mintNFT(wallet, {
+        classId: 'rollnfts', // Default collection - TODO: Make this selectable
+        tokenId: tokenId,
+        uri: metadataUpload.url,
+        recipient: address,
+      });
+
+      if (!mintResult.success) {
+        throw new Error(mintResult.error || 'Failed to mint NFT on blockchain');
+      }
+
+      toast.loading('Optimizing images...', { id: toastId });
+
+      // Step 6: Trigger image optimization (background process)
+      imageService.optimizeAndCache(imageUpload.ipfsHash, imageUpload.url);
+
+      // Step 7: Save to database via backend API
+      try {
+        await nftsAPI.create({
+          token_id: mintResult.tokenId,
+          name: formData.name,
+          description: formData.description,
+          image_ipfs: imageUpload.ipfsHash,
+          image_url: imageUpload.url,
+          metadata_uri: metadataUpload.url,
+          owner: address,
+          creator: address,
+          chain: 'CORE',
+          collection: 'rollnfts',
+          tx_hash: mintResult.txHash,
+        });
+      } catch (dbError) {
+        console.warn('Database save failed (non-critical):', dbError);
+        // Continue even if DB save fails - NFT is minted on chain
+      }
+
+      toast.success('NFT minted successfully!', { id: toastId });
+
+      // Step 8: List for sale if price provided
+      if (formData.listForSale && formData.price && parseFloat(formData.price) > 0) {
+        const listResult = await marketplaceService.listNFT(wallet, {
+          classId: 'rollnfts',
+          tokenId: mintResult.tokenId,
+          price: parseFloat(formData.price),
+          payWithRoll: formData.payWithRoll,
+          royaltyBps: 1000, // 10% royalty
+        });
+
+        if (listResult.success) {
+          toast.success('NFT listed for sale!');
+          navigate('/explore'); // Go to marketplace
+        } else {
+          navigate('/my-nfts'); // Go to My NFTs page
+        }
+      } else {
+        navigate('/my-nfts');
+      }
+
     } catch (error) {
       console.error('Minting error:', error);
-      toast.error('Failed to mint NFT');
+      toast.error(error.message || 'Failed to mint NFT. Please try again.');
     } finally {
       setMinting(false);
     }
@@ -119,7 +225,7 @@ const CreateNFT = () => {
       <div className="create-nft__container">
         <h1 className="create-nft__title">Create New NFT</h1>
         <p className="create-nft__subtitle">
-          Upload your artwork and set your price
+          Upload your artwork and mint on Coreum blockchain
         </p>
 
         <form className="create-nft__form" onSubmit={handleSubmit}>
@@ -187,32 +293,80 @@ const CreateNFT = () => {
             {errors.description && <span className="create-nft__error">{errors.description}</span>}
           </div>
 
-          {/* Price */}
+          {/* List for Sale Toggle */}
           <div className="create-nft__field">
-            <label className="create-nft__label">Price (Optional)</label>
-            <div className="create-nft__price-input">
+            <label className="create-nft__checkbox-label">
               <input
-                type="number"
-                step="0.01"
-                className={`create-nft__input ${errors.price ? 'create-nft__input--error' : ''}`}
-                value={formData.price}
-                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                placeholder="0.00"
+                type="checkbox"
+                checked={formData.listForSale}
+                onChange={(e) => setFormData({ ...formData, listForSale: e.target.checked })}
               />
-              <span className="create-nft__price-currency">XRP</span>
-            </div>
-            {errors.price && <span className="create-nft__error">{errors.price}</span>}
-            <span className="create-nft__hint">Leave empty to not list for sale immediately</span>
+              <span>List for sale immediately</span>
+            </label>
           </div>
+
+          {/* Price (conditional) */}
+          {formData.listForSale && (
+            <>
+              <div className="create-nft__field">
+                <label className="create-nft__label">Price (CORE)</label>
+                <div className="create-nft__price-input">
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    className={`create-nft__input ${errors.price ? 'create-nft__input--error' : ''}`}
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    placeholder="0.00"
+                  />
+                  <span className="create-nft__price-currency">CORE</span>
+                </div>
+                {errors.price && <span className="create-nft__error">{errors.price}</span>}
+              </div>
+
+              {/* Roll Token Burn Option */}
+              <div className="create-nft__field">
+                <label className="create-nft__checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={formData.payWithRoll}
+                    onChange={(e) => setFormData({ ...formData, payWithRoll: e.target.checked })}
+                  />
+                  <span>Burn Roll tokens for 50% fee discount (0.5% instead of 1%)</span>
+                </label>
+                {formData.payWithRoll && formData.price && (
+                  <p className="create-nft__hint">
+                    You'll burn {(parseFloat(formData.price) * 0.005).toFixed(2)} ROLL tokens worth to save 0.5% on sale
+                  </p>
+                )}
+              </div>
+            </>
+          )}
 
           {/* Submit */}
           <div className="create-nft__actions">
             <Button type="button" variant="ghost" onClick={() => navigate(-1)}>
               Cancel
             </Button>
-            <Button type="submit" variant="success" loading={minting}>
+            <Button type="submit" variant="success" loading={minting} disabled={minting}>
               {minting ? 'Minting...' : 'Create NFT'}
             </Button>
+          </div>
+
+          {/* Info */}
+          <div className="create-nft__info">
+            <p>
+              <strong>Gas Fee:</strong> ~0.05 CORE (paid to blockchain validators)
+            </p>
+            <p>
+              <strong>Storage:</strong> Free (IPFS via Pinata)
+            </p>
+            {formData.listForSale && (
+              <p>
+                <strong>Platform Fee:</strong> {formData.payWithRoll ? '0.5%' : '1%'} when NFT sells
+              </p>
+            )}
           </div>
         </form>
       </div>

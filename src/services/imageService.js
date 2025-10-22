@@ -8,7 +8,7 @@ import axios from 'axios';
 const PINATA_API_KEY = import.meta.env.VITE_PINATA_API_KEY;
 const PINATA_SECRET = import.meta.env.VITE_PINATA_SECRET;
 const PINATA_JWT = import.meta.env.VITE_PINATA_JWT;
-const PINATA_GATEWAY = 'https://gateway.pinata.cloud';
+const PINATA_GATEWAY = import.meta.env.VITE_PINATA_GATEWAY || 'gateway.pinata.cloud';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -28,54 +28,91 @@ class ImageService {
       });
       formData.append('pinataMetadata', pinataMetadata);
 
+      // Try with API key first (if JWT not available)
+      const headers = {};
+      if (PINATA_JWT) {
+        headers['Authorization'] = `Bearer ${PINATA_JWT}`;
+      } else if (PINATA_API_KEY && PINATA_SECRET) {
+        headers['pinata_api_key'] = PINATA_API_KEY;
+        headers['pinata_secret_api_key'] = PINATA_SECRET;
+      } else if (PINATA_API_KEY) {
+        // Try with just API key
+        headers['Authorization'] = `Bearer ${PINATA_API_KEY}`;
+      } else {
+        throw new Error('No Pinata credentials configured');
+      }
+
       const response = await axios.post(
         'https://api.pinata.cloud/pinning/pinFileToIPFS',
         formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            pinata_api_key: PINATA_API_KEY,
-            pinata_secret_api_key: PINATA_SECRET,
+            ...headers,
           },
           maxContentLength: Infinity,
           maxBodyLength: Infinity,
         }
       );
 
+      const ipfsHash = response.data.IpfsHash;
+      const url = `https://${PINATA_GATEWAY}/ipfs/${ipfsHash}`;
+
       return {
         success: true,
-        ipfsHash: response.data.IpfsHash,
-        url: `${PINATA_GATEWAY}/ipfs/${response.data.IpfsHash}`,
+        ipfsHash: ipfsHash,
+        url: url,
       };
     } catch (error) {
-      console.error('IPFS upload failed:', error);
-      return { success: false, error: error.message };
+      console.error('IPFS upload failed:', error.response?.data || error);
+      return { 
+        success: false, 
+        error: error.response?.data?.error || error.message 
+      };
     }
   }
 
   // Upload JSON metadata to IPFS
   async uploadMetadataToIPFS(metadata) {
     try {
+      // Try with API key first (if JWT not available)
+      const headers = {};
+      if (PINATA_JWT) {
+        headers['Authorization'] = `Bearer ${PINATA_JWT}`;
+      } else if (PINATA_API_KEY && PINATA_SECRET) {
+        headers['pinata_api_key'] = PINATA_API_KEY;
+        headers['pinata_secret_api_key'] = PINATA_SECRET;
+      } else if (PINATA_API_KEY) {
+        headers['Authorization'] = `Bearer ${PINATA_API_KEY}`;
+      } else {
+        throw new Error('No Pinata credentials configured');
+      }
+
       const response = await axios.post(
         'https://api.pinata.cloud/pinning/pinJSONToIPFS',
         metadata,
         {
           headers: {
             'Content-Type': 'application/json',
-            pinata_api_key: PINATA_API_KEY,
-            pinata_secret_api_key: PINATA_SECRET,
+            ...headers,
           },
         }
       );
 
+      const ipfsHash = response.data.IpfsHash;
+      const url = `https://${PINATA_GATEWAY}/ipfs/${ipfsHash}`;
+
       return {
         success: true,
-        ipfsHash: response.data.IpfsHash,
-        url: `${PINATA_GATEWAY}/ipfs/${response.data.IpfsHash}`,
+        ipfsHash: ipfsHash,
+        url: url,
       };
     } catch (error) {
-      console.error('Metadata upload failed:', error);
-      return { success: false, error: error.message };
+      console.error('Metadata upload failed:', error.response?.data || error);
+      return { 
+        success: false, 
+        error: error.response?.data?.error || error.message 
+      };
     }
   }
 
@@ -157,7 +194,7 @@ class ImageService {
       }
 
       // Not cached, return IPFS URL and trigger caching
-      const ipfsUrl = `${PINATA_GATEWAY}/ipfs/${ipfsHash}`;
+      const ipfsUrl = `https://${PINATA_GATEWAY}/ipfs/${ipfsHash}`;
       this.optimizeAndCache(ipfsHash, ipfsUrl); // Fire and forget
 
       return {
@@ -168,11 +205,10 @@ class ImageService {
       console.error('Failed to get optimized URL:', error);
       return {
         cached: false,
-        url: `${PINATA_GATEWAY}/ipfs/${ipfsHash}`,
+        url: `https://${PINATA_GATEWAY}/ipfs/${ipfsHash}`,
       };
     }
   }
 }
 
 export default new ImageService();
-
