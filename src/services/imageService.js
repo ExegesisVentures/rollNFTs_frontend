@@ -2,18 +2,13 @@
 // File: src/services/imageService.js
 // Handles upload to IPFS → Supabase → Vercel pipeline
 
-import { createClient } from '@supabase/supabase-js';
+import supabase from '../lib/supabase';
 import axios from 'axios';
 
 const PINATA_API_KEY = import.meta.env.VITE_PINATA_API_KEY;
 const PINATA_SECRET = import.meta.env.VITE_PINATA_SECRET;
 const PINATA_JWT = import.meta.env.VITE_PINATA_JWT;
 const PINATA_GATEWAY = import.meta.env.VITE_PINATA_GATEWAY || 'gateway.pinata.cloud';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
 
 class ImageService {
   // Upload image to Pinata (IPFS)

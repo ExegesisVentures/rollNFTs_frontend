@@ -3,25 +3,17 @@
 // Handles collection creation and NFT minting using Coreum's native NFT module
 
 import { SigningStargateClient } from '@cosmjs/stargate';
-import { Registry } from '@cosmjs/proto-signing';
+import { createCoreumRegistry, COREUM_MSG_TYPES } from '../lib/coreumTypes';
 import toast from 'react-hot-toast';
 
 const COREUM_CHAIN_ID = 'coreum-mainnet-1';
 const COREUM_RPC = 'https://full-node.mainnet-1.coreum.dev:26657';
 const COREUM_REST = 'https://full-node.mainnet-1.coreum.dev:1317';
 
-// Native NFT message types
-const NFT_TYPE_URL = {
-  CreateClass: '/cosmos.nft.v1beta1.MsgCreateClass',
-  Mint: '/cosmos.nft.v1beta1.MsgMint',
-  Send: '/cosmos.nft.v1beta1.MsgSend',
-  Burn: '/cosmos.nft.v1beta1.MsgBurn',
-};
-
 class CoreumService {
   constructor() {
     this.client = null;
-    this.registry = new Registry();
+    this.registry = createCoreumRegistry();
   }
 
   // Initialize client with wallet
@@ -47,7 +39,7 @@ class CoreumService {
     }
   }
 
-  // Create NFT Collection (Class)
+  // Create NFT Collection (Class) - Using Coreum AssetNFT Module
   async createCollection(wallet, collectionData) {
     try {
       const accounts = await wallet.getKey(COREUM_CHAIN_ID);
@@ -55,17 +47,22 @@ class CoreumService {
 
       await this.initClient(wallet);
 
+      // Use Coreum's AssetNFT module
+      const msgValue = {
+        issuer: senderAddress,
+        symbol: collectionData.symbol,
+        name: collectionData.name,
+        description: collectionData.description || '',
+        uri: collectionData.uri || '', // IPFS metadata URL
+        uriHash: '', // Optional
+        data: '', // Optional
+        features: [], // Features like burning, freezing, etc.
+        royaltyRate: '0', // Can be set later
+      };
+
       const msgCreateClass = {
-        typeUrl: NFT_TYPE_URL.CreateClass,
-        value: {
-          id: collectionData.symbol.toLowerCase(), // class_id
-          name: collectionData.name,
-          symbol: collectionData.symbol,
-          description: collectionData.description || '',
-          uri: collectionData.uri || '', // IPFS metadata URL
-          uriHash: '', // Optional
-          sender: senderAddress,
-        },
+        typeUrl: COREUM_MSG_TYPES.IssueClass,
+        value: msgValue,
       };
 
       // Estimate fee
@@ -89,7 +86,7 @@ class CoreumService {
       toast.success('Collection created successfully!');
       return {
         success: true,
-        classId: collectionData.symbol.toLowerCase(),
+        classId: `${collectionData.symbol.toLowerCase()}-${senderAddress}`,
         txHash: result.transactionHash,
       };
     } catch (error) {
@@ -99,7 +96,7 @@ class CoreumService {
     }
   }
 
-  // Mint NFT
+  // Mint NFT - Using Coreum AssetNFT Module
   async mintNFT(wallet, mintData) {
     try {
       const accounts = await wallet.getKey(COREUM_CHAIN_ID);
@@ -107,16 +104,18 @@ class CoreumService {
 
       await this.initClient(wallet);
 
+      const msgValue = {
+        sender: senderAddress,
+        classId: mintData.classId,
+        id: mintData.tokenId,
+        uri: mintData.uri, // IPFS metadata URL
+        uriHash: '',
+        recipient: mintData.recipient || senderAddress,
+      };
+
       const msgMint = {
-        typeUrl: NFT_TYPE_URL.Mint,
-        value: {
-          classId: mintData.classId,
-          id: mintData.tokenId,
-          uri: mintData.uri, // IPFS metadata URL
-          uriHash: '',
-          sender: senderAddress,
-          recipient: mintData.recipient || senderAddress,
-        },
+        typeUrl: COREUM_MSG_TYPES.Mint,
+        value: msgValue,
       };
 
       const fee = {

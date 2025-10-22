@@ -2,14 +2,9 @@
 // File: src/services/marketplaceService.js
 // Handles listing, buying, selling with Roll burn option
 
-import { createClient } from '@supabase/supabase-js';
+import supabase from '../lib/supabase';
 import coreumService from './coreumService';
 import toast from 'react-hot-toast';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
 
 const MARKETPLACE_CONTRACT = import.meta.env.VITE_MARKETPLACE_CONTRACT || 'PLACEHOLDER';
 const ROLL_TOKEN_ADDRESS = 'xrpl11f82115a5-core1zhs909jp9yktml6qqx9f0ptcq2xnhhj99cja03j3lfcsp2pgm86studdrz';

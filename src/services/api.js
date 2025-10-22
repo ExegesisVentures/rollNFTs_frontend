@@ -3,7 +3,10 @@
 
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://147.79.78.251:5058/api';
+// Use relative path for Vercel proxy (HTTPS), fallback to direct HTTP for local dev
+const API_URL = import.meta.env.VITE_API_URL || (
+  import.meta.env.PROD ? '/api' : 'http://147.79.78.251:5058/api'
+);
 
 const api = axios.create({
   baseURL: API_URL,
