@@ -1,0 +1,432 @@
+// Bulk Transfer Styles
+// File: src/pages/BulkTransfer.scss
+
+@import '../styles/_constants.scss';
+
+.bulk-transfer-page {
+  min-height: 100vh;
+  padding: 2rem;
+  background: $background-dark;
+}
+
+.bulk-transfer-container {
+  max-width: 900px;
+  margin: 0 auto;
+
+  .header {
+    text-align: center;
+    margin-bottom: 3rem;
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, $primary-color, $secondary-color);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: $text-muted;
+      font-size: 1.1rem;
+
+      strong {
+        color: $primary-color;
+      }
+    }
+  }
+
+  .setup-section,
+  .result-section {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 2rem;
+  }
+
+  .upload-section {
+    margin-bottom: 2rem;
+
+    h3 {
+      color: $text-light;
+      margin-bottom: 1rem;
+    }
+
+    .upload-actions {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+
+      .btn-upload,
+      .btn-template {
+        flex: 1;
+        padding: 1rem;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .btn-upload {
+        background: $primary-color;
+        color: white;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+        }
+      }
+
+      .btn-template {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: $text-light;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.08);
+        }
+      }
+    }
+
+    small {
+      color: $text-muted;
+      font-size: 0.85rem;
+    }
+  }
+
+  .divider {
+    text-align: center;
+    color: $text-muted;
+    margin: 2rem 0;
+    position: relative;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    &::before {
+      left: 0;
+    }
+
+    &::after {
+      right: 0;
+    }
+  }
+
+  .transfers-section {
+    margin: 2rem 0;
+
+    .transfers-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      h3 {
+        color: $text-light;
+      }
+
+      .btn-add {
+        padding: 0.5rem 1rem;
+        background: $primary-color;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+        }
+      }
+    }
+
+    .transfer-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+
+      .transfer-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+
+        span {
+          color: $text-light;
+          font-weight: 500;
+        }
+
+        .btn-remove {
+          background: rgba(255, 0, 0, 0.1);
+          border: 1px solid rgba(255, 0, 0, 0.3);
+          border-radius: 6px;
+          color: #ff4444;
+          padding: 0.25rem 0.75rem;
+          cursor: pointer;
+          transition: all 0.2s;
+
+          &:hover {
+            background: rgba(255, 0, 0, 0.2);
+          }
+        }
+      }
+
+      .transfer-fields {
+        display: grid;
+        gap: 1rem;
+
+        .field {
+          label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: $text-muted;
+            font-size: 0.9rem;
+          }
+
+          input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: $text-light;
+
+            &:focus {
+              outline: none;
+              border-color: $primary-color;
+            }
+
+            &::placeholder {
+              color: $text-muted;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .fee-summary {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+
+    h4 {
+      color: $text-light;
+      margin-bottom: 1rem;
+    }
+
+    .fee-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      color: $text-muted;
+
+      &.total {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 0.5rem;
+        padding-top: 1rem;
+        color: $text-light;
+        font-weight: 600;
+        font-size: 1.1rem;
+
+        span:last-child {
+          color: $primary-color;
+        }
+      }
+    }
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, $primary-color, $secondary-color);
+    color: white;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba($primary-color, 0.4);
+    }
+  }
+
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: $text-light;
+    margin-top: 1rem;
+
+    &:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  .result-section {
+    text-align: center;
+
+    .result-header {
+      margin-bottom: 2rem;
+
+      h3 {
+        color: $primary-color;
+        margin-bottom: 1rem;
+      }
+
+      p {
+        color: $text-muted;
+
+        code {
+          background: rgba(255, 255, 255, 0.1);
+          padding: 0.25rem 0.5rem;
+          border-radius: 4px;
+          color: $text-light;
+        }
+      }
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+
+      .stat {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+
+        span {
+          display: block;
+          color: $text-muted;
+          font-size: 0.9rem;
+          margin-bottom: 0.5rem;
+        }
+
+        strong {
+          display: block;
+          font-size: 2rem;
+          color: $text-light;
+        }
+
+        &.success strong {
+          color: #4ade80;
+        }
+
+        &.failed strong {
+          color: #f87171;
+        }
+
+        &.total strong {
+          color: $primary-color;
+        }
+      }
+    }
+
+    .results-list {
+      text-align: left;
+      margin: 2rem 0;
+
+      h4 {
+        color: $text-light;
+        margin-bottom: 1rem;
+      }
+
+      .result-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+
+        &.success {
+          border-color: rgba(74, 222, 128, 0.2);
+        }
+
+        &.failed {
+          border-color: rgba(248, 113, 113, 0.2);
+        }
+
+        .status {
+          font-size: 1.2rem;
+        }
+
+        .token {
+          flex: 1;
+          color: $text-light;
+          font-family: monospace;
+        }
+
+        .tx-link {
+          color: $primary-color;
+          text-decoration: none;
+          font-size: 0.9rem;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        .error {
+          color: #f87171;
+          font-size: 0.85rem;
+        }
+      }
+    }
+  }
+
+  .premium-notice {
+    display: flex;
+    gap: 1rem;
+    background: rgba(255, 165, 0, 0.05);
+    border: 1px solid rgba(255, 165, 0, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+
+    .icon {
+      font-size: 2rem;
+    }
+
+    strong {
+      display: block;
+      color: $text-light;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: $text-muted;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+  }
+}
+

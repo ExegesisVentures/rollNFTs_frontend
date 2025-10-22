@@ -3,6 +3,7 @@
 
 import React from 'react';
 import { ipfsToHttp } from '../utils/ipfs';
+import VerifiedBadge from './VerifiedBadge';
 import './CollectionCard.scss';
 
 const CollectionCard = ({ collection, onClick }) => {
@@ -10,6 +11,7 @@ const CollectionCard = ({ collection, onClick }) => {
   const name = collection.name || 'Unnamed Collection';
   const description = collection.description || 'No description';
   const chain = collection.chain?.toUpperCase() || 'CORE';
+  const collectionId = collection.id || collection.collection_id || collection.class_id;
 
   return (
     <div className="collection-card" onClick={onClick}>
@@ -34,6 +36,14 @@ const CollectionCard = ({ collection, onClick }) => {
       <div className="collection-card__details">
         <h3 className="collection-card__name">
           {name}
+          {collectionId && (
+            <VerifiedBadge
+              entityType="collection"
+              entityId={collectionId}
+              showLabel={false}
+              size="small"
+            />
+          )}
         </h3>
         
         <p className="collection-card__description">
