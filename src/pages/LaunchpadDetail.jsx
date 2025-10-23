@@ -19,7 +19,8 @@ import './LaunchpadDetail.scss';
 const LaunchpadDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { address, signAndBroadcast } = useWalletStore();
+  const walletAddress = useWalletStore(state => state.walletAddress);
+  const getSigningClient = useWalletStore(state => state.getSigningClient);
 
   const [launchpad, setLaunchpad] = useState(null);
   const [loading, setLoading] = useState(true);

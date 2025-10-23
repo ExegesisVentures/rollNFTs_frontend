@@ -22,7 +22,7 @@ import './ManageLaunchpad.scss';
 const ManageLaunchpad = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { address } = useWalletStore();
+  const walletAddress = useWalletStore(state => state.walletAddress);
 
   const [launchpad, setLaunchpad] = useState(null);
   const [stats, setStats] = useState(null);

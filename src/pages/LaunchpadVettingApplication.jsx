@@ -16,7 +16,7 @@ import './LaunchpadVettingApplication.scss';
 const LaunchpadVettingApplication = () => {
   const { id } = useParams(); // launchpad ID
   const navigate = useNavigate();
-  const { address, signMessage } = useWalletStore();
+  const walletAddress = useWalletStore(state => state.walletAddress);
 
   const [launchpad, setLaunchpad] = useState(null);
   const [existingApplication, setExistingApplication] = useState(null);

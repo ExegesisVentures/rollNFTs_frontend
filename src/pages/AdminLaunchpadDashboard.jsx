@@ -17,7 +17,7 @@ import './AdminLaunchpadDashboard.scss';
 
 const AdminLaunchpadDashboard = () => {
   const navigate = useNavigate();
-  const { address } = useWalletStore();
+  const walletAddress = useWalletStore(state => state.walletAddress);
 
   const [applications, setApplications] = useState([]);
   const [platformStats, setPlatformStats] = useState(null);

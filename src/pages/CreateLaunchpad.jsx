@@ -17,7 +17,7 @@ import './CreateLaunchpad.scss';
 
 const CreateLaunchpad = () => {
   const navigate = useNavigate();
-  const { address } = useWalletStore();
+  const walletAddress = useWalletStore(state => state.walletAddress);
 
   // Collections owned by user
   const [collections, setCollections] = useState([]);
@@ -51,13 +51,13 @@ const CreateLaunchpad = () => {
   // Load user's collections
   useEffect(() => {
     const loadCollections = async () => {
-      if (!address) return;
+      if (!walletAddress) return;
 
       try {
         const { data, error } = await supabase
           .from('collections')
           .select('*')
-          .eq('creator_address', address)
+          .eq('creator_address', walletAddress)
           .order('created_at', { ascending: false });
 
         if (error) throw error;
@@ -72,7 +72,7 @@ const CreateLaunchpad = () => {
     };
 
     loadCollections();
-  }, [address]);
+  }, [walletAddress]);
 
   // Handle collection selection
   const handleCollectionChange = (e) => {
