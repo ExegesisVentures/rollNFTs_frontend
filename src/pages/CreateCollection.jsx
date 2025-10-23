@@ -213,7 +213,7 @@ const CreateCollection = () => {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="collection-form">
+        <form onSubmit={handlePreview} className="collection-form">
           {/* Cover Image */}
           <div className="form-section">
             <h3>Collection Image</h3>
