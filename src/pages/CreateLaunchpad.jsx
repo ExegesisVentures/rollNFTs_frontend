@@ -8,9 +8,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useWalletStore } from '../store/walletStore';
+import useWalletStore from '../store/walletStore';
 import { launchpadService } from '../services/launchpadService';
-import { supabase } from '../lib/supabase';
+import supabase from '../lib/supabase';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import Button from '../components/shared/Button';
 import './CreateLaunchpad.scss';

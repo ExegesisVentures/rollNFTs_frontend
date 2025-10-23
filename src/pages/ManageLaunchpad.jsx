@@ -12,7 +12,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useWalletStore } from '../store/walletStore';
+import useWalletStore from '../store/walletStore';
 import { launchpadService } from '../services/launchpadService';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import Button from '../components/shared/Button';

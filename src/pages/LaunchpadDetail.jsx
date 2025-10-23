@@ -7,9 +7,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useWalletStore } from '../store/walletStore';
+import useWalletStore from '../store/walletStore';
 import { launchpadService } from '../services/launchpadService';
-import { coreumService } from '../services/coreumService';
+import coreumService from '../services/coreumService';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import Button from '../components/shared/Button';
 import VerifiedBadge from '../components/VerifiedBadge';
