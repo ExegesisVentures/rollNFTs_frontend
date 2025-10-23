@@ -211,7 +211,7 @@ const CreateLaunchpad = () => {
       const launchpadData = {
         collectionId: formData.collectionId,
         classId: formData.classId,
-        creatorAddress: address,
+        creatorAddress: walletAddress,
         name: formData.name.trim(),
         description: formData.description.trim(),
         bannerImage: bannerImageUrl,
@@ -245,7 +245,7 @@ const CreateLaunchpad = () => {
     }
   };
 
-  if (!address) {
+  if (!walletAddress) {
     return (
       <div className="create-launchpad-container">
         <div className="not-connected">

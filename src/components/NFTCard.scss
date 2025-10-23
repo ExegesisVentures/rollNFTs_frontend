@@ -4,9 +4,9 @@
   @include neumorphic-card;
   cursor: pointer;
   overflow: hidden;
-  border: 1px solid rgba(77, 156, 255, 0.2);
+  border: 1px solid rgba(77, 156, 255, 0.15);
   
-  // Add depth glow effect
+  // Reduced glow effect  
   &::after {
     content: '';
     position: absolute;
@@ -14,31 +14,32 @@
     right: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(77, 156, 255, 0.15) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(77, 156, 255, 0.08) 0%, transparent 70%);
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.4s ease;
   }
   
   &:hover {
-    @include neumorphic-hover;
-    border-color: rgba(77, 156, 255, 0.5);
+    transform: translate3d(0, -6px, 0) scale(1.015);
+    border-color: rgba(77, 156, 255, 0.35);
     box-shadow: 
-      0 20px 40px rgba(0, 0, 0, 0.4),
-      0 0 0 1px rgba(77, 156, 255, 0.3),
-      0 0 40px rgba(77, 156, 255, 0.4),
-      inset 0 0 30px rgba(77, 156, 255, 0.05);
+      0 12px 28px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(77, 156, 255, 0.15),
+      0 0 12px rgba(77, 156, 255, 0.12),
+      inset 0 2px 6px rgba(255, 255, 255, 0.12),
+      inset 0 -6px 16px rgba(0, 0, 0, 0.35);
     
     &::after {
       opacity: 1;
     }
     
     .nft-card__image img {
-      transform: scale(1.1);
+      transform: scale(1.08);
     }
     
     .nft-card__badge {
-      transform: translate3d(0, 0, 10px) scale(1.05);
+      transform: translate3d(0, 0, 8px) scale(1.05);
     }
   }
   
@@ -74,10 +75,10 @@
     font-size: 0.75rem;
     font-weight: $font-bold;
     box-shadow: 
-      0 4px 12px rgba(37, 214, 149, 0.3),
-      0 2px 4px rgba(0, 0, 0, 0.2),
-      inset 0 1px 2px rgba(255, 255, 255, 0.2),
-      inset 0 -2px 6px rgba(0, 0, 0, 0.15);
+      0 2px 8px rgba(37, 214, 149, 0.2),
+      0 6px 16px rgba(0, 0, 0, 0.2),
+      inset 0 2px 3px rgba(255, 255, 255, 0.25),
+      inset 0 -3px 8px rgba(0, 0, 0, 0.2);
     text-transform: uppercase;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform-style: preserve-3d;
@@ -86,10 +87,10 @@
     &--sold {
       background: $gradientRed;
       box-shadow: 
-        0 4px 12px rgba(216, 29, 60, 0.3),
-        0 2px 4px rgba(0, 0, 0, 0.2),
-        inset 0 1px 2px rgba(255, 255, 255, 0.2),
-        inset 0 -2px 6px rgba(0, 0, 0, 0.15);
+        0 2px 8px rgba(216, 29, 60, 0.2),
+        0 6px 16px rgba(0, 0, 0, 0.2),
+        inset 0 2px 3px rgba(255, 255, 255, 0.25),
+        inset 0 -3px 8px rgba(0, 0, 0, 0.2);
     }
   }
   
@@ -155,10 +156,10 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     box-shadow: 
-      0 4px 12px rgba(77, 156, 255, 0.25),
-      0 2px 4px rgba(0, 0, 0, 0.2),
-      inset 0 1px 2px rgba(255, 255, 255, 0.15),
-      inset 0 -2px 8px rgba(0, 0, 0, 0.15);
+      0 2px 8px rgba(77, 156, 255, 0.2),
+      0 6px 16px rgba(0, 0, 0, 0.15),
+      inset 0 2px 4px rgba(255, 255, 255, 0.2),
+      inset 0 -4px 12px rgba(0, 0, 0, 0.2);
     
     &::before {
       content: '';
@@ -168,24 +169,24 @@
       transform: translateX(-50%);
       width: 70%;
       height: 2px;
-      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.5) 50%, transparent 100%);
       border-radius: 50%;
       filter: blur(1px);
-      opacity: 0.7;
+      opacity: 0.8;
     }
     
     &:hover {
       box-shadow: 
-        0 8px 24px rgba(77, 156, 255, 0.4),
-        0 4px 8px rgba(0, 0, 0, 0.3),
-        0 0 30px rgba(77, 156, 255, 0.3),
-        inset 0 1px 3px rgba(255, 255, 255, 0.2),
-        inset 0 -3px 12px rgba(0, 0, 0, 0.2);
-      transform: translate3d(0, -4px, 0) scale(1.02);
+        0 4px 12px rgba(77, 156, 255, 0.25),
+        0 8px 20px rgba(0, 0, 0, 0.2),
+        0 0 12px rgba(77, 156, 255, 0.15),
+        inset 0 2px 6px rgba(255, 255, 255, 0.25),
+        inset 0 -6px 16px rgba(0, 0, 0, 0.25);
+      transform: translate3d(0, -3px, 0) scale(1.02);
     }
     
     &:active {
-      transform: translate3d(0, -2px, 0) scale(0.98);
+      transform: translate3d(0, -1px, 0) scale(0.98);
     }
   }
   

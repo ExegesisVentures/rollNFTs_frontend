@@ -56,27 +56,27 @@ $shadowMd: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
 $shadowLg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
 $shadowXl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
 
-// Neumorphic Shadows with Inset
+// Neumorphic Shadows with Inset - Enhanced 3D
 $shadowNeumorphic: 
-  0 4px 12px rgba(0, 0, 0, 0.3),
-  0 2px 4px rgba(0, 0, 0, 0.2),
-  inset 0 1px 2px rgba(255, 255, 255, 0.1),
-  inset 0 -2px 8px rgba(0, 0, 0, 0.2);
+  0 2px 8px rgba(0, 0, 0, 0.25),
+  0 8px 16px rgba(0, 0, 0, 0.15),
+  inset 0 2px 4px rgba(255, 255, 255, 0.08),
+  inset 0 -4px 12px rgba(0, 0, 0, 0.3);
 
 $shadowNeumorphicHover: 
-  0 8px 24px rgba(0, 0, 0, 0.35),
-  0 4px 8px rgba(0, 0, 0, 0.3),
-  inset 0 1px 3px rgba(255, 255, 255, 0.2),
-  inset 0 -3px 12px rgba(0, 0, 0, 0.25);
+  0 4px 16px rgba(0, 0, 0, 0.3),
+  0 12px 24px rgba(0, 0, 0, 0.2),
+  inset 0 2px 6px rgba(255, 255, 255, 0.12),
+  inset 0 -6px 16px rgba(0, 0, 0, 0.35);
 
-// Glow Shadows - Enhanced
-$shadowGlow: 0 0 20px rgba(37, 214, 149, 0.3), 0 0 40px rgba(37, 214, 149, 0.15);
-$shadowGlowRed: 0 0 20px rgba(216, 29, 60, 0.3), 0 0 40px rgba(216, 29, 60, 0.15);
-$shadowGlowBlue: 0 0 20px rgba(77, 156, 255, 0.3), 0 0 40px rgba(77, 156, 255, 0.15);
-$shadowGlowPurple: 0 0 20px rgba(168, 85, 247, 0.3), 0 0 40px rgba(168, 85, 247, 0.15);
-$shadowGlowOrange: 0 0 20px rgba(255, 140, 66, 0.3), 0 0 40px rgba(255, 140, 66, 0.15);
-$shadowGlowCyan: 0 0 20px rgba(6, 182, 212, 0.3), 0 0 40px rgba(6, 182, 212, 0.15);
-$shadowGlowYellow: 0 0 20px rgba(255, 187, 41, 0.3), 0 0 40px rgba(255, 187, 41, 0.15);
+// Glow Shadows - Reduced, More Subtle
+$shadowGlow: 0 0 8px rgba(37, 214, 149, 0.15), 0 0 16px rgba(37, 214, 149, 0.08);
+$shadowGlowRed: 0 0 8px rgba(216, 29, 60, 0.15), 0 0 16px rgba(216, 29, 60, 0.08);
+$shadowGlowBlue: 0 0 8px rgba(77, 156, 255, 0.15), 0 0 16px rgba(77, 156, 255, 0.08);
+$shadowGlowPurple: 0 0 8px rgba(168, 85, 247, 0.15), 0 0 16px rgba(168, 85, 247, 0.08);
+$shadowGlowOrange: 0 0 8px rgba(255, 140, 66, 0.15), 0 0 16px rgba(255, 140, 66, 0.08);
+$shadowGlowCyan: 0 0 8px rgba(6, 182, 212, 0.15), 0 0 16px rgba(6, 182, 212, 0.08);
+$shadowGlowYellow: 0 0 8px rgba(255, 187, 41, 0.15), 0 0 16px rgba(255, 187, 41, 0.08);
 
 // Spacing
 $spacing-xs: 4px;
@@ -219,12 +219,12 @@ $inputBg: $pitch;
 }
 
 @mixin neumorphic-hover {
-  transform: translate3d(0, -8px, 0) scale(1.02);
+  transform: translate3d(0, -6px, 0) scale(1.015);
   box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(37, 214, 149, 0.2),
-    0 0 30px rgba(37, 214, 149, 0.3),
-    inset 0 1px 3px rgba(255, 255, 255, 0.15),
-    inset 0 -3px 12px rgba(0, 0, 0, 0.2);
+    0 12px 28px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(37, 214, 149, 0.12),
+    0 0 12px rgba(37, 214, 149, 0.1),
+    inset 0 2px 6px rgba(255, 255, 255, 0.12),
+    inset 0 -6px 16px rgba(0, 0, 0, 0.35);
 }
 

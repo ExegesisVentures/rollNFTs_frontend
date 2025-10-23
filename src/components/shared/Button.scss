@@ -16,7 +16,7 @@
   position: relative;
   transform-style: preserve-3d;
   
-  // Top highlight for 3D effect
+  // Enhanced top highlight for 3D effect
   &::before {
     content: '';
     position: absolute;
@@ -25,10 +25,10 @@
     transform: translateX(-50%);
     width: 70%;
     height: 2px;
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.6) 50%, transparent 100%);
     border-radius: 50%;
     filter: blur(1px);
-    opacity: 0.7;
+    opacity: 0.9;
     pointer-events: none;
   }
   
@@ -44,26 +44,26 @@
   }
   
   &:active:not(:disabled) {
-    transform: translate3d(0, -1px, 0) scale(0.98);
+    transform: translate3d(0, 0, 0) scale(0.97);
   }
   
   &--primary {
     background: $gradientBlue;
     color: $primaryWhite;
     box-shadow: 
-      0 4px 12px rgba(77, 156, 255, 0.25),
-      0 2px 4px rgba(0, 0, 0, 0.2),
-      inset 0 1px 2px rgba(255, 255, 255, 0.15),
-      inset 0 -2px 8px rgba(0, 0, 0, 0.15);
+      0 2px 8px rgba(77, 156, 255, 0.2),
+      0 6px 16px rgba(0, 0, 0, 0.15),
+      inset 0 2px 4px rgba(255, 255, 255, 0.2),
+      inset 0 -4px 12px rgba(0, 0, 0, 0.2);
     
     &:hover:not(:disabled) {
       box-shadow: 
-        0 8px 24px rgba(77, 156, 255, 0.4),
-        0 4px 8px rgba(0, 0, 0, 0.3),
-        0 0 30px rgba(77, 156, 255, 0.3),
-        inset 0 1px 3px rgba(255, 255, 255, 0.2),
-        inset 0 -3px 12px rgba(0, 0, 0, 0.2);
-      transform: translate3d(0, -4px, 0) scale(1.02);
+        0 4px 12px rgba(77, 156, 255, 0.25),
+        0 8px 20px rgba(0, 0, 0, 0.2),
+        0 0 12px rgba(77, 156, 255, 0.15),
+        inset 0 2px 6px rgba(255, 255, 255, 0.25),
+        inset 0 -6px 16px rgba(0, 0, 0, 0.25);
+      transform: translate3d(0, -3px, 0) scale(1.015);
     }
   }
   
@@ -72,19 +72,19 @@
     color: $purple;
     border: 2px solid $purple;
     box-shadow: 
-      0 2px 6px rgba(168, 85, 247, 0.15),
-      inset 0 1px 1px rgba(255, 255, 255, 0.05);
+      0 2px 6px rgba(168, 85, 247, 0.12),
+      inset 0 2px 2px rgba(255, 255, 255, 0.05);
     
     &:hover:not(:disabled) {
       background: $purple;
       color: $primaryWhite;
       box-shadow: 
-        0 6px 16px rgba(168, 85, 247, 0.35),
-        0 3px 6px rgba(0, 0, 0, 0.2),
-        0 0 25px rgba(168, 85, 247, 0.25),
-        inset 0 1px 2px rgba(255, 255, 255, 0.15),
-        inset 0 -2px 8px rgba(0, 0, 0, 0.15);
-      transform: translate3d(0, -4px, 0) scale(1.02);
+        0 4px 12px rgba(168, 85, 247, 0.25),
+        0 6px 16px rgba(0, 0, 0, 0.15),
+        0 0 12px rgba(168, 85, 247, 0.12),
+        inset 0 2px 4px rgba(255, 255, 255, 0.2),
+        inset 0 -4px 12px rgba(0, 0, 0, 0.2);
+      transform: translate3d(0, -3px, 0) scale(1.015);
     }
   }
   
@@ -92,19 +92,19 @@
     background: $gradientGreen;
     color: $primaryWhite;
     box-shadow: 
-      0 4px 12px rgba(37, 214, 149, 0.25),
-      0 2px 4px rgba(0, 0, 0, 0.2),
-      inset 0 1px 2px rgba(255, 255, 255, 0.15),
-      inset 0 -2px 8px rgba(0, 0, 0, 0.15);
+      0 2px 8px rgba(37, 214, 149, 0.2),
+      0 6px 16px rgba(0, 0, 0, 0.15),
+      inset 0 2px 4px rgba(255, 255, 255, 0.2),
+      inset 0 -4px 12px rgba(0, 0, 0, 0.2);
     
     &:hover:not(:disabled) {
       box-shadow: 
-        0 8px 24px rgba(37, 214, 149, 0.4),
-        0 4px 8px rgba(0, 0, 0, 0.3),
-        0 0 30px rgba(37, 214, 149, 0.3),
-        inset 0 1px 3px rgba(255, 255, 255, 0.2),
-        inset 0 -3px 12px rgba(0, 0, 0, 0.2);
-      transform: translate3d(0, -4px, 0) scale(1.02);
+        0 4px 12px rgba(37, 214, 149, 0.25),
+        0 8px 20px rgba(0, 0, 0, 0.2),
+        0 0 12px rgba(37, 214, 149, 0.15),
+        inset 0 2px 6px rgba(255, 255, 255, 0.25),
+        inset 0 -6px 16px rgba(0, 0, 0, 0.25);
+      transform: translate3d(0, -3px, 0) scale(1.015);
     }
   }
   
@@ -112,19 +112,19 @@
     background: $gradientRed;
     color: $primaryWhite;
     box-shadow: 
-      0 4px 12px rgba(216, 29, 60, 0.25),
-      0 2px 4px rgba(0, 0, 0, 0.2),
-      inset 0 1px 2px rgba(255, 255, 255, 0.15),
-      inset 0 -2px 8px rgba(0, 0, 0, 0.15);
+      0 2px 8px rgba(216, 29, 60, 0.2),
+      0 6px 16px rgba(0, 0, 0, 0.15),
+      inset 0 2px 4px rgba(255, 255, 255, 0.2),
+      inset 0 -4px 12px rgba(0, 0, 0, 0.2);
     
     &:hover:not(:disabled) {
       box-shadow: 
-        0 8px 24px rgba(216, 29, 60, 0.4),
-        0 4px 8px rgba(0, 0, 0, 0.3),
-        0 0 30px rgba(216, 29, 60, 0.3),
-        inset 0 1px 3px rgba(255, 255, 255, 0.2),
-        inset 0 -3px 12px rgba(0, 0, 0, 0.2);
-      transform: translate3d(0, -4px, 0) scale(1.02);
+        0 4px 12px rgba(216, 29, 60, 0.25),
+        0 8px 20px rgba(0, 0, 0, 0.2),
+        0 0 12px rgba(216, 29, 60, 0.15),
+        inset 0 2px 6px rgba(255, 255, 255, 0.25),
+        inset 0 -6px 16px rgba(0, 0, 0, 0.25);
+      transform: translate3d(0, -3px, 0) scale(1.015);
     }
   }
   
@@ -133,16 +133,16 @@
     color: $carbon;
     border: 1px solid $borderDefault;
     box-shadow: 
-      0 2px 4px rgba(0, 0, 0, 0.15),
-      inset 0 1px 1px rgba(255, 255, 255, 0.03);
+      0 2px 4px rgba(0, 0, 0, 0.12),
+      inset 0 2px 2px rgba(255, 255, 255, 0.03);
     
     &:hover:not(:disabled) {
       border-color: $borderHover;
       color: $primaryWhite;
       background: rgba(255, 255, 255, 0.03);
       box-shadow: 
-        0 4px 8px rgba(0, 0, 0, 0.2),
-        inset 0 1px 2px rgba(255, 255, 255, 0.05);
+        0 3px 6px rgba(0, 0, 0, 0.15),
+        inset 0 2px 3px rgba(255, 255, 255, 0.05);
       transform: translate3d(0, -2px, 0);
     }
   }
