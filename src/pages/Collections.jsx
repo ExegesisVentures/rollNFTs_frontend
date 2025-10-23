@@ -52,12 +52,20 @@ const Collections = () => {
       {/* Header */}
       <div className="collections__header">
         <div className="collections__header-container">
-          <h1 className="collections__header-title">
-            NFT Collections
-          </h1>
-          <p className="collections__header-subtitle">
-            Explore unique collections from talented creators
-          </p>
+          <div className="collections__header-text">
+            <h1 className="collections__header-title">
+              NFT Collections
+            </h1>
+            <p className="collections__header-subtitle">
+              Explore unique collections from talented creators
+            </p>
+          </div>
+          <button 
+            className="btn-create-collection"
+            onClick={() => navigate('/create-collection')}
+          >
+            ✨ Create Collection
+          </button>
         </div>
       </div>
 

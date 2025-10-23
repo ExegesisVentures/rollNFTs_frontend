@@ -2,12 +2,19 @@
 -- File: supabase-collections-update.sql
 -- Add feature tracking columns
 
+-- First, ensure creator_address column exists (it might be called owner_address or something else)
+ALTER TABLE collections ADD COLUMN IF NOT EXISTS creator_address TEXT;
+
 -- Add feature columns to collections table
 ALTER TABLE collections ADD COLUMN IF NOT EXISTS features_burning BOOLEAN DEFAULT true;
 ALTER TABLE collections ADD COLUMN IF NOT EXISTS features_freezing BOOLEAN DEFAULT false;
 ALTER TABLE collections ADD COLUMN IF NOT EXISTS features_whitelisting BOOLEAN DEFAULT false;
 ALTER TABLE collections ADD COLUMN IF NOT EXISTS features_disable_sending BOOLEAN DEFAULT false;
 ALTER TABLE collections ADD COLUMN IF NOT EXISTS royalty_rate TEXT DEFAULT '0';
+
+-- Add metadata columns if they don't exist
+ALTER TABLE collections ADD COLUMN IF NOT EXISTS metadata_uri TEXT;
+ALTER TABLE collections ADD COLUMN IF NOT EXISTS tx_hash TEXT;
 
 -- Add indexes for feature queries
 CREATE INDEX IF NOT EXISTS idx_collections_features_burning ON collections(features_burning);

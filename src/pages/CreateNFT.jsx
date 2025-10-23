@@ -1,8 +1,8 @@
-// Create NFT Page - UPDATED WITH REAL MINTING
+// Create NFT Page - UPDATED WITH COLLECTION SELECTION
 // File: src/pages/CreateNFT.jsx
-// Replace your existing CreateNFT.jsx with this file
+// Users must select a collection before minting
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useWalletStore from '../store/walletStore';
 import WalletModal from '../components/WalletModal';
@@ -13,7 +13,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import imageService from '../services/imageService';
 import coreumService from '../services/coreumService';
 import marketplaceService from '../services/marketplaceService';
-import { nftsAPI } from '../services/api';
+import { nftsAPI, collectionsAPI } from '../services/api';
 import './CreateNFT.scss';
 
 const CreateNFT = () => {
@@ -21,7 +21,10 @@ const CreateNFT = () => {
   const { isConnected, address } = useWalletStore();
   const [showWalletModal, setShowWalletModal] = useState(false);
   
+  const [collections, setCollections] = useState([]);
+  const [loadingCollections, setLoadingCollections] = useState(false);
   const [formData, setFormData] = useState({
+    collectionId: '', // NEW: Collection selection required
     name: '',
     description: '',
     price: '',
@@ -32,6 +35,27 @@ const CreateNFT = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [minting, setMinting] = useState(false);
   const [errors, setErrors] = useState({});
+
+  // Load user's collections on mount
+  useEffect(() => {
+    if (isConnected && address) {
+      loadUserCollections();
+    }
+  }, [isConnected, address]);
+
+  const loadUserCollections = async () => {
+    try {
+      setLoadingCollections(true);
+      const result = await collectionsAPI.getByOwner(address);
+      if (result.success && result.data) {
+        setCollections(result.data);
+      }
+    } catch (error) {
+      console.error('Failed to load collections:', error);
+    } finally {
+      setLoadingCollections(false);
+    }
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -53,6 +77,12 @@ const CreateNFT = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate collection selection first
+    if (!formData.collectionId) {
+      toast.error('Please select a collection');
+      return;
+    }
     
     const validation = validateNFTMetadata(formData);
     if (!validation.valid) {
@@ -122,7 +152,7 @@ const CreateNFT = () => {
       const tokenId = `nft_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
       const mintResult = await coreumService.mintNFT(wallet, {
-        classId: 'rollnfts', // Default collection - TODO: Make this selectable
+        classId: formData.collectionId, // Use selected collection
         tokenId: tokenId,
         uri: metadataUpload.url,
         recipient: address,
@@ -229,13 +259,53 @@ const CreateNFT = () => {
         </p>
 
         <form className="create-nft__form" onSubmit={handleSubmit}>
+          {/* Collection Selection */}
+          <div className="create-nft__field">
+            <label className="create-nft__label">Collection *</label>
+            {loadingCollections ? (
+              <div className="create-nft__loading">Loading collections...</div>
+            ) : collections.length === 0 ? (
+              <div className="create-nft__no-collections">
+                <p>You don't have any collections yet.</p>
+                <Button
+                  type="button"
+                  onClick={() => navigate('/create-collection')}
+                >
+                  Create Your First Collection
+                </Button>
+              </div>
+            ) : (
+              <select
+                className="create-nft__select"
+                value={formData.collectionId}
+                onChange={(e) => setFormData({ ...formData, collectionId: e.target.value })}
+                required
+              >
+                <option value="">Select a collection</option>
+                {collections.map((collection) => (
+                  <option key={collection.id || collection.class_id} value={collection.class_id}>
+                    {collection.name} ({collection.symbol})
+                  </option>
+                ))}
+              </select>
+            )}
+            <p className="create-nft__hint">
+              NFTs must be minted into a collection. Collection features (burning, freezing, etc.) are set when creating the collection.
+            </p>
+          </div>
+
           {/* Image Upload */}
           <div className="create-nft__field">
             <label className="create-nft__label">Image *</label>
             <div className="create-nft__image-upload">
               {imagePreview ? (
                 <div className="create-nft__image-preview">
-                  <img src={imagePreview} alt="Preview" />
+                  <img 
+                    src={imagePreview} 
+                    alt="Preview"
+                    loading="eager"
+                    decoding="async"
+                  />
                   <button
                     type="button"
                     className="create-nft__image-remove"

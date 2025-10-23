@@ -175,5 +175,54 @@
     padding-top: $spacing-xl;
     border-top: 1px solid $borderDefault;
   }
+  
+  &__select {
+    width: 100%;
+    padding: $spacing-md;
+    background: $inputBg;
+    border: 1px solid $borderDefault;
+    border-radius: $radius-md;
+    color: $white;
+    font-size: 1rem;
+    transition: $transition-fast;
+    
+    &:focus {
+      outline: none;
+      border-color: $purple;
+    }
+    
+    option {
+      background: $inputBg;
+      color: $white;
+    }
+  }
+  
+  &__loading {
+    padding: $spacing-lg;
+    text-align: center;
+    color: $slate;
+    background: $cardBg;
+    border: 1px solid $borderDefault;
+    border-radius: $radius-md;
+  }
+  
+  &__no-collections {
+    padding: $spacing-xl;
+    text-align: center;
+    background: $cardBg;
+    border: 1px solid $borderDefault;
+    border-radius: $radius-md;
+    
+    p {
+      color: $slate;
+      margin-bottom: $spacing-lg;
+    }
+  }
+  
+  &__hint {
+    font-size: 0.875rem;
+    color: $slate;
+    margin-top: $spacing-sm;
+  }
 }
 

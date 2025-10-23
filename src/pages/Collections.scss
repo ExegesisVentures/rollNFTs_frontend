@@ -11,6 +11,15 @@
     &-container {
       max-width: 1400px;
       margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: $spacing-lg;
+    }
+    
+    &-text {
+      flex: 1;
     }
     
     &-title {
@@ -73,6 +82,24 @@
     padding: $spacing-4xl 0;
     color: $slate;
     font-size: 1.125rem;
+  }
+}
+
+.btn-create-collection {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, $purple, #9333ea);
+  border: none;
+  border-radius: $radius-lg;
+  color: white;
+  font-weight: $font-semibold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba($purple, 0.4);
   }
 }
 
