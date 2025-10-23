@@ -1,0 +1,254 @@
+// Collection Preview Modal Styles
+// File: src/components/CollectionPreviewModal.scss
+
+@import '../styles/_constants.scss';
+
+.collection-preview {
+  padding: $spacing-lg;
+
+  &__header {
+    text-align: center;
+    margin-bottom: $spacing-2xl;
+
+    h3 {
+      font-size: 1.5rem;
+      font-weight: $font-bold;
+      color: $primaryWhite;
+      margin-bottom: $spacing-sm;
+    }
+
+    p {
+      color: $slate;
+      font-size: 0.95rem;
+    }
+  }
+
+  &__card {
+    margin-bottom: $spacing-2xl;
+    padding: $spacing-xl;
+    background: $pitch;
+    border-radius: $radius-lg;
+    border: 2px solid $borderDefault;
+  }
+
+  &__info {
+    margin-bottom: $spacing-2xl;
+    padding: $spacing-lg;
+    background: rgba($blue, 0.05);
+    border-radius: $radius-md;
+    border: 1px solid rgba($blue, 0.2);
+
+    h4 {
+      font-size: 1.1rem;
+      font-weight: $font-semibold;
+      color: $primaryWhite;
+      margin-bottom: $spacing-md;
+    }
+  }
+
+  &__info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: $spacing-md;
+
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: $spacing-sm;
+      background: rgba($cardBg, 0.5);
+      border-radius: $radius-sm;
+    }
+
+    .info-label {
+      color: $slate;
+      font-weight: $font-medium;
+    }
+
+    .info-value {
+      color: $primaryWhite;
+      font-weight: $font-semibold;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &__confirmation {
+    text-align: center;
+    padding: $spacing-lg;
+    background: linear-gradient(135deg, rgba($green, 0.1), rgba($blue, 0.1));
+    border-radius: $radius-md;
+    border: 1px solid rgba($green, 0.2);
+    margin-bottom: $spacing-xl;
+
+    .confirmation-question {
+      font-size: 1.1rem;
+      color: $primaryWhite;
+      margin-bottom: $spacing-sm;
+    }
+
+    .confirmation-hint {
+      color: $slate;
+      font-size: 0.9rem;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-md;
+    justify-content: center;
+
+    button {
+      min-width: 180px;
+    }
+  }
+}
+
+// Preview Card (mimics CollectionCard exactly)
+.preview-card {
+  background: $cardBg;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  transition: transform $transition-normal, box-shadow $transition-normal;
+  border: 1px solid $borderDefault;
+
+  &__cover {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    background: $pitch;
+    overflow: hidden;
+    border-bottom: 1px solid $borderDefault;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform $transition-slow;
+    }
+
+    &--placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $slate;
+      font-weight: $font-medium;
+    }
+  }
+
+  &__details {
+    padding: $spacing-lg;
+  }
+
+  &__name {
+    font-size: 1.25rem;
+    font-weight: $font-bold;
+    margin-bottom: $spacing-sm;
+    color: $primaryWhite;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+  }
+
+  &__description {
+    color: $slate;
+    margin-bottom: $spacing-lg;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &__stats {
+    display: flex;
+    gap: $spacing-sm;
+    margin-top: $spacing-lg;
+    padding-top: $spacing-lg;
+    border-top: 1px solid $borderDefault;
+  }
+
+  &__stats-item {
+    flex: 1;
+
+    p {
+      margin: 0;
+    }
+
+    &-label {
+      color: $slate;
+      font-size: 0.75rem;
+      margin-bottom: $spacing-xs;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    &-value {
+      font-size: 1rem;
+      font-weight: $font-semibold;
+      color: $primaryWhite;
+      background: $gradientGreen;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  &__chain-container {
+    margin-top: $spacing-md;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  &__chain {
+    display: inline-block;
+    padding: $spacing-xs $spacing-md;
+    background: $gradientBlue;
+    color: $primaryWhite;
+    font-size: 0.7rem;
+    border-radius: $radius-full;
+    font-weight: $font-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &--core {
+      background: $gradientGreen;
+    }
+
+    &--coreum {
+      background: $gradientGreen;
+    }
+
+    &--xrpl {
+      background: $gradientBlue;
+    }
+
+    &--ethereum {
+      background: $gradientPurple;
+    }
+  }
+}
+
+// Mobile responsive
+@include mobile {
+  .collection-preview {
+    padding: $spacing-md;
+
+    &__actions {
+      flex-direction: column;
+
+      button {
+        width: 100%;
+      }
+    }
+
+    &__info-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+

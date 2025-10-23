@@ -9,6 +9,7 @@ import coreumService from '../services/coreumService';
 import imageService from '../services/imageService';
 import supabase from '../lib/supabase';
 import toast from 'react-hot-toast';
+import CollectionPreviewModal from '../components/CollectionPreviewModal';
 import './CreateCollection.scss';
 
 const CreateCollection = () => {
@@ -36,6 +37,7 @@ const CreateCollection = () => {
   const [coverImagePreview, setCoverImagePreview] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   // Handle form field changes
   const handleChange = (e) => {
@@ -75,8 +77,8 @@ const CreateCollection = () => {
     reader.readAsDataURL(file);
   };
 
-  // Create collection
-  const handleSubmit = async (e) => {
+  // Handle preview button click
+  const handlePreview = (e) => {
     e.preventDefault();
 
     if (!walletAddress) {
@@ -96,7 +98,14 @@ const CreateCollection = () => {
       return;
     }
 
+    // Show preview modal
+    setShowPreview(true);
+  };
+
+  // Create collection (after preview confirmation)
+  const handleCreateCollection = async () => {
     setCreating(true);
+    setShowPreview(false);
 
     try {
       // Step 1: Upload cover image to IPFS (if provided)
@@ -416,7 +425,7 @@ const CreateCollection = () => {
               className="btn-primary"
               disabled={creating || uploading || !formData.name || !formData.symbol}
             >
-              {uploading ? 'Uploading Image...' : creating ? 'Creating Collection...' : 'Create Collection'}
+              {uploading ? 'Uploading Image...' : creating ? 'Creating Collection...' : '🎨 Preview Creation'}
             </button>
           </div>
 
@@ -431,6 +440,16 @@ const CreateCollection = () => {
           </div>
         </form>
       </div>
+
+      {/* Preview Modal */}
+      <CollectionPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        formData={formData}
+        coverImagePreview={coverImagePreview}
+        onConfirm={handleCreateCollection}
+        onEdit={() => setShowPreview(false)}
+      />
     </div>
   );
 };
