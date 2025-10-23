@@ -1,9 +1,9 @@
-// Create NFT Page - UPDATED WITH COLLECTION SELECTION
+// Create NFT Page - 2-STEP WIZARD (Collection → NFT Details)
 // File: src/pages/CreateNFT.jsx
-// Users must select a collection before minting
+// Smart UX: Collection selection FIRST, then NFT form
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import useWalletStore from '../store/walletStore';
 import WalletModal from '../components/WalletModal';
 import Button from '../components/shared/Button';
@@ -18,13 +18,18 @@ import './CreateNFT.scss';
 
 const CreateNFT = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { isConnected, address } = useWalletStore();
   const [showWalletModal, setShowWalletModal] = useState(false);
+  
+  // Step management: 'select-collection' or 'create-nft'
+  const [step, setStep] = useState('select-collection');
+  const [selectedCollection, setSelectedCollection] = useState(null);
   
   const [collections, setCollections] = useState([]);
   const [loadingCollections, setLoadingCollections] = useState(false);
   const [formData, setFormData] = useState({
-    collectionId: '', // NEW: Collection selection required
+    collectionId: '',
     name: '',
     description: '',
     price: '',
@@ -43,6 +48,17 @@ const CreateNFT = () => {
     }
   }, [isConnected, address]);
 
+  // Check if collection was passed via URL parameter
+  useEffect(() => {
+    const collectionId = searchParams.get('collection');
+    if (collectionId && collections.length > 0) {
+      const collection = collections.find(c => c.class_id === collectionId);
+      if (collection) {
+        handleCollectionSelect(collection);
+      }
+    }
+  }, [searchParams, collections]);
+
   const loadUserCollections = async () => {
     try {
       setLoadingCollections(true);
@@ -55,6 +71,18 @@ const CreateNFT = () => {
     } finally {
       setLoadingCollections(false);
     }
+  };
+
+  const handleCollectionSelect = (collection) => {
+    setSelectedCollection(collection);
+    setFormData({ ...formData, collectionId: collection.class_id });
+    setStep('create-nft');
+  };
+
+  const handleBackToCollections = () => {
+    setStep('select-collection');
+    setSelectedCollection(null);
+    setFormData({ ...formData, collectionId: '' });
   };
 
   const handleImageChange = (e) => {
@@ -239,6 +267,115 @@ const CreateNFT = () => {
     );
   }
 
+  // STEP 1: COLLECTION SELECTION SCREEN
+  if (step === 'select-collection') {
+    return (
+      <div className="create-nft">
+        <Toaster 
+          position="top-right"
+          toastOptions={{
+            style: {
+              background: '#101216',
+              color: '#fff',
+              border: '1px solid #1b1d23',
+            },
+          }}
+        />
+
+        <div className="create-nft__container">
+          <div className="create-nft__step-indicator">
+            <span className="create-nft__step active">1. Select Collection</span>
+            <span className="create-nft__step-divider">→</span>
+            <span className="create-nft__step">2. NFT Details</span>
+          </div>
+
+          <h1 className="create-nft__title">Select a Collection</h1>
+          <p className="create-nft__subtitle">
+            Choose which collection to mint your NFT into
+          </p>
+
+          {loadingCollections ? (
+            <div className="create-nft__loading-collections">
+              <div className="spinner"></div>
+              <p>Loading your collections...</p>
+            </div>
+          ) : collections.length === 0 ? (
+            <div className="create-nft__no-collections-screen">
+              <div className="create-nft__no-collections-icon">📦</div>
+              <h2>No Collections Found</h2>
+              <p>You need to create a collection before minting NFTs.</p>
+              <p className="create-nft__no-collections-hint">
+                Collections define permanent features like burning, freezing, and royalty rates for all NFTs within them.
+              </p>
+              <div className="create-nft__no-collections-actions">
+                <Button
+                  onClick={() => navigate('/create-collection')}
+                  variant="primary"
+                >
+                  ✨ Create Your First Collection
+                </Button>
+                <Button
+                  onClick={() => navigate('/')}
+                  variant="secondary"
+                >
+                  ← Back to Home
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="create-nft__collections-grid">
+              {collections.map((collection) => (
+                <div
+                  key={collection.id || collection.class_id}
+                  className="create-nft__collection-card"
+                  onClick={() => handleCollectionSelect(collection)}
+                >
+                  <div className="create-nft__collection-image">
+                    {collection.image || collection.cover_image ? (
+                      <img 
+                        src={collection.image || collection.cover_image} 
+                        alt={collection.name}
+                        onError={(e) => {
+                          e.target.src = 'https://via.placeholder.com/300x300?text=Collection';
+                        }}
+                      />
+                    ) : (
+                      <div className="create-nft__collection-placeholder">
+                        {collection.symbol?.charAt(0) || '?'}
+                      </div>
+                    )}
+                  </div>
+                  <div className="create-nft__collection-info">
+                    <h3>{collection.name}</h3>
+                    <p className="create-nft__collection-symbol">{collection.symbol}</p>
+                    <p className="create-nft__collection-items">
+                      {collection.total_items || 0} items
+                    </p>
+                  </div>
+                  <div className="create-nft__collection-select-btn">
+                    Select →
+                  </div>
+                </div>
+              ))}
+              
+              <div
+                className="create-nft__collection-card create-nft__collection-card--create"
+                onClick={() => navigate('/create-collection')}
+              >
+                <div className="create-nft__collection-create-icon">+</div>
+                <div className="create-nft__collection-info">
+                  <h3>Create New Collection</h3>
+                  <p>Start a new collection</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // STEP 2: NFT CREATION FORM
   return (
     <div className="create-nft">
       <Toaster 
@@ -253,47 +390,36 @@ const CreateNFT = () => {
       />
 
       <div className="create-nft__container">
+        <div className="create-nft__step-indicator">
+          <span className="create-nft__step completed" onClick={handleBackToCollections}>
+            ✓ 1. Collection
+          </span>
+          <span className="create-nft__step-divider">→</span>
+          <span className="create-nft__step active">2. NFT Details</span>
+        </div>
+
+        <div className="create-nft__selected-collection">
+          <button 
+            type="button" 
+            className="create-nft__change-collection"
+            onClick={handleBackToCollections}
+          >
+            ← Change Collection
+          </button>
+          <div className="create-nft__selected-collection-info">
+            <span className="create-nft__selected-collection-label">Minting into:</span>
+            <span className="create-nft__selected-collection-name">
+              {selectedCollection?.name} ({selectedCollection?.symbol})
+            </span>
+          </div>
+        </div>
+
         <h1 className="create-nft__title">Create New NFT</h1>
         <p className="create-nft__subtitle">
           Upload your artwork and mint on Coreum blockchain
         </p>
 
         <form className="create-nft__form" onSubmit={handleSubmit}>
-          {/* Collection Selection */}
-          <div className="create-nft__field">
-            <label className="create-nft__label">Collection *</label>
-            {loadingCollections ? (
-              <div className="create-nft__loading">Loading collections...</div>
-            ) : collections.length === 0 ? (
-              <div className="create-nft__no-collections">
-                <p>You don't have any collections yet.</p>
-                <Button
-                  type="button"
-                  onClick={() => navigate('/create-collection')}
-                >
-                  Create Your First Collection
-                </Button>
-              </div>
-            ) : (
-              <select
-                className="create-nft__select"
-                value={formData.collectionId}
-                onChange={(e) => setFormData({ ...formData, collectionId: e.target.value })}
-                required
-              >
-                <option value="">Select a collection</option>
-                {collections.map((collection) => (
-                  <option key={collection.id || collection.class_id} value={collection.class_id}>
-                    {collection.name} ({collection.symbol})
-                  </option>
-                ))}
-              </select>
-            )}
-            <p className="create-nft__hint">
-              NFTs must be minted into a collection. Collection features (burning, freezing, etc.) are set when creating the collection.
-            </p>
-          </div>
-
           {/* Image Upload */}
           <div className="create-nft__field">
             <label className="create-nft__label">Image *</label>

@@ -4,10 +4,6 @@
   "framework": "vite",
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "http://147.79.78.251:5058/api/:path*"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
@@ -43,8 +39,9 @@
         }
       ]
     }
-  ]
+  ],
+  "env": {
+    "VITE_API_URL": "@vite_api_url",
+    "VITE_IPFS_GATEWAY": "@vite_ipfs_gateway"
+  }
 }
-
-
-

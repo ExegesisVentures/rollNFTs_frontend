@@ -64,6 +64,7 @@ const Header = () => {
           <div className="header__links">
             <Link to="/">Marketplace</Link>
             <Link to="/collections">Collections</Link>
+            <Link to="/launchpads">Launchpads</Link>
             <Link to="/create">Create</Link>
             <Link to="/my-nfts">My NFTs</Link>
           </div>

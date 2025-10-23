@@ -224,5 +224,274 @@
     color: $slate;
     margin-top: $spacing-sm;
   }
+  
+  // STEP INDICATOR
+  &__step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-md;
+    margin-bottom: $spacing-2xl;
+    padding: $spacing-lg;
+    background: $cardBg;
+    border-radius: $radius-lg;
+    border: 1px solid $borderDefault;
+  }
+  
+  &__step {
+    font-size: 0.9rem;
+    color: $slate;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $radius-md;
+    transition: $transition-fast;
+    
+    &.active {
+      color: $purple;
+      background: rgba($purple, 0.1);
+      font-weight: $font-semibold;
+    }
+    
+    &.completed {
+      color: $green;
+      cursor: pointer;
+      
+      &:hover {
+        background: rgba($green, 0.1);
+      }
+    }
+  }
+  
+  &__step-divider {
+    color: $borderDefault;
+  }
+  
+  // COLLECTION SELECTION SCREEN
+  &__loading-collections {
+    text-align: center;
+    padding: $spacing-4xl;
+    
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid $borderDefault;
+      border-top-color: $purple;
+      border-radius: $radius-full;
+      animation: spin 1s linear infinite;
+      margin: 0 auto $spacing-lg;
+    }
+    
+    p {
+      color: $slate;
+    }
+  }
+  
+  &__no-collections-screen {
+    text-align: center;
+    padding: $spacing-4xl;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  &__no-collections-icon {
+    font-size: 4rem;
+    margin-bottom: $spacing-xl;
+  }
+  
+  &__no-collections-screen h2 {
+    font-size: 1.75rem;
+    color: $white;
+    margin-bottom: $spacing-md;
+  }
+  
+  &__no-collections-screen p {
+    color: $slate;
+    font-size: 1.125rem;
+    margin-bottom: $spacing-lg;
+  }
+  
+  &__no-collections-hint {
+    font-size: 0.9rem !important;
+    color: $slate;
+    padding: $spacing-lg;
+    background: $inputBg;
+    border-radius: $radius-md;
+    border: 1px solid $borderDefault;
+    margin-bottom: $spacing-2xl !important;
+  }
+  
+  &__no-collections-actions {
+    display: flex;
+    gap: $spacing-md;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  // COLLECTIONS GRID
+  &__collections-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+    margin-top: $spacing-2xl;
+    
+    @include tablet-sm {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @include desktop-sm {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  &__collection-card {
+    background: $cardBg;
+    border: 2px solid $borderDefault;
+    border-radius: $radius-lg;
+    padding: $spacing-lg;
+    cursor: pointer;
+    transition: all 0.2s;
+    
+    &:hover {
+      border-color: $purple;
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba($purple, 0.2);
+    }
+    
+    &--create {
+      border-style: dashed;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+      
+      &:hover {
+        border-color: $green;
+        box-shadow: 0 8px 24px rgba($green, 0.2);
+      }
+    }
+  }
+  
+  &__collection-image {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: $radius-md;
+    overflow: hidden;
+    margin-bottom: $spacing-md;
+    background: $inputBg;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  
+  &__collection-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: $font-bold;
+    color: $purple;
+  }
+  
+  &__collection-create-icon {
+    font-size: 3rem;
+    color: $green;
+    margin-bottom: $spacing-md;
+  }
+  
+  &__collection-info {
+    h3 {
+      font-size: 1.125rem;
+      font-weight: $font-semibold;
+      color: $white;
+      margin-bottom: $spacing-xs;
+    }
+    
+    p {
+      font-size: 0.875rem;
+      color: $slate;
+      margin: $spacing-xs 0;
+    }
+  }
+  
+  &__collection-symbol {
+    color: $purple !important;
+    font-weight: $font-semibold;
+  }
+  
+  &__collection-items {
+    font-size: 0.8rem !important;
+  }
+  
+  &__collection-select-btn {
+    margin-top: $spacing-md;
+    padding: $spacing-sm;
+    text-align: center;
+    background: linear-gradient(135deg, $purple, #9333ea);
+    border-radius: $radius-md;
+    color: $white;
+    font-weight: $font-semibold;
+    font-size: 0.9rem;
+  }
+  
+  // SELECTED COLLECTION DISPLAY
+  &__selected-collection {
+    background: $cardBg;
+    border: 1px solid $borderDefault;
+    border-radius: $radius-lg;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-xl;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+  }
+  
+  &__change-collection {
+    background: transparent;
+    border: 1px solid $borderDefault;
+    color: $slate;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $radius-md;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: $transition-fast;
+    
+    &:hover {
+      border-color: $purple;
+      color: $purple;
+    }
+  }
+  
+  &__selected-collection-info {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+  }
+  
+  &__selected-collection-label {
+    color: $slate;
+    font-size: 0.9rem;
+  }
+  
+  &__selected-collection-name {
+    color: $white;
+    font-weight: $font-semibold;
+    font-size: 1rem;
+    background: linear-gradient(135deg, $purple, #9333ea);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
 
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -3,13 +3,14 @@
 // Premium service for transferring multiple NFTs at once
 
 import React, { useState } from 'react';
-import { useWallet } from '../context/WalletContext';
+import useWalletStore from '../store/walletStore';
 import bulkTransferService from '../services/bulkTransferService';
 import toast from 'react-hot-toast';
 import './BulkTransfer.scss';
 
 const BulkTransfer = () => {
-  const { wallet, address } = useWallet();
+  const walletAddress = useWalletStore(state => state.walletAddress);
+  const getSigningClient = useWalletStore(state => state.getSigningClient);
   const [transfers, setTransfers] = useState([]);
   const [processing, setProcessing] = useState(false);
   const [result, setResult] = useState(null);
@@ -59,7 +60,7 @@ const BulkTransfer = () => {
 
   // Execute bulk transfer
   const handleBulkTransfer = async () => {
-    if (!wallet) {
+    if (!walletAddress) {
       toast.error('Please connect your wallet');
       return;
     }
@@ -84,7 +85,8 @@ const BulkTransfer = () => {
 
     setProcessing(true);
 
-    const transferResult = await bulkTransferService.bulkTransfer(wallet, {
+    const signingClient = await getSigningClient();
+    const transferResult = await bulkTransferService.bulkTransfer(signingClient, {
       transfers,
     });
 

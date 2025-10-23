@@ -93,7 +93,12 @@ const CollectionDetail = () => {
 
       {/* Header with cover image */}
       <div className="collection-detail__header">
-        <div className="collection-detail__cover" style={{ backgroundImage: `url(${coverUrl})` }} />
+        <div 
+          className="collection-detail__cover" 
+          style={{ backgroundImage: `url(${coverUrl})` }}
+          role="img"
+          aria-label={`${collection.name} cover image`}
+        />
         <div className="collection-detail__header-content">
           <h1 className="collection-detail__title">{collection.name}</h1>
           <p className="collection-detail__description">{collection.description}</p>

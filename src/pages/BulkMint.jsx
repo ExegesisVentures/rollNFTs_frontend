@@ -3,13 +3,14 @@
 // Premium service for minting multiple NFTs at once
 
 import React, { useState } from 'react';
-import { useWallet } from '../context/WalletContext';
+import useWalletStore from '../store/walletStore';
 import bulkMintService from '../services/bulkMintService';
 import toast from 'react-hot-toast';
 import './BulkMint.scss';
 
 const BulkMint = () => {
-  const { wallet, address } = useWallet();
+  const walletAddress = useWalletStore(state => state.walletAddress);
+  const getSigningClient = useWalletStore(state => state.getSigningClient);
   const [collectionId, setCollectionId] = useState('');
   const [items, setItems] = useState([]);
   const [csvFile, setCsvFile] = useState(null);
@@ -86,7 +87,7 @@ const BulkMint = () => {
 
   // Create bulk mint job
   const handleCreateJob = async () => {
-    if (!wallet) {
+    if (!walletAddress) {
       toast.error('Please connect your wallet');
       return;
     }
@@ -103,7 +104,8 @@ const BulkMint = () => {
 
     setProcessing(true);
 
-    const result = await bulkMintService.createBulkMintJob(wallet, {
+    const signingClient = await getSigningClient();
+    const result = await bulkMintService.createBulkMintJob(signingClient, {
       collectionId,
       items,
       totalCount: items.length,
@@ -119,11 +121,12 @@ const BulkMint = () => {
 
   // Process bulk mint job
   const handleProcessJob = async () => {
-    if (!wallet || !jobId) return;
+    if (!walletAddress || !jobId) return;
 
     setProcessing(true);
 
-    const result = await bulkMintService.processBulkMintJob(wallet, jobId);
+    const signingClient = await getSigningClient();
+    const result = await bulkMintService.processBulkMintJob(signingClient, jobId);
 
     if (result.success) {
       setProgress(result);

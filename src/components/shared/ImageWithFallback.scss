@@ -1,0 +1,49 @@
+// Image with Fallback Component Styles
+// File: src/components/shared/ImageWithFallback.scss
+
+@import '../../styles/_constants.scss';
+
+.image-with-fallback {
+  position: relative;
+  overflow: hidden;
+  background: $pitch;
+  
+  &__skeleton {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      $pitch 0%,
+      lighten($pitch, 5%) 50%,
+      $pitch 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    z-index: 1;
+  }
+  
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    
+    &--loaded {
+      opacity: 1;
+    }
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+

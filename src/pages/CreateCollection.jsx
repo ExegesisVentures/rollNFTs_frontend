@@ -3,7 +3,7 @@
 // Proper NFT collection creation with feature selection
 
 import React, { useState } from 'react';
-import { useWallet } from '../context/WalletContext';
+import useWalletStore from '../store/walletStore';
 import { useNavigate } from 'react-router-dom';
 import coreumService from '../services/coreumService';
 import imageService from '../services/imageService';
@@ -12,7 +12,8 @@ import toast from 'react-hot-toast';
 import './CreateCollection.scss';
 
 const CreateCollection = () => {
-  const { wallet, address } = useWallet();
+  const walletAddress = useWalletStore(state => state.walletAddress);
+  const getSigningClient = useWalletStore(state => state.getSigningClient);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -78,7 +79,7 @@ const CreateCollection = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!wallet) {
+    if (!walletAddress) {
       toast.error('Please connect your wallet');
       return;
     }
@@ -141,7 +142,8 @@ const CreateCollection = () => {
       if (features.disableSending) coreumFeatures.push(4); // ClassFeature_disable_sending
 
       // Step 4: Create collection on Coreum
-      const createResult = await coreumService.createCollection(wallet, {
+      const signingClient = await getSigningClient();
+      const createResult = await coreumService.createCollection(signingClient, {
         symbol: formData.symbol.toUpperCase(),
         name: formData.name,
         description: formData.description,
@@ -163,7 +165,7 @@ const CreateCollection = () => {
           description: formData.description,
           cover_image: coverImageUrl,
           metadata_uri: metadataResult.url,
-          creator_address: address,
+          creator_address: walletAddress,
           features_burning: features.burning,
           features_freezing: features.freezing,
           features_whitelisting: features.whitelisting,

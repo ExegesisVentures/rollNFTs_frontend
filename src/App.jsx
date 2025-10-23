@@ -14,6 +14,13 @@ import CreateCollection from './pages/CreateCollection';
 import BulkMint from './pages/BulkMint';
 import BulkTransfer from './pages/BulkTransfer';
 import AdminVerification from './pages/AdminVerification';
+// Launchpad imports
+import Launchpads from './pages/Launchpads';
+import CreateLaunchpad from './pages/CreateLaunchpad';
+import LaunchpadDetail from './pages/LaunchpadDetail';
+import ManageLaunchpad from './pages/ManageLaunchpad';
+import LaunchpadVettingApplication from './pages/LaunchpadVettingApplication';
+import AdminLaunchpadDashboard from './pages/AdminLaunchpadDashboard';
 import ErrorBoundary from './components/shared/ErrorBoundary';
 import './App.scss';
 
@@ -35,6 +42,15 @@ function App() {
               <Route path="/bulk-transfer" element={<BulkTransfer />} />
               <Route path="/admin/verification" element={<AdminVerification />} />
               <Route path="/my-nfts" element={<MyNFTs />} />
+              
+              {/* Launchpad Routes */}
+              <Route path="/launchpads" element={<Launchpads />} />
+              <Route path="/launchpads/create" element={<CreateLaunchpad />} />
+              <Route path="/launchpads/:id" element={<LaunchpadDetail />} />
+              <Route path="/launchpads/:id/manage" element={<ManageLaunchpad />} />
+              <Route path="/launchpads/:id/apply-vetting" element={<LaunchpadVettingApplication />} />
+              <Route path="/admin/launchpads" element={<AdminLaunchpadDashboard />} />
+              
               <Route path="*" element={
                 <div className="container" style={{paddingTop: '4rem', textAlign: 'center'}}>
                   <h1>404 - Page Not Found</h1>

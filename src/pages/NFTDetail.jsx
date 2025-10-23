@@ -124,6 +124,8 @@ const NFTDetail = () => {
               <img 
                 src={imageUrl} 
                 alt={nft.metadata?.name || nft.name}
+                loading="eager"
+                decoding="async"
                 onError={(e) => {
                   e.target.src = 'https://via.placeholder.com/600x600?text=NFT';
                 }}

@@ -21,6 +21,8 @@ const CollectionCard = ({ collection, onClick }) => {
           <img
             src={imageUrl}
             alt={name}
+            loading="lazy"
+            decoding="async"
             onError={(e) => {
               e.target.src = 'https://via.placeholder.com/600x400?text=Collection';
             }}

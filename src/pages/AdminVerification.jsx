@@ -3,27 +3,27 @@
 // Admin dashboard for managing verification requests
 
 import React, { useState, useEffect } from 'react';
-import { useWallet } from '../context/WalletContext';
+import useWalletStore from '../store/walletStore';
 import verifiedBadgeService from '../services/verifiedBadgeService';
 import toast from 'react-hot-toast';
 import './AdminVerification.scss';
 
 const AdminVerification = () => {
-  const { address } = useWallet();
+  const walletAddress = useWalletStore(state => state.walletAddress);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    if (address) {
-      const adminStatus = verifiedBadgeService.isAdmin(address);
+    if (walletAddress) {
+      const adminStatus = verifiedBadgeService.isAdmin(walletAddress);
       setIsAdmin(adminStatus);
       
       if (adminStatus) {
         loadRequests();
       }
     }
-  }, [address]);
+  }, [walletAddress]);
 
   const loadRequests = async () => {
     setLoading(true);
@@ -43,7 +43,7 @@ const AdminVerification = () => {
 
     const result = await verifiedBadgeService.approveVerification(
       requestId,
-      address,
+      walletAddress,
       reason || 'Approved by admin'
     );
 
@@ -58,7 +58,7 @@ const AdminVerification = () => {
 
     const result = await verifiedBadgeService.rejectVerification(
       requestId,
-      address,
+      walletAddress,
       notes
     );
 
@@ -67,7 +67,7 @@ const AdminVerification = () => {
     }
   };
 
-  if (!address) {
+  if (!walletAddress) {
     return (
       <div className="admin-verification-page">
         <div className="admin-container">
@@ -87,7 +87,7 @@ const AdminVerification = () => {
           <div className="access-denied">
             <h2>⛔ Access Denied</h2>
             <p>You do not have admin permissions.</p>
-            <small>Connected: {address}</small>
+            <small>Connected: {walletAddress}</small>
           </div>
         </div>
       </div>
