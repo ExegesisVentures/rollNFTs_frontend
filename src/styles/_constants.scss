@@ -128,8 +128,11 @@ $background-dark: $solid;
 $primary-color: $green;
 $secondary-color: $green1;
 $text-muted: $slate;
+$text-light: $primaryWhite;
 $card-bg: $cardBg;
 $border-color: $borderDefault;
+$white: $primaryWhite;
+$inputBg: $pitch;
 
 // Mixins
 @mixin mobile {
