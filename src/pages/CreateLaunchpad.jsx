@@ -268,10 +268,10 @@ const CreateLaunchpad = () => {
     return (
       <div className="create-launchpad-container">
         <div className="no-collections">
-          <h2>No Collections Found</h2>
-          <p>You need to create a collection before you can set up a launchpad.</p>
-          <Button onClick={() => navigate('/collections/create')}>
-            Create Collection
+          <h2>🚀 Ready to Launch?</h2>
+          <p>To set up a Launch Sequence, you need to create a collection first. Your collection will serve as the foundation for your NFT launch.</p>
+          <Button onClick={() => navigate('/create-collection')}>
+            Create Collection First
           </Button>
         </div>
       </div>
@@ -281,8 +281,8 @@ const CreateLaunchpad = () => {
   return (
     <div className="create-launchpad-container">
       <div className="create-launchpad-header">
-        <h1>Create NFT Launchpad</h1>
-        <p>Set up a launchpad for your NFT collection. NFTs will be minted on-demand through the launchpad.</p>
+        <h1>🚀 Start Launch Sequence</h1>
+        <p>Set up your NFT launch sequence. NFTs will be minted on-demand as collectors participate in your launch.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="create-launchpad-form">
@@ -314,7 +314,7 @@ const CreateLaunchpad = () => {
           <h2>Basic Information</h2>
           
           <div className="form-group">
-            <label htmlFor="name">Launchpad Name *</label>
+            <label htmlFor="name">Launch Sequence Name *</label>
             <input
               type="text"
               id="name"
@@ -562,19 +562,19 @@ const CreateLaunchpad = () => {
             variant="primary"
             disabled={creating}
           >
-            {creating ? 'Creating Launchpad...' : 'Create Launchpad'}
+            {creating ? '🚀 Initiating Launch...' : '🚀 Start Launch Sequence'}
           </Button>
         </div>
 
         <div className="form-note">
           <p>
-            <strong>Note:</strong> After creating your launchpad, you'll be able to:
+            <strong>Note:</strong> After starting your launch sequence, you'll be able to:
           </p>
           <ul>
             <li>Manage your whitelist</li>
             <li>Apply for the "Vetted" badge</li>
             <li>View real-time analytics</li>
-            <li>Cancel the launchpad at any time</li>
+            <li>Cancel the launch at any time</li>
           </ul>
         </div>
       </form>
