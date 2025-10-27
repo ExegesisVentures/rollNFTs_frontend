@@ -2,6 +2,7 @@
 // File: src/services/walletService.js
 
 import { SigningStargateClient } from '@cosmjs/stargate';
+import { coreumRegistry } from 'coreum-js';
 
 // Coreum Chain Configuration
 const COREUM_CHAIN_CONFIG = {
@@ -336,7 +337,10 @@ class WalletService {
 
       const client = await SigningStargateClient.connectWithSigner(
         COREUM_CHAIN_CONFIG.rpc,
-        offlineSigner
+        offlineSigner,
+        {
+          registry: coreumRegistry,
+        }
       );
 
       this.signingClient = client;
