@@ -2,11 +2,11 @@
 // File: api/proxy.js
 // This proxies requests from HTTPS frontend to HTTP backend securely
 
-const axios = require('axios');
+import axios from 'axios';
 
 const API_BASE_URL = process.env.BACKEND_API_URL || 'http://147.79.78.251:5058/api';
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -86,5 +86,5 @@ module.exports = async function handler(req, res) {
       data: error.response?.data || null,
     });
   }
-};
+}
 
