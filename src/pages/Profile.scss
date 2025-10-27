@@ -63,6 +63,8 @@
     grid-template-columns: auto 1fr auto;
     gap: 2rem;
     align-items: flex-start;
+    position: relative;
+    z-index: $z-dropdown; // Ensure header is above background elements
 
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
@@ -298,6 +300,8 @@
     display: flex;
     gap: 1rem;
     flex-direction: column;
+    position: relative;
+    z-index: $z-dropdown + 10; // Ensure buttons are above other elements
 
     @media (max-width: 768px) {
       flex-direction: row;
@@ -350,6 +354,8 @@
     margin-bottom: 2rem;
     border-bottom: 2px solid $border-color;
     overflow-x: auto;
+    position: relative;
+    z-index: $z-dropdown + 5; // Ensure tabs are above content
 
     &::-webkit-scrollbar {
       height: 4px;
@@ -368,18 +374,22 @@
     padding: 1rem 1.5rem;
     font-size: 1rem;
     font-weight: 500;
-    cursor: pointer;
+    cursor: pointer !important;
     transition: all 0.3s ease;
     border-bottom: 3px solid transparent;
     white-space: nowrap;
+    position: relative;
+    z-index: $z-dropdown + 6; // Ensure individual tabs are clickable
 
     &:hover {
       color: $text-primary;
+      cursor: pointer !important;
     }
 
     &--active {
       color: $primary-color;
       border-bottom-color: $primary-color;
+      cursor: pointer !important;
     }
   }
 
