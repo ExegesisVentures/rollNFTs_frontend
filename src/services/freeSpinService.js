@@ -2,8 +2,14 @@
 // Location: src/services/freeSpinService.js
 
 import { supabase } from '../lib/supabase';
-import { handleServiceError, AppError } from '../utils/errorHandler';
+import { AppError, ErrorHandler } from '../utils/errorHandler';
 import { coreumService } from './coreumService';
+
+// Helper function to handle service errors
+const handleServiceError = (error, message) => {
+  console.error(message, error);
+  return new AppError(message, { originalError: error.message });
+};
 
 class FreeSpinService {
   /**
