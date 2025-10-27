@@ -66,6 +66,7 @@ const Header = () => {
             <Link to="/">Marketplace</Link>
             <Link to="/collections">Collections</Link>
             <Link to="/launchpads">Launchpad</Link>
+            <Link to="/free-spins">Free Spins</Link>
             <Link to="/create">Create</Link>
             <Link to="/my-nfts">My NFTs</Link>
           </div>
@@ -101,6 +102,26 @@ const Header = () => {
                     >
                       <span className="header__wallet-dropdown-icon">👤</span>
                       My Profile
+                    </button>
+                    <button
+                      className="header__wallet-dropdown-item"
+                      onClick={() => {
+                        setShowDropdown(false);
+                        navigate('/my-nfts');
+                      }}
+                    >
+                      <span className="header__wallet-dropdown-icon">🖼️</span>
+                      My NFTs
+                    </button>
+                    <button
+                      className="header__wallet-dropdown-item"
+                      onClick={() => {
+                        setShowDropdown(false);
+                        navigate('/free-spins');
+                      }}
+                    >
+                      <span className="header__wallet-dropdown-icon">🎡</span>
+                      Free Spins
                     </button>
                     <button
                       className="header__wallet-dropdown-item"
