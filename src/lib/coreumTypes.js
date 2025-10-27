@@ -32,8 +32,13 @@ const MsgIssueClass = {
     if (message.data) {
       writer.uint32(58).string(message.data);
     }
+    if (message.features && message.features.length > 0) {
+      for (const feature of message.features) {
+        writer.uint32(66).int32(feature);
+      }
+    }
     if (message.royaltyRate) {
-      writer.uint32(66).string(message.royaltyRate);
+      writer.uint32(74).string(message.royaltyRate);
     }
     return writer;
   },
@@ -66,6 +71,10 @@ const MsgIssueClass = {
           message.data = reader.string();
           break;
         case 8:
+          if (!message.features) message.features = [];
+          message.features.push(reader.int32());
+          break;
+        case 9:
           message.royaltyRate = reader.string();
           break;
         default:

@@ -11,7 +11,7 @@
  */
 
 import { supabase } from '../lib/supabase';
-import { coreumService } from './coreumService';
+import coreumService from './coreumService';
 
 class LaunchpadService {
   

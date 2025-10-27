@@ -3,7 +3,7 @@
 
 import { supabase } from '../lib/supabase';
 import { AppError, ErrorHandler } from '../utils/errorHandler';
-import { coreumService } from './coreumService';
+import coreumService from './coreumService';
 
 // Helper function to handle service errors
 const handleServiceError = (error, message) => {

@@ -3,7 +3,7 @@
 // Handles collection creation and NFT minting using Coreum's native NFT module
 
 import { SigningStargateClient } from '@cosmjs/stargate';
-import { createCoreumRegistry, COREUM_MSG_TYPES } from '../lib/coreumTypes';
+import { NFT, coreumRegistry } from 'coreum-js';
 import toast from 'react-hot-toast';
 
 const COREUM_CHAIN_ID = 'coreum-mainnet-1';
@@ -13,7 +13,6 @@ const COREUM_REST = 'https://full-node.mainnet-1.coreum.dev:1317';
 class CoreumService {
   constructor() {
     this.client = null;
-    this.registry = createCoreumRegistry();
   }
 
   // Initialize client with wallet
@@ -28,7 +27,7 @@ class CoreumService {
         COREUM_RPC,
         offlineSigner,
         {
-          registry: this.registry,
+          registry: coreumRegistry,
         }
       );
 
@@ -58,8 +57,8 @@ class CoreumService {
       // Store client reference
       this.client = signingClient;
 
-      // Use Coreum's AssetNFT module
-      const msgValue = {
+      // Use Coreum's AssetNFT module with coreum-js
+      const msgCreateClass = NFT.IssueClass({
         issuer: senderAddress,
         symbol: collectionData.symbol,
         name: collectionData.name,
@@ -69,12 +68,7 @@ class CoreumService {
         data: '', // Optional
         features: collectionData.features || [], // Features: [1=burning, 2=freezing, 3=whitelisting, 4=disable_sending]
         royaltyRate: collectionData.royaltyRate || '0', // Royalty in basis points (e.g., "1000" = 10%)
-      };
-
-      const msgCreateClass = {
-        typeUrl: COREUM_MSG_TYPES.IssueClass,
-        value: msgValue,
-      };
+      });
 
       // Estimate fee
       const fee = {
@@ -129,19 +123,14 @@ class CoreumService {
       // Store client reference
       this.client = signingClient;
 
-      const msgValue = {
+      const msgMint = NFT.Mint({
         sender: senderAddress,
         classId: mintData.classId,
         id: mintData.tokenId,
         uri: mintData.uri, // IPFS metadata URL
         uriHash: '',
         recipient: mintData.recipient || senderAddress,
-      };
-
-      const msgMint = {
-        typeUrl: COREUM_MSG_TYPES.Mint,
-        value: msgValue,
-      };
+      });
 
       const fee = {
         amount: [{ denom: 'ucore', amount: '50000' }], // 0.05 CORE
@@ -191,15 +180,12 @@ class CoreumService {
       // Store client reference
       this.client = signingClient;
 
-      const msgSend = {
-        typeUrl: COREUM_MSG_TYPES.Send,
-        value: {
-          classId: transferData.classId,
-          id: transferData.tokenId,
-          sender: senderAddress,
-          receiver: transferData.recipient,
-        },
-      };
+      const msgSend = NFT.Send({
+        classId: transferData.classId,
+        id: transferData.tokenId,
+        sender: senderAddress,
+        receiver: transferData.recipient,
+      });
 
       const fee = {
         amount: [{ denom: 'ucore', amount: '30000' }],
