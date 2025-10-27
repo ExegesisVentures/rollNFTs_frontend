@@ -3,14 +3,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useWalletStore } from '../store/walletStore';
+import useWalletStore from '../store/walletStore';
 import { freeSpinService } from '../services/freeSpinService';
 import toast from 'react-hot-toast';
 import './FreeSpins.scss';
 
 const FreeSpins = () => {
   const navigate = useNavigate();
-  const { address, isConnected } = useWalletStore();
+  const { walletAddress: address, isConnected } = useWalletStore();
   
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);

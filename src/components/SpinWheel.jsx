@@ -2,14 +2,14 @@
 // Location: src/components/SpinWheel.jsx
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useWalletStore } from '../store/walletStore';
+import useWalletStore from '../store/walletStore';
 import Wheel3D from './Wheel3D';
 import { freeSpinService } from '../services/freeSpinService';
 import toast from 'react-hot-toast';
 import './SpinWheel.scss';
 
 const SpinWheel = ({ campaignId, embedded = false, onPrizeWon }) => {
-  const { address, isConnected } = useWalletStore();
+  const { walletAddress: address, isConnected } = useWalletStore();
   
   // State
   const [campaign, setCampaign] = useState(null);

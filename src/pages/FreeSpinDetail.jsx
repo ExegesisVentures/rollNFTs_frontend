@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useWalletStore } from '../store/walletStore';
+import useWalletStore from '../store/walletStore';
 import { freeSpinService } from '../services/freeSpinService';
 import SpinWheel from '../components/SpinWheel';
 import toast from 'react-hot-toast';
@@ -11,7 +11,7 @@ import './FreeSpinDetail.scss';
 
 const FreeSpinDetail = () => {
   const { campaignId } = useParams();
-  const { address, isConnected } = useWalletStore();
+  const { walletAddress: address, isConnected } = useWalletStore();
   
   const [campaign, setCampaign] = useState(null);
   const [loading, setLoading] = useState(true);
