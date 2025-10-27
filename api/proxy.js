@@ -25,6 +25,7 @@ module.exports = async function handler(req, res) {
   
   // Log for debugging (will appear in Vercel logs)
   console.log(`🔄 Proxying ${req.method} ${path} -> ${targetUrl}`);
+  console.log(`📊 Query params:`, req.query);
   
   try {
     // Forward the request to the backend

@@ -41,14 +41,56 @@ class FreeSpinService {
       // Filter by date - campaigns that haven't ended yet
       // Either end_date is null (never ends) OR end_date is in the future
       const now = new Date().toISOString();
-      // Note: Using 'gt' (greater than) instead of 'gte' for "greater than current time"
-      query = query.or(`end_date.is.null,end_date.gt.${now}`);
+      
+      // Split into two separate queries to avoid PostgREST or() syntax issues
+      // First get campaigns with no end date
+      const { data: noEndDate, error: noEndError } = await supabase
+        .from('free_spin_campaigns')
+        .select(`
+          *,
+          collections:collection_id (
+            id,
+            name,
+            symbol,
+            banner_image,
+            creator_address
+          )
+        `)
+        .eq('active', true)
+        .is('end_date', null)
+        .order('created_at', { ascending: false });
 
-      const { data, error } = await query;
+      if (noEndError) throw noEndError;
 
-      if (error) throw error;
+      // Then get campaigns with end date in the future
+      const { data: futureEndDate, error: futureError } = await supabase
+        .from('free_spin_campaigns')
+        .select(`
+          *,
+          collections:collection_id (
+            id,
+            name,
+            symbol,
+            banner_image,
+            creator_address
+          )
+        `)
+        .eq('active', true)
+        .not('end_date', 'is', null)
+        .gt('end_date', now)
+        .order('created_at', { ascending: false });
 
-      return data || [];
+      if (futureError) throw futureError;
+
+      // Combine results
+      const allData = [...(noEndDate || []), ...(futureEndDate || [])];
+      
+      // Apply collection filter if specified
+      const filteredData = collectionId 
+        ? allData.filter(campaign => campaign.collection_id === collectionId)
+        : allData;
+
+      return filteredData;
     } catch (error) {
       throw handleServiceError(error, 'Failed to fetch spin campaigns');
     }

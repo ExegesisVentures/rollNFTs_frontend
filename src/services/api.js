@@ -8,11 +8,6 @@ import axios from 'axios';
  * This function is called on every request to ensure correct URL
  */
 function getAPIUrl() {
-  // Check if we have an environment variable override
-  if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
-  }
-
   // Runtime detection (this is evaluated in the browser, not during build)
   if (typeof window === 'undefined') {
     // SSR or build time - default to proxy
@@ -21,12 +16,17 @@ function getAPIUrl() {
 
   const hostname = window.location.hostname;
   
-  // Localhost - use direct HTTP connection
+  // Localhost ONLY - use direct HTTP connection for development
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    // Check if environment variable explicitly says to use proxy even in localhost
+    if (import.meta.env.VITE_USE_PROXY === 'true') {
+      return '/api';
+    }
     return 'http://147.79.78.251:5058/api';
   }
   
   // Production, Preview, or ANY deployed environment - ALWAYS use proxy
+  // NEVER allow VITE_API_URL to override this in production!
   // This fixes the Mixed Content error (HTTPS → HTTP blocked by browser)
   return '/api';
 }
