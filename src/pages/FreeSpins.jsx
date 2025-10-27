@@ -189,13 +189,23 @@ const FreeSpins = () => {
       {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
-          <h1 className="hero-title">
-            <span className="hero-icon">🎡</span>
-            Free Spin Campaigns
-          </h1>
-          <p className="hero-subtitle">
-            Connect your wallet and spin to win exclusive NFTs and prizes!
-          </p>
+          <div className="hero-header">
+            <div>
+              <h1 className="hero-title">
+                <span className="hero-icon">🎡</span>
+                Free Spin Campaigns
+              </h1>
+              <p className="hero-subtitle">
+                Connect your wallet and spin to win exclusive NFTs and prizes!
+              </p>
+            </div>
+            {isConnected && (
+              <Link to="/free-spins/create" className="btn btn-create">
+                <span className="btn-icon">➕</span>
+                Create Campaign
+              </Link>
+            )}
+          </div>
           
           {!isConnected && (
             <div className="hero-cta">
