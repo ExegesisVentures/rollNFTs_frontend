@@ -3,15 +3,15 @@
 
 // Multiple IPFS gateways for failover and load balancing
 const IPFS_GATEWAYS = [
-  'https://magenta-certain-scallop-951.mypinata.cloud/ipfs/', // Your custom Pinata gateway (fastest)
-  'https://gateway.pinata.cloud/ipfs/', // Public Pinata gateway (fallback)
+  'https://gateway.pinata.cloud/ipfs/', // Public Pinata gateway (primary - more reliable)
+  'https://magenta-certain-scallop-951.mypinata.cloud/ipfs/', // Your custom Pinata gateway (fallback)
   'https://cloudflare-ipfs.com/ipfs/',
   'https://ipfs.io/ipfs/',
   'https://dweb.link/ipfs/',
   'https://gateway.ipfs.io/ipfs/',
 ];
 
-// Get primary gateway from env or use your custom gateway as default
+// Get primary gateway from env or use public Pinata gateway as default (more reliable)
 const PRIMARY_GATEWAY = import.meta.env.VITE_IPFS_GATEWAY || IPFS_GATEWAYS[0];
 
 /**
@@ -37,6 +37,23 @@ export const ipfsToHttp = (uri) => {
   }
   
   return uri;
+};
+
+/**
+ * Convert IPFS URI to HTTP URL with automatic failover
+ * @param {string} uri - IPFS URI (ipfs://...)
+ * @param {number} fallbackIndex - Which gateway to try (0 = primary)
+ * @returns {string} HTTP URL
+ */
+export const ipfsToHttpWithFallback = (uri, fallbackIndex = 0) => {
+  if (!uri) return '';
+  
+  const hash = getIpfsHash(uri);
+  if (!hash) return uri;
+  
+  // Use specified gateway or primary
+  const gateway = IPFS_GATEWAYS[fallbackIndex] || IPFS_GATEWAYS[0];
+  return `${gateway}${hash}`;
 };
 
 /**
