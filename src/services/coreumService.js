@@ -3,6 +3,8 @@
 // Handles collection creation and NFT minting using Coreum's native NFT module
 
 import { SigningStargateClient } from '@cosmjs/stargate';
+import { Registry } from '@cosmjs/proto-signing';
+import { defaultRegistryTypes } from '@cosmjs/stargate';
 import { NFT, coreumRegistry } from 'coreum-js';
 import toast from 'react-hot-toast';
 
@@ -27,7 +29,7 @@ class CoreumService {
         COREUM_RPC,
         offlineSigner,
         {
-          registry: coreumRegistry,
+          registry: new Registry([...defaultRegistryTypes, ...coreumRegistry]),
         }
       );
 

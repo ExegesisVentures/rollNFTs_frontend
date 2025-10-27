@@ -2,6 +2,8 @@
 // File: src/services/walletService.js
 
 import { SigningStargateClient } from '@cosmjs/stargate';
+import { Registry } from '@cosmjs/proto-signing';
+import { defaultRegistryTypes } from '@cosmjs/stargate';
 import { coreumRegistry } from 'coreum-js';
 
 // Coreum Chain Configuration
@@ -339,7 +341,7 @@ class WalletService {
         COREUM_CHAIN_CONFIG.rpc,
         offlineSigner,
         {
-          registry: coreumRegistry,
+          registry: new Registry([...defaultRegistryTypes, ...coreumRegistry]),
         }
       );
 
