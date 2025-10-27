@@ -5,7 +5,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useWalletStore } from '../store/walletStore';
 import Wheel3D from './Wheel3D';
 import { freeSpinService } from '../services/freeSpinService';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import './SpinWheel.scss';
 
 const SpinWheel = ({ campaignId, embedded = false, onPrizeWon }) => {

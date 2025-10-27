@@ -6,7 +6,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useWalletStore } from '../store/walletStore';
 import { freeSpinService } from '../services/freeSpinService';
 import { collectionsAPI, nftsAPI } from '../services/api';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import './AdminSpinCampaign.scss';
 
 const AdminSpinCampaign = () => {
