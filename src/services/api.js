@@ -4,25 +4,43 @@
 import axios from 'axios';
 
 // API URL Configuration
-// In production (Vercel): Use /api (proxied to backend via Vercel serverless function)
-// In development: Check environment variable first, then detect localhost
+// CRITICAL: In production (Vercel): ALWAYS use /api (proxied via Vercel serverless function)
+// In development: Use direct HTTP connection to backend
+
+// Detect environment
 const isLocalhost = typeof window !== 'undefined' && 
   (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
-// Priority: 1. Environment variable, 2. Localhost check, 3. Production proxy
-const API_URL = import.meta.env.VITE_API_URL || (
-  isLocalhost ? 'http://147.79.78.251:5058/api' : '/api'
-);
+const isProduction = typeof window !== 'undefined' && 
+  window.location.hostname === 'rollnfts.vercel.app';
 
-// Log API URL in development for debugging
-if (import.meta.env.DEV) {
-  console.log('🔗 API Configuration:', {
-    hostname: window.location.hostname,
-    isLocalhost,
-    API_URL,
-    env: import.meta.env.VITE_API_URL,
-  });
+// Determine API URL
+// Priority: 1. Environment variable, 2. Production detection, 3. Localhost, 4. Default to proxy
+let API_URL;
+
+if (import.meta.env.VITE_API_URL) {
+  // Use environment variable if set
+  API_URL = import.meta.env.VITE_API_URL;
+} else if (isProduction) {
+  // FORCE proxy usage in production
+  API_URL = '/api';
+} else if (isLocalhost) {
+  // Use direct connection for local development
+  API_URL = 'http://147.79.78.251:5058/api';
+} else {
+  // Default to proxy for any other deployment
+  API_URL = '/api';
 }
+
+// ALWAYS log API configuration (even in production for debugging)
+console.log('🔗 API Configuration:', {
+  hostname: typeof window !== 'undefined' ? window.location.hostname : 'unknown',
+  isLocalhost,
+  isProduction,
+  API_URL,
+  env: import.meta.env.VITE_API_URL || 'not set',
+  mode: import.meta.env.MODE,
+});
 
 const api = axios.create({
   baseURL: API_URL,
