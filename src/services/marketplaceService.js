@@ -12,7 +12,7 @@ const TREASURY_ADDRESS = 'core1wxgp4edry80allxrm20s5yq67wt7jcejj3w29l';
 
 class MarketplaceService {
   // List NFT for sale
-  async listNFT(wallet, listingData) {
+  async listNFT(signingClient, sellerAddress, listingData) {
     try {
       const { classId, tokenId, price, payWithRoll, royaltyBps } = listingData;
 
@@ -20,9 +20,6 @@ class MarketplaceService {
       if (!classId || !tokenId || !price) {
         throw new Error('Missing required listing data');
       }
-
-      const accounts = await wallet.getKey('coreum-mainnet-1');
-      const sellerAddress = accounts.bech32Address;
 
       // Calculate Roll burn amount if paying with Roll
       let rollBurnAmount = 0;
@@ -66,7 +63,7 @@ class MarketplaceService {
   }
 
   // Buy NFT
-  async buyNFT(wallet, listingId) {
+  async buyNFT(signingClient, buyerAddress, listingId) {
     try {
       // Get listing details
       const { data: listing, error: listingError } = await supabase
@@ -77,9 +74,6 @@ class MarketplaceService {
         .single();
 
       if (listingError) throw new Error('Listing not found');
-
-      const accounts = await wallet.getKey('coreum-mainnet-1');
-      const buyerAddress = accounts.bech32Address;
 
       // Calculate fees
       const platformFee = listing.pay_with_roll
@@ -93,7 +87,7 @@ class MarketplaceService {
       // For now, transfer NFT directly
 
       // Transfer NFT
-      const transferResult = await coreumService.transferNFT(wallet, {
+      const transferResult = await coreumService.transferNFT(signingClient, {
         classId: listing.collection_id,
         tokenId: listing.nft_token_id,
         recipient: buyerAddress,

@@ -12,12 +12,9 @@ const TREASURY_ADDRESS = 'core1wxgp4edry80allxrm20s5yq67wt7jcejj3w29l';
 
 class BulkMintService {
   // Create bulk mint job
-  async createBulkMintJob(wallet, jobData) {
+  async createBulkMintJob(signingClient, userAddress, jobData) {
     try {
       const { collectionId, items, totalCount } = jobData;
-
-      const accounts = await wallet.getKey('coreum-mainnet-1');
-      const userAddress = accounts.bech32Address;
 
       // Calculate total fee
       const estimatedGas = totalCount * 50000; // 0.05 CORE per NFT
@@ -74,7 +71,7 @@ class BulkMintService {
   }
 
   // Process bulk mint job (mints all NFTs)
-  async processBulkMintJob(wallet, jobId) {
+  async processBulkMintJob(signingClient, jobId) {
     try {
       // Get job details
       const { data: job, error: jobError } = await supabase
@@ -121,7 +118,7 @@ class BulkMintService {
           }
 
           // Mint NFT
-          const mintResult = await coreumService.mintNFT(wallet, {
+          const mintResult = await coreumService.mintNFT(signingClient, {
             classId: job.collection_id,
             tokenId: item.token_id,
             uri: metadataResult.url,

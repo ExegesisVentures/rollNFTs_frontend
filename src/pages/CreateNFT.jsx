@@ -19,7 +19,7 @@ import './CreateNFT.scss';
 const CreateNFT = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { isConnected, address } = useWalletStore();
+  const { isConnected, address, getSigningClient } = useWalletStore();
   const [showWalletModal, setShowWalletModal] = useState(false);
   
   // Step management: 'select-collection' or 'create-nft'
@@ -170,16 +170,16 @@ const CreateNFT = () => {
 
       toast.loading('Minting NFT on Coreum...', { id: toastId });
 
-      // Step 4: Get wallet (Keplr, Leap, or Cosmostation)
-      const wallet = window.keplr || window.leap || window.cosmostation?.providers?.keplr;
-      if (!wallet) {
-        throw new Error('Wallet not found. Please install Keplr, Leap, or Cosmostation');
+      // Step 4: Get signing client
+      const signingClient = await getSigningClient();
+      if (!signingClient) {
+        throw new Error('Failed to get signing client. Please reconnect your wallet.');
       }
 
       // Step 5: Mint NFT on Coreum blockchain
       const tokenId = `nft_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
-      const mintResult = await coreumService.mintNFT(wallet, {
+      const mintResult = await coreumService.mintNFT(signingClient, {
         classId: formData.collectionId, // Use selected collection
         tokenId: tokenId,
         uri: metadataUpload.url,
@@ -219,7 +219,7 @@ const CreateNFT = () => {
 
       // Step 8: List for sale if price provided
       if (formData.listForSale && formData.price && parseFloat(formData.price) > 0) {
-        const listResult = await marketplaceService.listNFT(wallet, {
+        const listResult = await marketplaceService.listNFT(signingClient, address, {
           classId: 'rollnfts',
           tokenId: mintResult.tokenId,
           price: parseFloat(formData.price),

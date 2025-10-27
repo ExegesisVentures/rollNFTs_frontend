@@ -1,0 +1,57 @@
+# Quick Fix Summary
+
+## Problem
+```javascript
+// ❌ ERROR
+TypeError: A.getKey is not a function
+at CoreumService.createCollection
+```
+
+## Root Cause
+Services expected **wallet provider** (Keplr/Leap) but received **SigningStargateClient**
+
+## Solution
+Changed all blockchain services to accept **SigningStargateClient** instead of wallet provider.
+
+## Files Fixed (5 services + 4 pages)
+
+### **Services:**
+1. `coreumService.js` - createCollection, mintNFT, transferNFT  
+2. `bulkMintService.js` - createBulkMintJob, processBulkMintJob  
+3. `bulkTransferService.js` - bulkTransfer  
+4. `marketplaceService.js` - listNFT, buyNFT  
+
+### **Pages:**
+5. `CreateNFT.jsx` - Updated wallet usage  
+6. `CreateNFT-UPDATED.jsx` - Updated wallet usage  
+7. `BulkMint.jsx` - Added walletAddress param  
+8. `BulkTransfer.jsx` - Added address param  
+
+## Code Change Pattern
+
+**Before:**
+```javascript
+const wallet = window.keplr;
+await coreumService.createCollection(wallet, data);
+```
+
+**After:**
+```javascript
+const signingClient = await getSigningClient();
+await coreumService.createCollection(signingClient, data);
+```
+
+## Deploy
+```bash
+cd /Users/exe/Downloads/Cursor/RollNFTs-Frontend
+npm run build
+vercel --prod
+```
+
+## Test
+Visit: `https://rollnfts.vercel.app/create-collection`  
+Expected: ✅ Collection creates successfully  
+Previous: ❌ `A.getKey is not a function`
+
+**Status:** ✅ READY TO DEPLOY
+

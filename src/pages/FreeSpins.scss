@@ -1,0 +1,475 @@
+// FreeSpins Landing Page Styles
+// Location: src/pages/FreeSpins.scss
+
+@import '../styles/constants';
+
+.free-spins-page {
+  min-height: 100vh;
+  padding-bottom: 80px;
+  
+  // Hero Section
+  .hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 80px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      
+      .hero-title {
+        font-size: 3.5rem;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        
+        .hero-icon {
+          font-size: 4rem;
+          animation: rotate-slow 20s linear infinite;
+        }
+      }
+      
+      @keyframes rotate-slow {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      
+      .hero-subtitle {
+        font-size: 1.3rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 30px;
+        line-height: 1.6;
+      }
+      
+      .hero-cta {
+        margin-top: 30px;
+        
+        .cta-message {
+          display: inline-block;
+          padding: 15px 30px;
+          background: rgba(255, 255, 255, 0.2);
+          backdrop-filter: blur(10px);
+          border-radius: 50px;
+          color: white;
+          font-size: 1.1rem;
+          border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+      }
+    }
+  }
+  
+  // Filters Section
+  .filters-section {
+    padding: 30px 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    
+    .filters-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+      
+      .filter-btn {
+        padding: 12px 24px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 25px;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          background: rgba(255, 255, 255, 0.1);
+          border-color: rgba(255, 255, 255, 0.2);
+          color: rgba(255, 255, 255, 0.9);
+        }
+        
+        &.active {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border-color: transparent;
+          color: white;
+          box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+      }
+    }
+  }
+  
+  // Campaigns Section
+  .campaigns-section {
+    padding: 60px 20px;
+    
+    .campaigns-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      
+      // Loading State
+      .loading-state {
+        text-align: center;
+        padding: 80px 20px;
+        
+        .loading-spinner {
+          width: 60px;
+          height: 60px;
+          border: 4px solid rgba(255, 255, 255, 0.1);
+          border-top-color: #667eea;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+          to {
+            transform: rotate(360deg);
+          }
+        }
+        
+        p {
+          color: rgba(255, 255, 255, 0.6);
+          font-size: 1.1rem;
+        }
+      }
+      
+      // Empty State
+      .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        
+        .empty-icon {
+          font-size: 5rem;
+          display: block;
+          margin-bottom: 20px;
+          opacity: 0.5;
+        }
+        
+        h2 {
+          font-size: 2rem;
+          color: rgba(255, 255, 255, 0.8);
+          margin-bottom: 15px;
+        }
+        
+        p {
+          color: rgba(255, 255, 255, 0.5);
+          font-size: 1.1rem;
+        }
+      }
+      
+      // Campaigns Grid
+      .campaigns-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 30px;
+        
+        @media (max-width: 768px) {
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+  }
+  
+  // Campaign Card
+  .campaign-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(102, 126, 234, 0.5);
+      
+      .banner-image {
+        transform: scale(1.05);
+      }
+    }
+    
+    .campaign-banner {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      
+      .banner-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+      
+      .banner-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        .placeholder-icon {
+          font-size: 4rem;
+          opacity: 0.5;
+        }
+      }
+      
+      .campaign-badges {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        
+        .badge {
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 0.85rem;
+          font-weight: 600;
+          backdrop-filter: blur(10px);
+          
+          &.badge-available {
+            background: rgba(76, 175, 80, 0.9);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+          }
+          
+          &.badge-whitelist {
+            background: rgba(255, 193, 7, 0.9);
+            color: #333;
+          }
+        }
+      }
+    }
+    
+    .campaign-info {
+      padding: 25px;
+      
+      .campaign-name {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 10px;
+      }
+      
+      .campaign-collection {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+        
+        .collection-icon {
+          font-size: 1.1rem;
+        }
+      }
+      
+      .campaign-description {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+      
+      .campaign-stats {
+        display: flex;
+        justify-content: space-around;
+        padding: 20px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 20px;
+        
+        .stat {
+          text-align: center;
+          
+          .stat-icon {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 8px;
+          }
+          
+          .stat-value {
+            display: block;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 4px;
+          }
+          
+          .stat-label {
+            display: block;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+        }
+      }
+      
+      .campaign-cta {
+        width: 100%;
+        padding: 14px;
+        font-weight: bold;
+        font-size: 1.05rem;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+      }
+    }
+  }
+  
+  // Info Section
+  .info-section {
+    padding: 80px 20px;
+    background: rgba(255, 255, 255, 0.02);
+    
+    .info-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      
+      h2 {
+        font-size: 2.5rem;
+        text-align: center;
+        margin-bottom: 60px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      
+      .info-steps {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+        
+        .step {
+          text-align: center;
+          padding: 30px;
+          background: rgba(255, 255, 255, 0.03);
+          border-radius: 20px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          transition: all 0.3s ease;
+          
+          &:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(102, 126, 234, 0.3);
+            transform: translateY(-5px);
+          }
+          
+          .step-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+          }
+          
+          h3 {
+            font-size: 1.3rem;
+            color: white;
+            margin-bottom: 15px;
+          }
+          
+          p {
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Mobile Responsiveness
+@media (max-width: 768px) {
+  .free-spins-page {
+    .hero-section {
+      padding: 60px 20px;
+      
+      .hero-content {
+        .hero-title {
+          font-size: 2.5rem;
+          flex-direction: column;
+          gap: 10px;
+          
+          .hero-icon {
+            font-size: 3rem;
+          }
+        }
+        
+        .hero-subtitle {
+          font-size: 1.1rem;
+        }
+        
+        .hero-cta .cta-message {
+          font-size: 1rem;
+          padding: 12px 20px;
+        }
+      }
+    }
+    
+    .campaigns-section {
+      padding: 40px 15px;
+    }
+    
+    .info-section {
+      padding: 60px 20px;
+      
+      .info-container {
+        h2 {
+          font-size: 2rem;
+          margin-bottom: 40px;
+        }
+        
+        .info-steps {
+          gap: 30px;
+        }
+      }
+    }
+  }
+}
+

@@ -1,0 +1,284 @@
+// Wheel3D Styles - 3D Spinning Wheel with Realistic Effects
+// Location: src/components/Wheel3D.scss
+
+@import '../styles/constants';
+
+.wheel3d-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  perspective: 1000px;
+  
+  // Pointer at top
+  .wheel-pointer {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    
+    .pointer-arrow {
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-top: 35px solid #FFD700;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+      position: relative;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        top: -35px;
+        left: -15px;
+        width: 30px;
+        height: 30px;
+        background: #FFD700;
+        border-radius: 50%;
+      }
+      
+      // Animation when spinning
+      animation: pointer-bounce 0.6s ease-in-out infinite;
+    }
+  }
+  
+  @keyframes pointer-bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+  
+  // Main wheel
+  .wheel3d {
+    position: relative;
+    transition: none; // Animation controlled by JS
+    transform-style: preserve-3d;
+    cursor: pointer;
+    
+    &.spinning {
+      pointer-events: none;
+      
+      .wheel-pointer .pointer-arrow {
+        animation: pointer-bounce 0.3s ease-in-out infinite;
+      }
+    }
+    
+    &.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      filter: grayscale(0.3);
+    }
+    
+    // SVG wheel
+    .wheel-svg {
+      display: block;
+      filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+      transition: filter 0.3s ease;
+      
+      .wheel-segment {
+        transition: opacity 0.2s ease;
+        
+        &:hover {
+          opacity: 0.9;
+        }
+      }
+      
+      .wheel-outer-ring {
+        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
+      }
+      
+      .segment-text {
+        pointer-events: none;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        font-family: 'Arial Black', sans-serif;
+        letter-spacing: 0.5px;
+      }
+      
+      .wheel-inner-circle {
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+      }
+      
+      .wheel-center-dot {
+        filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.8));
+      }
+    }
+    
+    // 3D shadow effect
+    .wheel-shadow {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      right: 15px;
+      bottom: 15px;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(0, 0, 0, 0.4) 0%,
+        rgba(0, 0, 0, 0.2) 40%,
+        transparent 70%
+      );
+      border-radius: 50%;
+      z-index: -1;
+      transform: translateZ(-50px);
+      filter: blur(15px);
+    }
+    
+    // Hover effect when not spinning
+    &:not(.spinning):not(.disabled):hover {
+      .wheel-svg {
+        filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.4));
+        transform: translateY(-5px);
+      }
+    }
+  }
+  
+  // Center decoration
+  .wheel-center-decoration {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    pointer-events: none;
+    
+    .center-circle {
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(
+        circle,
+        rgba(255, 215, 0, 0.3) 0%,
+        transparent 70%
+      );
+      border-radius: 50%;
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+  }
+  
+  @keyframes pulse-glow {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 0.3;
+    }
+  }
+  
+  // Glow effect when spinning
+  .wheel-glow-effect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(
+      circle,
+      rgba(255, 215, 0, 0.3) 0%,
+      rgba(255, 140, 0, 0.2) 30%,
+      transparent 60%
+    );
+    border-radius: 50%;
+    animation: rotate-glow 2s linear infinite;
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  @keyframes rotate-glow {
+    from {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+}
+
+// Mobile responsiveness
+@media (max-width: 768px) {
+  .wheel3d-container {
+    padding: 40px 20px;
+    
+    .wheel-pointer {
+      top: 10px;
+      
+      .pointer-arrow {
+        border-left-width: 15px;
+        border-right-width: 15px;
+        border-top-width: 25px;
+        
+        &::after {
+          top: -25px;
+          left: -10px;
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+    
+    .wheel3d {
+      .wheel-svg .segment-text {
+        font-size: 10px;
+      }
+    }
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .wheel3d-container {
+    .wheel-pointer .pointer-arrow {
+      border-top-color: #FFF;
+      
+      &::after {
+        background: #FFF;
+      }
+    }
+    
+    .wheel3d .wheel-svg {
+      .wheel-outer-ring {
+        stroke: #FFF;
+      }
+      
+      .wheel-segment {
+        stroke-width: 3;
+      }
+    }
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .wheel3d-container {
+    .wheel-pointer .pointer-arrow {
+      animation: none;
+    }
+    
+    .wheel-center-decoration .center-circle {
+      animation: none;
+    }
+    
+    .wheel-glow-effect {
+      animation: none;
+    }
+  }
+}
+
+// Dark mode adjustments
+@media (prefers-color-scheme: dark) {
+  .wheel3d-container {
+    .wheel3d .wheel-svg {
+      filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.6));
+      
+      .wheel-segment {
+        stroke: #222;
+      }
+    }
+  }
+}
+

@@ -86,7 +86,7 @@ const BulkTransfer = () => {
     setProcessing(true);
 
     const signingClient = await getSigningClient();
-    const transferResult = await bulkTransferService.bulkTransfer(signingClient, {
+    const transferResult = await bulkTransferService.bulkTransfer(signingClient, address, {
       transfers,
     });
 

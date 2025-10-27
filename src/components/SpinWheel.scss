@@ -1,0 +1,544 @@
+// SpinWheel Styles - Container for spin wheel functionality
+// Location: src/components/SpinWheel.scss
+
+@import '../styles/constants';
+
+.spin-wheel-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  
+  &.embedded {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  &.standalone {
+    padding: 40px 20px;
+  }
+  
+  // Campaign Info
+  .campaign-info {
+    text-align: center;
+    margin-bottom: 30px;
+    
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .campaign-description {
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 15px;
+      line-height: 1.6;
+    }
+    
+    .campaign-collection {
+      display: inline-block;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      font-size: 0.9rem;
+      
+      span {
+        color: rgba(255, 255, 255, 0.6);
+      }
+      
+      strong {
+        color: #fff;
+      }
+    }
+  }
+  
+  // Spin Status
+  .spin-status {
+    text-align: center;
+    margin-bottom: 20px;
+    
+    .status-warning,
+    .status-error,
+    .status-success {
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 500;
+      display: inline-block;
+      
+      p {
+        margin: 0;
+      }
+    }
+    
+    .status-warning {
+      background: rgba(255, 193, 7, 0.1);
+      color: #ffc107;
+      border: 1px solid rgba(255, 193, 7, 0.3);
+    }
+    
+    .status-error {
+      background: rgba(244, 67, 54, 0.1);
+      color: #f44336;
+      border: 1px solid rgba(244, 67, 54, 0.3);
+    }
+    
+    .status-success {
+      background: rgba(76, 175, 80, 0.1);
+      color: #4caf50;
+      border: 1px solid rgba(76, 175, 80, 0.3);
+    }
+  }
+  
+  // Wheel Section
+  .wheel-section {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+  }
+  
+  // Spin Actions
+  .spin-actions {
+    text-align: center;
+    margin: 30px 0;
+    
+    .btn-spin {
+      padding: 16px 60px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+      
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+      
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        
+        &::before {
+          left: 100%;
+        }
+      }
+      
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+      
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #555;
+        box-shadow: none;
+      }
+      
+      .spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin-right: 10px;
+        vertical-align: middle;
+      }
+    }
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  // Campaign Stats
+  .campaign-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 40px 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    
+    .stat-item {
+      text-align: center;
+      
+      .stat-value {
+        display: block;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #667eea;
+        margin-bottom: 5px;
+      }
+      
+      .stat-label {
+        display: block;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.6);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+    }
+  }
+  
+  // Spin History
+  .spin-history {
+    margin-top: 40px;
+    
+    h3 {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .history-list {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      padding: 15px;
+      
+      .history-item {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        margin-bottom: 10px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 10px;
+        transition: background 0.2s ease;
+        
+        &:hover {
+          background: rgba(255, 255, 255, 0.08);
+        }
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+        
+        .history-icon {
+          font-size: 1.5rem;
+          margin-right: 15px;
+        }
+        
+        .history-details {
+          flex: 1;
+          
+          .history-type {
+            font-weight: 500;
+            margin: 0 0 4px 0;
+            color: rgba(255, 255, 255, 0.9);
+          }
+          
+          .history-date {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin: 0;
+          }
+        }
+        
+        .history-status {
+          padding: 4px 12px;
+          border-radius: 12px;
+          font-size: 0.8rem;
+          font-weight: 500;
+          text-transform: uppercase;
+          
+          &.status-completed {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+          }
+          
+          &.status-reserved {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+          }
+          
+          &.status-failed {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+          }
+        }
+      }
+    }
+  }
+  
+  // Loading State
+  &.spin-wheel-loading {
+    text-align: center;
+    padding: 60px 20px;
+    
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-top-color: #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    
+    p {
+      color: rgba(255, 255, 255, 0.6);
+    }
+  }
+  
+  // Error/Inactive State
+  .spin-wheel-error,
+  .spin-wheel-inactive {
+    text-align: center;
+    padding: 60px 20px;
+    
+    p {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+  }
+}
+
+// Prize Modal
+.prize-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+  
+  .prize-modal {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    animation: slideUp 0.3s ease;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    
+    .close-button {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+    }
+    
+    .prize-modal-content {
+      text-align: center;
+      
+      .prize-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        animation: bounce 0.6s ease;
+      }
+      
+      h2 {
+        font-size: 2rem;
+        margin-bottom: 15px;
+        color: white;
+      }
+      
+      .prize-message {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 25px;
+      }
+      
+      .prize-nft-preview {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 25px;
+        
+        .nft-image {
+          width: 100%;
+          max-width: 300px;
+          height: auto;
+          border-radius: 10px;
+          margin-bottom: 15px;
+        }
+        
+        h3 {
+          font-size: 1.4rem;
+          margin-bottom: 10px;
+          color: white;
+        }
+        
+        .nft-description {
+          font-size: 0.95rem;
+          color: rgba(255, 255, 255, 0.8);
+          line-height: 1.5;
+        }
+      }
+      
+      .claim-button {
+        padding: 14px 40px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        background: white;
+        color: #667eea;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+      
+      .claim-success {
+        margin-top: 20px;
+        
+        .success-text {
+          font-size: 1.1rem;
+          color: white;
+          margin-bottom: 10px;
+        }
+        
+        .tx-link {
+          display: inline-block;
+          color: white;
+          text-decoration: underline;
+          transition: opacity 0.2s ease;
+          
+          &:hover {
+            opacity: 0.8;
+          }
+        }
+      }
+      
+      .spins-remaining {
+        margin-top: 20px;
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.8);
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+// Mobile Responsiveness
+@media (max-width: 768px) {
+  .spin-wheel-container {
+    &.embedded {
+      padding: 20px;
+    }
+    
+    &.standalone {
+      padding: 20px 15px;
+    }
+    
+    .campaign-info h2 {
+      font-size: 1.5rem;
+    }
+    
+    .spin-actions .btn-spin {
+      padding: 14px 40px;
+      font-size: 1rem;
+    }
+    
+    .campaign-stats {
+      gap: 20px;
+      
+      .stat-item .stat-value {
+        font-size: 1.5rem;
+      }
+    }
+  }
+  
+  .prize-modal-overlay .prize-modal {
+    padding: 30px 20px;
+    
+    .prize-modal-content {
+      .prize-icon {
+        font-size: 3rem;
+      }
+      
+      h2 {
+        font-size: 1.5rem;
+      }
+      
+      .prize-message {
+        font-size: 1rem;
+      }
+    }
+  }
+}
+

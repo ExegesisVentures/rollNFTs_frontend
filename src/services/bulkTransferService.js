@@ -11,12 +11,9 @@ const TREASURY_ADDRESS = 'core1wxgp4edry80allxrm20s5yq67wt7jcejj3w29l';
 
 class BulkTransferService {
   // Execute bulk transfer
-  async bulkTransfer(wallet, transferData) {
+  async bulkTransfer(signingClient, senderAddress, transferData) {
     try {
       const { transfers } = transferData; // Array of { classId, tokenId, recipient }
-
-      const accounts = await wallet.getKey('coreum-mainnet-1');
-      const senderAddress = accounts.bech32Address;
 
       // Calculate total fee
       const estimatedGas = transfers.length * 30000; // 0.03 CORE per transfer
@@ -48,7 +45,7 @@ class BulkTransferService {
 
       for (const transfer of transfers) {
         try {
-          const transferResult = await coreumService.transferNFT(wallet, {
+          const transferResult = await coreumService.transferNFT(signingClient, {
             classId: transfer.classId,
             tokenId: transfer.tokenId,
             recipient: transfer.recipient,

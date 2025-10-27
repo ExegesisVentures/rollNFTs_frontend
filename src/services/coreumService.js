@@ -40,12 +40,17 @@ class CoreumService {
   }
 
   // Create NFT Collection (Class) - Using Coreum AssetNFT Module
-  async createCollection(wallet, collectionData) {
+  async createCollection(signingClient, collectionData) {
     try {
-      const accounts = await wallet.getKey(COREUM_CHAIN_ID);
-      const senderAddress = accounts.bech32Address;
+      // Get accounts from signing client
+      const accounts = await signingClient.getAccounts();
+      if (!accounts || accounts.length === 0) {
+        throw new Error('No accounts found in signing client');
+      }
+      const senderAddress = accounts[0].address;
 
-      await this.initClient(wallet);
+      // Store client reference
+      this.client = signingClient;
 
       // Use Coreum's AssetNFT module
       const msgValue = {
@@ -100,12 +105,17 @@ class CoreumService {
   }
 
   // Mint NFT - Using Coreum AssetNFT Module
-  async mintNFT(wallet, mintData) {
+  async mintNFT(signingClient, mintData) {
     try {
-      const accounts = await wallet.getKey(COREUM_CHAIN_ID);
-      const senderAddress = accounts.bech32Address;
+      // Get accounts from signing client
+      const accounts = await signingClient.getAccounts();
+      if (!accounts || accounts.length === 0) {
+        throw new Error('No accounts found in signing client');
+      }
+      const senderAddress = accounts[0].address;
 
-      await this.initClient(wallet);
+      // Store client reference
+      this.client = signingClient;
 
       const msgValue = {
         sender: senderAddress,
@@ -151,15 +161,20 @@ class CoreumService {
   }
 
   // Transfer NFT
-  async transferNFT(wallet, transferData) {
+  async transferNFT(signingClient, transferData) {
     try {
-      const accounts = await wallet.getKey(COREUM_CHAIN_ID);
-      const senderAddress = accounts.bech32Address;
+      // Get accounts from signing client
+      const accounts = await signingClient.getAccounts();
+      if (!accounts || accounts.length === 0) {
+        throw new Error('No accounts found in signing client');
+      }
+      const senderAddress = accounts[0].address;
 
-      await this.initClient(wallet);
+      // Store client reference
+      this.client = signingClient;
 
       const msgSend = {
-        typeUrl: NFT_TYPE_URL.Send,
+        typeUrl: COREUM_MSG_TYPES.Send,
         value: {
           classId: transferData.classId,
           id: transferData.tokenId,

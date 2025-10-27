@@ -8,6 +8,8 @@ import { ipfsToHttp } from '../utils/ipfs';
 import NFTCard from '../components/NFTCard';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import EmptyState from '../components/shared/EmptyState';
+import SpinWheel from '../components/SpinWheel';
+import { freeSpinService } from '../services/freeSpinService';
 import toast, { Toaster } from 'react-hot-toast';
 import './CollectionDetail.scss';
 
@@ -19,10 +21,13 @@ const CollectionDetail = () => {
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [nftsLoading, setNftsLoading] = useState(true);
+  const [spinCampaigns, setSpinCampaigns] = useState([]);
+  const [activeCampaign, setActiveCampaign] = useState(null);
 
   useEffect(() => {
     loadCollection();
     loadNFTs();
+    loadSpinCampaigns();
   }, [id]);
 
   const loadCollection = async () => {
@@ -58,8 +63,30 @@ const CollectionDetail = () => {
     }
   };
 
+  const loadSpinCampaigns = async () => {
+    try {
+      const campaigns = await freeSpinService.getActiveCampaigns(id);
+      setSpinCampaigns(campaigns);
+      if (campaigns.length > 0) {
+        setActiveCampaign(campaigns[0]); // Use first active campaign
+      }
+    } catch (error) {
+      console.error('Error loading spin campaigns:', error);
+      // Don't show error toast - spin campaigns are optional
+    }
+  };
+
   const handleNFTClick = (nft) => {
     navigate(`/nft/${nft.id}`);
+  };
+
+  const handlePrizeWon = (prizeResult) => {
+    // Refresh NFTs list if an NFT was won and claimed
+    if (prizeResult.prize.type === 'nft' && prizeResult.claimed) {
+      setTimeout(() => {
+        loadNFTs();
+      }, 2000);
+    }
   };
 
   if (loading) {
@@ -125,6 +152,26 @@ const CollectionDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Spin Wheel Section - Right beneath banner */}
+      {activeCampaign && (
+        <div className="collection-detail__spin-section">
+          <div className="spin-section-header">
+            <h2 className="spin-section-title">
+              <span className="spin-icon">🎡</span>
+              {activeCampaign.name}
+            </h2>
+            <p className="spin-section-subtitle">
+              Connect your wallet and spin to win exclusive prizes!
+            </p>
+          </div>
+          <SpinWheel 
+            campaignId={activeCampaign.id}
+            embedded={true}
+            onPrizeWon={handlePrizeWon}
+          />
+        </div>
+      )}
 
       {/* NFTs Grid */}
       <div className="collection-detail__content">

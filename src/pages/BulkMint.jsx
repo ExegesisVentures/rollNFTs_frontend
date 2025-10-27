@@ -105,7 +105,7 @@ const BulkMint = () => {
     setProcessing(true);
 
     const signingClient = await getSigningClient();
-    const result = await bulkMintService.createBulkMintJob(signingClient, {
+    const result = await bulkMintService.createBulkMintJob(signingClient, walletAddress, {
       collectionId,
       items,
       totalCount: items.length,

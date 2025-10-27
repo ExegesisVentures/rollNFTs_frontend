@@ -14,6 +14,7 @@ import CreateCollection from './pages/CreateCollection';
 import BulkMint from './pages/BulkMint';
 import BulkTransfer from './pages/BulkTransfer';
 import AdminVerification from './pages/AdminVerification';
+import Profile from './pages/Profile';
 // Launchpad imports
 import Launchpads from './pages/Launchpads';
 import CreateLaunchpad from './pages/CreateLaunchpad';
@@ -21,6 +22,10 @@ import LaunchpadDetail from './pages/LaunchpadDetail';
 import ManageLaunchpad from './pages/ManageLaunchpad';
 import LaunchpadVettingApplication from './pages/LaunchpadVettingApplication';
 import AdminLaunchpadDashboard from './pages/AdminLaunchpadDashboard';
+// Free Spin imports
+import FreeSpins from './pages/FreeSpins';
+import FreeSpinDetail from './pages/FreeSpinDetail';
+import AdminSpinCampaign from './pages/AdminSpinCampaign';
 import ErrorBoundary from './components/shared/ErrorBoundary';
 import './App.scss';
 
@@ -42,6 +47,8 @@ function App() {
               <Route path="/bulk-transfer" element={<BulkTransfer />} />
               <Route path="/admin/verification" element={<AdminVerification />} />
               <Route path="/my-nfts" element={<MyNFTs />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/:address" element={<Profile />} />
               
               {/* Launchpad Routes */}
               <Route path="/launchpads" element={<Launchpads />} />
@@ -50,6 +57,11 @@ function App() {
               <Route path="/launchpads/:id/manage" element={<ManageLaunchpad />} />
               <Route path="/launchpads/:id/apply-vetting" element={<LaunchpadVettingApplication />} />
               <Route path="/admin/launchpads" element={<AdminLaunchpadDashboard />} />
+              
+              {/* Free Spin Routes */}
+              <Route path="/free-spins" element={<FreeSpins />} />
+              <Route path="/free-spins/:campaignId" element={<FreeSpinDetail />} />
+              <Route path="/admin/spin-campaigns" element={<AdminSpinCampaign />} />
               
               <Route path="*" element={
                 <div className="container" style={{paddingTop: '4rem', textAlign: 'center'}}>
