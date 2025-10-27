@@ -18,7 +18,7 @@ module.exports = async function handler(req, res) {
 
   // Get the path after /api/
   // req.url will be like "/collections" or "/nfts/listed"
-  const path = req.url.replace(/^\/?/, ''); // Remove leading slash if present
+  const path = req.url.replace(/^\/api\//, '').replace(/^\//, ''); // Remove /api/ prefix and leading slash
   
   // Build the target URL
   const targetUrl = `${API_BASE_URL}/${path}`;
@@ -26,6 +26,7 @@ module.exports = async function handler(req, res) {
   // Log for debugging (will appear in Vercel logs)
   console.log(`🔄 Proxying ${req.method} ${path} -> ${targetUrl}`);
   console.log(`📊 Query params:`, req.query);
+  console.log(`📊 Request URL:`, req.url);
   
   try {
     // Forward the request to the backend
@@ -37,8 +38,11 @@ module.exports = async function handler(req, res) {
         'Content-Type': req.headers['content-type'] || 'application/json',
         // Forward any authorization headers
         ...(req.headers.authorization && { 'Authorization': req.headers.authorization }),
+        // Forward user agent
+        'User-Agent': req.headers['user-agent'] || 'Vercel-Proxy/1.0',
       },
-      // Don't pass query params separately - they're already in req.url
+      // Pass query parameters explicitly
+      params: req.query,
       // Increase timeout for long-running requests
       timeout: 30000,
       // Don't throw on error status codes - we'll handle them
@@ -53,6 +57,7 @@ module.exports = async function handler(req, res) {
     
     // Log response status
     console.log(`✅ Proxy response: ${response.status}`);
+    console.log(`📊 Response headers:`, response.headers);
     
     // Return the response
     res.status(response.status).json(response.data);
@@ -62,6 +67,9 @@ module.exports = async function handler(req, res) {
       message: error.message,
       code: error.code,
       url: targetUrl,
+      stack: error.stack,
+      response: error.response?.data,
+      status: error.response?.status,
     });
     
     // Set CORS headers even on error
