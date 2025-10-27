@@ -2,7 +2,7 @@
 // File: src/components/Header.jsx
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useWalletStore from '../store/walletStore';
 import WalletModal from './WalletModal';
 import { getWalletName } from '../services/walletService';
@@ -10,6 +10,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import './Header.scss';
 
 const Header = () => {
+  const navigate = useNavigate();
   const { isConnected, walletAddress, walletType, balance, disconnect, autoReconnect } = useWalletStore();
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -91,6 +92,16 @@ const Header = () => {
 
                 {showDropdown && (
                   <div className="header__wallet-dropdown">
+                    <button
+                      className="header__wallet-dropdown-item"
+                      onClick={() => {
+                        setShowDropdown(false);
+                        navigate('/profile');
+                      }}
+                    >
+                      <span className="header__wallet-dropdown-icon">👤</span>
+                      My Profile
+                    </button>
                     <button
                       className="header__wallet-dropdown-item"
                       onClick={copyAddress}
