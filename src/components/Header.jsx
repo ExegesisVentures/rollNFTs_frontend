@@ -92,13 +92,11 @@ const Header = () => {
                 </button>
 
                 {showDropdown && (
-                  <div className="header__wallet-dropdown" onClick={(e) => e.stopPropagation()}>
+                  <div className="header__wallet-dropdown">
                     <button
                       type="button"
                       className="header__wallet-dropdown-item"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
+                      onClick={() => {
                         setShowDropdown(false);
                         navigate('/profile');
                       }}
@@ -109,9 +107,7 @@ const Header = () => {
                     <button
                       type="button"
                       className="header__wallet-dropdown-item"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
+                      onClick={() => {
                         setShowDropdown(false);
                         navigate('/my-nfts');
                       }}
@@ -122,9 +118,7 @@ const Header = () => {
                     <button
                       type="button"
                       className="header__wallet-dropdown-item"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
+                      onClick={() => {
                         setShowDropdown(false);
                         navigate('/free-spins');
                       }}
@@ -135,9 +129,7 @@ const Header = () => {
                     <button
                       type="button"
                       className="header__wallet-dropdown-item"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
+                      onClick={() => {
                         copyAddress();
                       }}
                     >
@@ -147,9 +139,7 @@ const Header = () => {
                     <button
                       type="button"
                       className="header__wallet-dropdown-item header__wallet-dropdown-item--danger"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
+                      onClick={() => {
                         handleDisconnect();
                       }}
                     >

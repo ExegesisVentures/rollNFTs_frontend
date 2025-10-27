@@ -177,7 +177,7 @@
       border-radius: $radius-md;
       padding: $spacing-sm;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-      z-index: 1001;
+      z-index: 1002;
       animation: slideDown 0.2s ease;
       pointer-events: auto;
     }
@@ -193,12 +193,20 @@
       border-radius: $radius-sm;
       color: $primaryWhite;
       font-size: 0.875rem;
-      cursor: pointer;
+      cursor: pointer !important;
       transition: all $transition-normal;
       text-align: left;
+      position: relative;
+      z-index: 1003;
 
       &:hover {
         background: rgba($blue, 0.1);
+        cursor: pointer !important;
+      }
+
+      &:active {
+        background: rgba($blue, 0.15);
+        cursor: pointer !important;
       }
 
       &--danger {
@@ -206,6 +214,12 @@
 
         &:hover {
           background: rgba($red, 0.1);
+          cursor: pointer !important;
+        }
+
+        &:active {
+          background: rgba($red, 0.15);
+          cursor: pointer !important;
         }
       }
     }
@@ -220,7 +234,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      z-index: 999;
+      z-index: 1000;
       background: transparent;
       pointer-events: auto;
     }
