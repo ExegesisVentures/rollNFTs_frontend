@@ -12,7 +12,11 @@ const IPFS_GATEWAYS = [
 ];
 
 // Get primary gateway from env or use public Pinata gateway as default (more reliable)
-const PRIMARY_GATEWAY = import.meta.env.VITE_IPFS_GATEWAY || IPFS_GATEWAYS[0];
+// FORCE use of reliable gateway - ignore VITE_IPFS_GATEWAY if it points to old gateway
+const envGateway = import.meta.env.VITE_IPFS_GATEWAY;
+const PRIMARY_GATEWAY = (envGateway && !envGateway.includes('magenta-certain-scallop-951')) 
+  ? envGateway 
+  : IPFS_GATEWAYS[0]; // Always use reliable public gateway
 
 /**
  * Convert IPFS URI to HTTP URL with primary gateway
@@ -24,18 +28,24 @@ export const ipfsToHttp = (uri) => {
   
   if (uri.startsWith('ipfs://')) {
     const hash = uri.replace('ipfs://', '');
-    return `${PRIMARY_GATEWAY}${hash}`;
+    const result = `${PRIMARY_GATEWAY}${hash}`;
+    console.log(`🔗 IPFS Conversion: ${uri} -> ${result} (gateway: ${PRIMARY_GATEWAY})`);
+    return result;
   }
   
   if (uri.startsWith('Qm') || uri.startsWith('bafy')) {
-    return `${PRIMARY_GATEWAY}${uri}`;
+    const result = `${PRIMARY_GATEWAY}${uri}`;
+    console.log(`🔗 IPFS Conversion: ${uri} -> ${result} (gateway: ${PRIMARY_GATEWAY})`);
+    return result;
   }
   
   // If it's already an HTTP URL, return as is
   if (uri.startsWith('http://') || uri.startsWith('https://')) {
+    console.log(`🔗 IPFS Conversion: ${uri} -> ${uri} (already HTTP)`);
     return uri;
   }
   
+  console.log(`🔗 IPFS Conversion: ${uri} -> ${uri} (unchanged)`);
   return uri;
 };
 
