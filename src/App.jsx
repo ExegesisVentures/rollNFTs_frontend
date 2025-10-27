@@ -61,6 +61,7 @@ function App() {
               {/* Free Spin Routes */}
               <Route path="/free-spins" element={<FreeSpins />} />
               <Route path="/free-spins/:campaignId" element={<FreeSpinDetail />} />
+              <Route path="/free-spins/create" element={<AdminSpinCampaign />} />
               <Route path="/admin/spin-campaigns" element={<AdminSpinCampaign />} />
               
               <Route path="*" element={

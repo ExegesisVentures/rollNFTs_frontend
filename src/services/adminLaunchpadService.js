@@ -16,7 +16,8 @@ class AdminLaunchpadService {
   // Admin wallet addresses (should be in environment variables)
   static ADMIN_ADDRESSES = [
     process.env.REACT_APP_ADMIN_ADDRESS_1,
-    process.env.REACT_APP_ADMIN_ADDRESS_2
+    process.env.REACT_APP_ADMIN_ADDRESS_2,
+    'core1eg7rdhf8mz8dhkxq6r2dtfkxkyds3330gkkfkj' // User's wallet address
   ].filter(Boolean);
 
   /**

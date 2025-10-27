@@ -9,6 +9,34 @@
   max-width: 1400px;
   margin: 0 auto;
   
+  .access-denied {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 20px;
+    
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    
+    p {
+      font-size: 1.1rem;
+      color: #94a3b8;
+      margin-bottom: 40px;
+      max-width: 500px;
+    }
+    
+    .access-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+  }
+  
   .page-header {
     display: flex;
     justify-content: space-between;

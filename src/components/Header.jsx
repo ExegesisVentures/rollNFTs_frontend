@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import useWalletStore from '../store/walletStore';
 import WalletModal from './WalletModal';
 import { getWalletName } from '../services/walletService';
+import { adminLaunchpadService } from '../services/adminLaunchpadService';
 import toast, { Toaster } from 'react-hot-toast';
 import './Header.scss';
 
@@ -14,12 +15,22 @@ const Header = () => {
   const { isConnected, walletAddress, walletType, balance, disconnect, autoReconnect } = useWalletStore();
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const dropdownRef = useRef(null);
 
   // Auto-reconnect on mount
   useEffect(() => {
     autoReconnect();
   }, [autoReconnect]);
+
+  // Check admin status when wallet connects
+  useEffect(() => {
+    if (walletAddress) {
+      setIsAdmin(adminLaunchpadService.isAdmin(walletAddress));
+    } else {
+      setIsAdmin(false);
+    }
+  }, [walletAddress]);
 
   // Handle click outside dropdown
   useEffect(() => {
@@ -144,6 +155,55 @@ const Header = () => {
                       <span className="header__wallet-dropdown-icon">🎡</span>
                       Free Spins
                     </button>
+                    <button
+                      type="button"
+                      className="header__wallet-dropdown-item"
+                      onClick={() => {
+                        setShowDropdown(false);
+                        navigate('/free-spins/create');
+                      }}
+                    >
+                      <span className="header__wallet-dropdown-icon">➕</span>
+                      Create Spin Campaign
+                    </button>
+                    {isAdmin && (
+                      <>
+                        <div className="header__wallet-dropdown-divider"></div>
+                        <button
+                          type="button"
+                          className="header__wallet-dropdown-item header__wallet-dropdown-item--admin"
+                          onClick={() => {
+                            setShowDropdown(false);
+                            navigate('/admin/spin-campaigns');
+                          }}
+                        >
+                          <span className="header__wallet-dropdown-icon">⚙️</span>
+                          Admin: Spin Campaigns
+                        </button>
+                        <button
+                          type="button"
+                          className="header__wallet-dropdown-item header__wallet-dropdown-item--admin"
+                          onClick={() => {
+                            setShowDropdown(false);
+                            navigate('/admin/launchpads');
+                          }}
+                        >
+                          <span className="header__wallet-dropdown-icon">🚀</span>
+                          Admin: Launchpads
+                        </button>
+                        <button
+                          type="button"
+                          className="header__wallet-dropdown-item header__wallet-dropdown-item--admin"
+                          onClick={() => {
+                            setShowDropdown(false);
+                            navigate('/admin/verification');
+                          }}
+                        >
+                          <span className="header__wallet-dropdown-icon">🛡️</span>
+                          Admin: Verification
+                        </button>
+                      </>
+                    )}
                     <button
                       type="button"
                       className="header__wallet-dropdown-item"

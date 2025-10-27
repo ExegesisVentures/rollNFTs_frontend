@@ -6,6 +6,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import useWalletStore from '../store/walletStore';
 import { freeSpinService } from '../services/freeSpinService';
 import { collectionsAPI, nftsAPI } from '../services/api';
+import { adminLaunchpadService } from '../services/adminLaunchpadService';
 import toast from 'react-hot-toast';
 import './AdminSpinCampaign.scss';
 
@@ -16,6 +17,8 @@ const AdminSpinCampaign = () => {
   const [campaigns, setCampaigns] = useState([]);
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [hasCollections, setHasCollections] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [formData, setFormData] = useState({
     collectionId: '',
@@ -37,8 +40,12 @@ const AdminSpinCampaign = () => {
       return;
     }
     
+    // Check if user is admin or has collections
+    const adminStatus = adminLaunchpadService.isAdmin(address);
+    setIsAdmin(adminStatus);
+    
     loadData();
-  }, [isConnected]);
+  }, [isConnected, address]);
 
   const loadData = async () => {
     try {
@@ -61,6 +68,7 @@ const AdminSpinCampaign = () => {
           c => c.creator_address === address
         );
         setCollections(userCollections);
+        setHasCollections(userCollections.length > 0);
       }
     } catch (error) {
       console.error('Error loading data:', error);
@@ -233,6 +241,26 @@ const AdminSpinCampaign = () => {
     );
   };
 
+  // Access control: Must be admin OR have collections
+  if (!loading && !isAdmin && !hasCollections) {
+    return (
+      <div className="admin-spin-campaign">
+        <div className="access-denied">
+          <h2>🎡 Create Spin Campaigns</h2>
+          <p>To create spin campaigns, you need to have at least one NFT collection.</p>
+          <div className="access-actions">
+            <Link to="/create-collection" className="btn btn-primary">
+              Create Collection
+            </Link>
+            <Link to="/free-spins" className="btn btn-secondary">
+              View All Campaigns
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="admin-spin-campaign">
@@ -247,7 +275,7 @@ const AdminSpinCampaign = () => {
   return (
     <div className="admin-spin-campaign">
       <div className="page-header">
-        <h1>Spin Campaign Management</h1>
+        <h1>{isAdmin ? 'Admin: Spin Campaign Management' : 'My Spin Campaigns'}</h1>
         <button 
           className="btn btn-primary"
           onClick={() => setShowCreateModal(true)}
