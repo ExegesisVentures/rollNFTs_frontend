@@ -60,17 +60,31 @@ class CoreumService {
       this.client = signingClient;
 
       // Use Coreum's AssetNFT module with coreum-js
-      const msgCreateClass = NFT.IssueClass({
+      // Only include fields that have values
+      const msgParams = {
         issuer: senderAddress,
         symbol: collectionData.symbol,
         name: collectionData.name,
-        description: collectionData.description || '',
-        uri: collectionData.uri || '', // IPFS metadata URL
-        uriHash: '', // Optional
-        data: '', // Optional
-        features: collectionData.features || [], // Features: [1=burning, 2=freezing, 3=whitelisting, 4=disable_sending]
-        royaltyRate: collectionData.royaltyRate || '0', // Royalty in basis points (e.g., "1000" = 10%)
-      });
+      };
+
+      // Add optional fields only if they have values
+      if (collectionData.description) {
+        msgParams.description = collectionData.description;
+      }
+      if (collectionData.uri) {
+        msgParams.uri = collectionData.uri;
+      }
+      if (collectionData.uriHash) {
+        msgParams.uriHash = collectionData.uriHash;
+      }
+      if (collectionData.features && collectionData.features.length > 0) {
+        msgParams.features = collectionData.features;
+      }
+      if (collectionData.royaltyRate && collectionData.royaltyRate !== '0') {
+        msgParams.royaltyRate = collectionData.royaltyRate;
+      }
+
+      const msgCreateClass = NFT.IssueClass(msgParams);
 
       // Estimate fee
       const fee = {
@@ -125,14 +139,24 @@ class CoreumService {
       // Store client reference
       this.client = signingClient;
 
-      const msgMint = NFT.Mint({
+      const msgParams = {
         sender: senderAddress,
         classId: mintData.classId,
         id: mintData.tokenId,
-        uri: mintData.uri, // IPFS metadata URL
-        uriHash: '',
-        recipient: mintData.recipient || senderAddress,
-      });
+      };
+
+      // Add optional fields only if they have values
+      if (mintData.uri) {
+        msgParams.uri = mintData.uri;
+      }
+      if (mintData.uriHash) {
+        msgParams.uriHash = mintData.uriHash;
+      }
+      if (mintData.recipient) {
+        msgParams.recipient = mintData.recipient;
+      }
+
+      const msgMint = NFT.Mint(msgParams);
 
       const fee = {
         amount: [{ denom: 'ucore', amount: '50000' }], // 0.05 CORE
