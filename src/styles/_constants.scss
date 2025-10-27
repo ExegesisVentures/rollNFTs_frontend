@@ -134,6 +134,17 @@ $border-color: $borderDefault;
 $white: $primaryWhite;
 $inputBg: $pitch;
 
+// Additional Compatibility Aliases
+$neumorphic-bg: $solid;
+$neumorphic-bg-dark: $cardBg;
+$text-primary: $primaryWhite;
+$text-tertiary: $dim;
+$border-radius: $radius-lg;
+$shadow-neumorphic-sm: $shadowMd;
+$shadow-neumorphic-md: $shadowLg;
+$shadow-neumorphic-lg: $shadowXl;
+$shadow-neumorphic-inset: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+
 // Mixins
 @mixin mobile {
   @media (max-width: #{$breakpoint-sm - 1px}) {

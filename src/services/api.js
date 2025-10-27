@@ -3,50 +3,59 @@
 
 import axios from 'axios';
 
-// API URL Configuration
-// CRITICAL: In production (Vercel): ALWAYS use /api (proxied via Vercel serverless function)
-// In development: Use direct HTTP connection to backend
+/**
+ * Get API URL - EVALUATED AT RUNTIME, NOT BUILD TIME!
+ * This function is called on every request to ensure correct URL
+ */
+function getAPIUrl() {
+  // Check if we have an environment variable override
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
 
-// Detect environment
-const isLocalhost = typeof window !== 'undefined' && 
-  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+  // Runtime detection (this is evaluated in the browser, not during build)
+  if (typeof window === 'undefined') {
+    // SSR or build time - default to proxy
+    return '/api';
+  }
 
-const isProduction = typeof window !== 'undefined' && 
-  window.location.hostname === 'rollnfts.vercel.app';
-
-// Determine API URL
-// Priority: 1. Environment variable, 2. Production detection, 3. Localhost, 4. Default to proxy
-let API_URL;
-
-if (import.meta.env.VITE_API_URL) {
-  // Use environment variable if set
-  API_URL = import.meta.env.VITE_API_URL;
-} else if (isProduction) {
-  // FORCE proxy usage in production
-  API_URL = '/api';
-} else if (isLocalhost) {
-  // Use direct connection for local development
-  API_URL = 'http://147.79.78.251:5058/api';
-} else {
-  // Default to proxy for any other deployment
-  API_URL = '/api';
+  const hostname = window.location.hostname;
+  
+  // Localhost - use direct HTTP connection
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'http://147.79.78.251:5058/api';
+  }
+  
+  // Production or any deployment - use proxy
+  return '/api';
 }
 
-// ALWAYS log API configuration (even in production for debugging)
-console.log('🔗 API Configuration:', {
-  hostname: typeof window !== 'undefined' ? window.location.hostname : 'unknown',
-  isLocalhost,
-  isProduction,
-  API_URL,
-  env: import.meta.env.VITE_API_URL || 'not set',
-  mode: import.meta.env.MODE,
-});
-
+// Create axios instance with interceptor to set baseURL at request time
 const api = axios.create({
-  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+});
+
+// REQUEST INTERCEPTOR: Set baseURL at request time, not at import time!
+api.interceptors.request.use((config) => {
+  const baseURL = getAPIUrl();
+  config.baseURL = baseURL;
+  
+  // Log for debugging (first request only to avoid spam)
+  if (!api._hasLoggedConfig) {
+    console.log('🔗 API Configuration (Runtime):', {
+      hostname: typeof window !== 'undefined' ? window.location.hostname : 'unknown',
+      baseURL: baseURL,
+      env: import.meta.env.VITE_API_URL || 'not set',
+      mode: import.meta.env.MODE,
+    });
+    api._hasLoggedConfig = true;
+  }
+  
+  return config;
+}, (error) => {
+  return Promise.reject(error);
 });
 
 // Collections API
