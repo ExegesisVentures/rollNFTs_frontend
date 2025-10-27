@@ -3,14 +3,26 @@
 
 import axios from 'axios';
 
-// Use relative path for Vercel proxy (HTTPS), fallback to direct HTTP for local dev
-// Check if running on localhost
+// API URL Configuration
+// In production (Vercel): Use /api (proxied to backend via Vercel serverless function)
+// In development: Check environment variable first, then detect localhost
 const isLocalhost = typeof window !== 'undefined' && 
   (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
+// Priority: 1. Environment variable, 2. Localhost check, 3. Production proxy
 const API_URL = import.meta.env.VITE_API_URL || (
   isLocalhost ? 'http://147.79.78.251:5058/api' : '/api'
 );
+
+// Log API URL in development for debugging
+if (import.meta.env.DEV) {
+  console.log('🔗 API Configuration:', {
+    hostname: window.location.hostname,
+    isLocalhost,
+    API_URL,
+    env: import.meta.env.VITE_API_URL,
+  });
+}
 
 const api = axios.create({
   baseURL: API_URL,

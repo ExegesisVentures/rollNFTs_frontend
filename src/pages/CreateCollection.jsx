@@ -104,27 +104,32 @@ const CreateCollection = () => {
 
   // Create collection (after preview confirmation)
   const handleCreateCollection = async () => {
+    // Don't close the modal yet - keep it open to show loading state
     setCreating(true);
-    setShowPreview(false);
 
     try {
+      console.log('🎨 Starting collection creation...');
+      
       // Step 1: Upload cover image to IPFS (if provided)
       let coverImageUrl = '';
       if (formData.coverImage) {
+        console.log('📸 Uploading cover image to IPFS...');
         setUploading(true);
         const uploadResult = await imageService.uploadToIPFS(formData.coverImage, {
           name: `${formData.symbol}-cover`,
         });
 
         if (!uploadResult.success) {
-          throw new Error('Failed to upload cover image');
+          throw new Error(uploadResult.error || 'Failed to upload cover image');
         }
 
         coverImageUrl = uploadResult.url;
+        console.log('✅ Cover image uploaded:', coverImageUrl);
         setUploading(false);
       }
 
       // Step 2: Create collection metadata
+      console.log('📝 Creating metadata...');
       const metadata = {
         name: formData.name,
         symbol: formData.symbol,
@@ -140,8 +145,9 @@ const CreateCollection = () => {
       // Upload metadata to IPFS
       const metadataResult = await imageService.uploadMetadataToIPFS(metadata);
       if (!metadataResult.success) {
-        throw new Error('Failed to upload metadata');
+        throw new Error(metadataResult.error || 'Failed to upload metadata');
       }
+      console.log('✅ Metadata uploaded:', metadataResult.url);
 
       // Step 3: Convert features to Coreum format
       const coreumFeatures = [];
@@ -151,6 +157,7 @@ const CreateCollection = () => {
       if (features.disableSending) coreumFeatures.push(4); // ClassFeature_disable_sending
 
       // Step 4: Create collection on Coreum
+      console.log('⛓️ Creating collection on Coreum blockchain...');
       const signingClient = await getSigningClient();
       const createResult = await coreumService.createCollection(signingClient, {
         symbol: formData.symbol.toUpperCase(),
@@ -161,10 +168,12 @@ const CreateCollection = () => {
       });
 
       if (!createResult.success) {
-        throw new Error(createResult.error || 'Failed to create collection');
+        throw new Error(createResult.error || 'Failed to create collection on blockchain');
       }
+      console.log('✅ Collection created on blockchain:', createResult.classId);
 
       // Step 5: Save to database
+      console.log('💾 Saving collection to database...');
       const { error: dbError } = await supabase
         .from('collections')
         .insert({
@@ -183,20 +192,38 @@ const CreateCollection = () => {
         });
 
       if (dbError) {
-        console.error('Database error:', dbError);
+        console.error('⚠️ Database error:', dbError);
+        toast.error('Collection created but failed to save to database. You may need to refresh.');
         // Don't fail - collection was created on-chain
+      } else {
+        console.log('✅ Collection saved to database');
       }
 
-      toast.success(`Collection "${formData.name}" created!`);
+      // Success!
+      toast.success(`🎉 Collection "${formData.name}" created successfully!`);
       
-      // Navigate to collection detail page
+      // Close modal and navigate after a short delay
+      setShowPreview(false);
       setTimeout(() => {
         navigate(`/collection/${createResult.classId}`);
-      }, 2000);
+      }, 1500);
 
     } catch (error) {
-      console.error('Collection creation error:', error);
-      toast.error(error.message || 'Failed to create collection');
+      console.error('❌ Collection creation error:', error);
+      
+      // Provide detailed error messages
+      let errorMessage = 'Failed to create collection';
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+      
+      toast.error(errorMessage, {
+        duration: 5000,
+      });
+      
+      // Don't close the modal on error - let user try again or edit
     } finally {
       setCreating(false);
       setUploading(false);
@@ -444,11 +471,12 @@ const CreateCollection = () => {
       {/* Preview Modal */}
       <CollectionPreviewModal
         isOpen={showPreview}
-        onClose={() => setShowPreview(false)}
+        onClose={() => !creating && setShowPreview(false)} // Prevent closing during creation
         formData={formData}
         coverImagePreview={coverImagePreview}
         onConfirm={handleCreateCollection}
         onEdit={() => setShowPreview(false)}
+        isCreating={creating}
       />
     </div>
   );

@@ -16,9 +16,17 @@ const CollectionPreviewModal = ({
   formData, 
   coverImagePreview, 
   onConfirm,
-  onEdit 
+  onEdit,
+  isCreating = false, // Add loading state prop
 }) => {
   if (!isOpen) return null;
+
+  const handleConfirm = async () => {
+    // Don't close the modal - let the parent handle it after creation
+    if (onConfirm) {
+      await onConfirm();
+    }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Preview Your Collection">
@@ -130,14 +138,16 @@ const CollectionPreviewModal = ({
           <Button
             variant="secondary"
             onClick={onEdit}
+            disabled={isCreating}
           >
             ✏️ Make Changes
           </Button>
           <Button
             variant="primary"
-            onClick={onConfirm}
+            onClick={handleConfirm}
+            disabled={isCreating}
           >
-            ✅ Looks Perfect, Create Collection!
+            {isCreating ? '⏳ Creating...' : '✅ Looks Perfect, Create Collection!'}
           </Button>
         </div>
       </div>
