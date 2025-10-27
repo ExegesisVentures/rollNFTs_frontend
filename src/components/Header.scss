@@ -227,17 +227,6 @@
     &-dropdown-icon {
       font-size: 1rem;
     }
-
-    &-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 1000;
-      background: transparent;
-      pointer-events: auto;
-    }
     
     &-btn {
       display: flex;

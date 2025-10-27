@@ -1,7 +1,7 @@
 // Enhanced Header Component with Wallet Integration
 // File: src/components/Header.jsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useWalletStore from '../store/walletStore';
 import WalletModal from './WalletModal';
@@ -14,11 +14,29 @@ const Header = () => {
   const { isConnected, walletAddress, walletType, balance, disconnect, autoReconnect } = useWalletStore();
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
 
   // Auto-reconnect on mount
   useEffect(() => {
     autoReconnect();
   }, [autoReconnect]);
+
+  // Handle click outside dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showDropdown]);
 
   const handleConnect = () => {
     setShowWalletModal(true);
@@ -72,7 +90,7 @@ const Header = () => {
           </div>
 
           {/* Wallet Connect */}
-          <div className="header__wallet">
+          <div className="header__wallet" ref={dropdownRef}>
             {isConnected ? (
               <div className="header__wallet-connected">
                 <div className="header__wallet-balance">
@@ -167,14 +185,6 @@ const Header = () => {
         isOpen={showWalletModal} 
         onClose={() => setShowWalletModal(false)} 
       />
-
-      {/* Close dropdown when clicking outside */}
-      {showDropdown && (
-        <div 
-          className="header__wallet-overlay"
-          onClick={() => setShowDropdown(false)}
-        />
-      )}
     </>
   );
 };
