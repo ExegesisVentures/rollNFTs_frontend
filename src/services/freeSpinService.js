@@ -38,8 +38,10 @@ class FreeSpinService {
         query = query.eq('collection_id', collectionId);
       }
 
-      // Filter by date
+      // Filter by date - campaigns that haven't ended yet
+      // Either end_date is null (never ends) OR end_date is in the future
       const now = new Date().toISOString();
+      // Note: Using 'gt' (greater than) instead of 'gte' for "greater than current time"
       query = query.or(`end_date.is.null,end_date.gt.${now}`);
 
       const { data, error } = await query;

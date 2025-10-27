@@ -2,11 +2,11 @@
 // File: api/proxy.js
 // This proxies requests from HTTPS frontend to HTTP backend securely
 
-import axios from 'axios';
+const axios = require('axios');
 
-const API_BASE_URL = 'http://147.79.78.251:5058/api';
+const API_BASE_URL = process.env.BACKEND_API_URL || 'http://147.79.78.251:5058/api';
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -17,9 +17,10 @@ export default async function handler(req, res) {
   }
 
   // Get the path after /api/
-  const path = req.url.replace(/^\/api\//, '').replace(/^\//, '');
+  // req.url will be like "/collections" or "/nfts/listed"
+  const path = req.url.replace(/^\/?/, ''); // Remove leading slash if present
   
-  // Build the target URL with query parameters
+  // Build the target URL
   const targetUrl = `${API_BASE_URL}/${path}`;
   
   // Log for debugging (will appear in Vercel logs)
@@ -36,7 +37,7 @@ export default async function handler(req, res) {
         // Forward any authorization headers
         ...(req.headers.authorization && { 'Authorization': req.headers.authorization }),
       },
-      params: req.query,
+      // Don't pass query params separately - they're already in req.url
       // Increase timeout for long-running requests
       timeout: 30000,
       // Don't throw on error status codes - we'll handle them
@@ -76,5 +77,5 @@ export default async function handler(req, res) {
       data: error.response?.data || null,
     });
   }
-}
+};
 

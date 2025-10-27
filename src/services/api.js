@@ -26,7 +26,8 @@ function getAPIUrl() {
     return 'http://147.79.78.251:5058/api';
   }
   
-  // Production or any deployment - use proxy
+  // Production, Preview, or ANY deployed environment - ALWAYS use proxy
+  // This fixes the Mixed Content error (HTTPS → HTTP blocked by browser)
   return '/api';
 }
 
