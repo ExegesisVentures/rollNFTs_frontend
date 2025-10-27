@@ -42,10 +42,16 @@ class CoreumService {
   // Create NFT Collection (Class) - Using Coreum AssetNFT Module
   async createCollection(signingClient, collectionData) {
     try {
-      // Get accounts from signing client
-      const accounts = await signingClient.getAccounts();
+      // Get signer from the signing client
+      const signer = signingClient.signer;
+      if (!signer) {
+        throw new Error('No signer found in signing client');
+      }
+
+      // Get accounts from the signer
+      const accounts = await signer.getAccounts();
       if (!accounts || accounts.length === 0) {
-        throw new Error('No accounts found in signing client');
+        throw new Error('No accounts found in signer');
       }
       const senderAddress = accounts[0].address;
 
@@ -107,10 +113,16 @@ class CoreumService {
   // Mint NFT - Using Coreum AssetNFT Module
   async mintNFT(signingClient, mintData) {
     try {
-      // Get accounts from signing client
-      const accounts = await signingClient.getAccounts();
+      // Get signer from the signing client
+      const signer = signingClient.signer;
+      if (!signer) {
+        throw new Error('No signer found in signing client');
+      }
+
+      // Get accounts from the signer
+      const accounts = await signer.getAccounts();
       if (!accounts || accounts.length === 0) {
-        throw new Error('No accounts found in signing client');
+        throw new Error('No accounts found in signer');
       }
       const senderAddress = accounts[0].address;
 
@@ -163,10 +175,16 @@ class CoreumService {
   // Transfer NFT
   async transferNFT(signingClient, transferData) {
     try {
-      // Get accounts from signing client
-      const accounts = await signingClient.getAccounts();
+      // Get signer from the signing client
+      const signer = signingClient.signer;
+      if (!signer) {
+        throw new Error('No signer found in signing client');
+      }
+
+      // Get accounts from the signer
+      const accounts = await signer.getAccounts();
       if (!accounts || accounts.length === 0) {
-        throw new Error('No accounts found in signing client');
+        throw new Error('No accounts found in signer');
       }
       const senderAddress = accounts[0].address;
 
