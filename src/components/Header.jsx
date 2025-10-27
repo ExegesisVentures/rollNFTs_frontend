@@ -92,10 +92,13 @@ const Header = () => {
                 </button>
 
                 {showDropdown && (
-                  <div className="header__wallet-dropdown">
+                  <div className="header__wallet-dropdown" onClick={(e) => e.stopPropagation()}>
                     <button
+                      type="button"
                       className="header__wallet-dropdown-item"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         setShowDropdown(false);
                         navigate('/profile');
                       }}
@@ -104,8 +107,11 @@ const Header = () => {
                       My Profile
                     </button>
                     <button
+                      type="button"
                       className="header__wallet-dropdown-item"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         setShowDropdown(false);
                         navigate('/my-nfts');
                       }}
@@ -114,8 +120,11 @@ const Header = () => {
                       My NFTs
                     </button>
                     <button
+                      type="button"
                       className="header__wallet-dropdown-item"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         setShowDropdown(false);
                         navigate('/free-spins');
                       }}
@@ -124,15 +133,25 @@ const Header = () => {
                       Free Spins
                     </button>
                     <button
+                      type="button"
                       className="header__wallet-dropdown-item"
-                      onClick={copyAddress}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        copyAddress();
+                      }}
                     >
                       <span className="header__wallet-dropdown-icon">📋</span>
                       Copy Address
                     </button>
                     <button
+                      type="button"
                       className="header__wallet-dropdown-item header__wallet-dropdown-item--danger"
-                      onClick={handleDisconnect}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDisconnect();
+                      }}
                     >
                       <span className="header__wallet-dropdown-icon">🔌</span>
                       Disconnect

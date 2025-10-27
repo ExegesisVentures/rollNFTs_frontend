@@ -103,6 +103,7 @@
     align-items: center;
     gap: $spacing-md;
     position: relative;
+    z-index: 1000;
     
     &-connected {
       display: flex;
@@ -176,8 +177,9 @@
       border-radius: $radius-md;
       padding: $spacing-sm;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-      z-index: 1000;
+      z-index: 1001;
       animation: slideDown 0.2s ease;
+      pointer-events: auto;
     }
 
     &-dropdown-item {
@@ -219,6 +221,8 @@
       right: 0;
       bottom: 0;
       z-index: 999;
+      background: transparent;
+      pointer-events: auto;
     }
     
     &-btn {
