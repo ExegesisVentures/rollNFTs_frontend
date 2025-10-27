@@ -4,6 +4,7 @@
 
 import supabase from '../lib/supabase';
 import axios from 'axios';
+import { ipfsToHttp } from '../utils/ipfs';
 
 const PINATA_API_KEY = import.meta.env.VITE_PINATA_API_KEY;
 const PINATA_SECRET = import.meta.env.VITE_PINATA_SECRET;
@@ -51,7 +52,7 @@ class ImageService {
       );
 
       const ipfsHash = response.data.IpfsHash;
-      const url = `https://${PINATA_GATEWAY}/ipfs/${ipfsHash}`;
+      const url = ipfsToHttp(`ipfs://${ipfsHash}`);
 
       return {
         success: true,
@@ -95,7 +96,7 @@ class ImageService {
       );
 
       const ipfsHash = response.data.IpfsHash;
-      const url = `https://${PINATA_GATEWAY}/ipfs/${ipfsHash}`;
+      const url = ipfsToHttp(`ipfs://${ipfsHash}`);
 
       return {
         success: true,
@@ -173,6 +174,20 @@ class ImageService {
         .single();
 
       if (!error && data) {
+        // Check if cached URL uses old gateway and needs refresh
+        const cachedUrl = data.medium_url || data.original_url;
+        const currentUrl = ipfsToHttp(`ipfs://${ipfsHash}`);
+        
+        // If cached URL uses old gateway, refresh it
+        if (cachedUrl && cachedUrl.includes('magenta-certain-scallop-951.mypinata.cloud')) {
+          console.log(`🔄 Refreshing cached URL for ${ipfsHash} - old gateway detected`);
+          this.optimizeAndCache(ipfsHash, currentUrl); // Refresh cache
+          return {
+            cached: false,
+            url: currentUrl,
+          };
+        }
+
         // Update access count
         await supabase
           .from('image_cache')
@@ -184,12 +199,12 @@ class ImageService {
 
         return {
           cached: true,
-          url: data.medium_url || data.original_url,
+          url: cachedUrl,
         };
       }
 
       // Not cached, return IPFS URL and trigger caching
-      const ipfsUrl = `https://${PINATA_GATEWAY}/ipfs/${ipfsHash}`;
+      const ipfsUrl = ipfsToHttp(`ipfs://${ipfsHash}`);
       this.optimizeAndCache(ipfsHash, ipfsUrl); // Fire and forget
 
       return {
@@ -200,7 +215,7 @@ class ImageService {
       console.error('Failed to get optimized URL:', error);
       return {
         cached: false,
-        url: `https://${PINATA_GATEWAY}/ipfs/${ipfsHash}`,
+        url: ipfsToHttp(`ipfs://${ipfsHash}`),
       };
     }
   }
