@@ -5,18 +5,17 @@
  */
 
 export const SCHEMA_VERSION = {
-  version: 2,
-  lastUpdate: '2025-10-28T' + new Date().toISOString(),
-  description: 'Fixed RLS policies - removed conflicting authenticated user policies',
+  version: 3,
+  lastUpdate: '2025-10-28T23:50:00Z',
+  description: 'RLS policies cleaned - only permissive policy remains',
   changes: [
-    'Removed "Collections can be created by authenticated users" policy',
-    'Removed "Collections can be updated by owner" policy', 
-    'Removed "Collections are viewable by everyone" policy',
-    'Kept only "collections_allow_all" permissive policy',
-    'This allows anon key to insert collections'
+    'Confirmed only "collections_allow_all" policy active',
+    'All conflicting authenticated user policies removed',
+    'This allows anon key to insert collections successfully'
   ]
 };
 
 // This comment line changes with each commit to force git diff
-// Timestamp: 2025-10-28T23:45:00Z - Schema version 2
+// Timestamp: 2025-10-28T23:50:00Z - Schema version 3 - Ready for production
+
 
