@@ -282,6 +282,173 @@ class CoreumService {
       return null;
     }
   }
+
+  // Burn NFT
+  async burnNFT(signingClient, burnData) {
+    try {
+      // Get signer from the signing client
+      const signer = signingClient.signer;
+      if (!signer) {
+        throw new Error('No signer found in signing client');
+      }
+
+      // Get accounts from the signer
+      const accounts = await signer.getAccounts();
+      if (!accounts || accounts.length === 0) {
+        throw new Error('No accounts found in signer');
+      }
+      const senderAddress = accounts[0].address;
+
+      // Store client reference
+      this.client = signingClient;
+
+      // Create burn message
+      const msgBurn = NFT.Burn({
+        classId: burnData.classId,
+        id: burnData.tokenId,
+        sender: senderAddress,
+      });
+
+      const fee = {
+        amount: [{ denom: 'ucore', amount: '30000' }], // 0.03 CORE
+        gas: '100000',
+      };
+
+      console.log('🔥 Burning NFT:', burnData.tokenId);
+
+      const result = await this.client.signAndBroadcast(
+        senderAddress,
+        [msgBurn],
+        fee,
+        'Burn NFT'
+      );
+
+      if (result.code !== 0) {
+        throw new Error(`Transaction failed: ${result.rawLog}`);
+      }
+
+      console.log('✅ NFT burned successfully:', result.transactionHash);
+      toast.success('NFT burned successfully!');
+      
+      return {
+        success: true,
+        txHash: result.transactionHash,
+      };
+    } catch (error) {
+      console.error('Failed to burn NFT:', error);
+      toast.error(error.message || 'Failed to burn NFT');
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Freeze NFT (issuer only)
+  async freezeNFT(signingClient, freezeData) {
+    try {
+      const signer = signingClient.signer;
+      if (!signer) {
+        throw new Error('No signer found in signing client');
+      }
+
+      const accounts = await signer.getAccounts();
+      if (!accounts || accounts.length === 0) {
+        throw new Error('No accounts found in signer');
+      }
+      const senderAddress = accounts[0].address;
+
+      this.client = signingClient;
+
+      // Create freeze message (requires freezing feature to be enabled on collection)
+      const msgFreeze = NFT.Freeze({
+        classId: freezeData.classId,
+        id: freezeData.tokenId,
+        sender: senderAddress,
+      });
+
+      const fee = {
+        amount: [{ denom: 'ucore', amount: '30000' }],
+        gas: '100000',
+      };
+
+      console.log('❄️ Freezing NFT:', freezeData.tokenId);
+
+      const result = await this.client.signAndBroadcast(
+        senderAddress,
+        [msgFreeze],
+        fee,
+        'Freeze NFT'
+      );
+
+      if (result.code !== 0) {
+        throw new Error(`Transaction failed: ${result.rawLog}`);
+      }
+
+      console.log('✅ NFT frozen successfully:', result.transactionHash);
+      toast.success('NFT frozen successfully!');
+      
+      return {
+        success: true,
+        txHash: result.transactionHash,
+      };
+    } catch (error) {
+      console.error('Failed to freeze NFT:', error);
+      toast.error(error.message || 'Failed to freeze NFT');
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Unfreeze NFT (issuer only)
+  async unfreezeNFT(signingClient, unfreezeData) {
+    try {
+      const signer = signingClient.signer;
+      if (!signer) {
+        throw new Error('No signer found in signing client');
+      }
+
+      const accounts = await signer.getAccounts();
+      if (!accounts || accounts.length === 0) {
+        throw new Error('No accounts found in signer');
+      }
+      const senderAddress = accounts[0].address;
+
+      this.client = signingClient;
+
+      const msgUnfreeze = NFT.Unfreeze({
+        classId: unfreezeData.classId,
+        id: unfreezeData.tokenId,
+        sender: senderAddress,
+      });
+
+      const fee = {
+        amount: [{ denom: 'ucore', amount: '30000' }],
+        gas: '100000',
+      };
+
+      console.log('☀️ Unfreezing NFT:', unfreezeData.tokenId);
+
+      const result = await this.client.signAndBroadcast(
+        senderAddress,
+        [msgUnfreeze],
+        fee,
+        'Unfreeze NFT'
+      );
+
+      if (result.code !== 0) {
+        throw new Error(`Transaction failed: ${result.rawLog}`);
+      }
+
+      console.log('✅ NFT unfrozen successfully:', result.transactionHash);
+      toast.success('NFT unfrozen successfully!');
+      
+      return {
+        success: true,
+        txHash: result.transactionHash,
+      };
+    } catch (error) {
+      console.error('Failed to unfreeze NFT:', error);
+      toast.error(error.message || 'Failed to unfreeze NFT');
+      return { success: false, error: error.message };
+    }
+  }
 }
 
 export default new CoreumService();
