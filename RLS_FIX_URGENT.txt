@@ -1,0 +1,101 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║              🚨 URGENT: RLS POLICY FIX NEEDED 🚨                           ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+ERROR FOUND:
+━━━━━━━━━━━━
+❌ POST collections 401 (Unauthorized)
+❌ Error: "new row violates row-level security policy for table collections"
+
+CAUSE:
+━━━━━━
+The collections table has Row Level Security (RLS) enabled but no policy
+allowing INSERT operations with the anonymous (anon) key.
+
+══════════════════════════════════════════════════════════════════════════════
+
+🔧 IMMEDIATE FIX (2 MINUTES)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Option 1: Run Updated Main Script (Recommended)
+┌────────────────────────────────────────────────────────────────────────────┐
+│ 1. Open: https://supabase.com/dashboard/project/wemaymehbtnxkwxslhsu/editor
+│ 2. Run: supabase/FIX_SCHEMA_ISSUES.sql (UPDATED - now includes RLS fix)   │
+│ 3. Settings → API → Refresh Schema Cache                                  │
+│ 4. Wait 15 seconds                                                         │
+│ 5. Try creating collection again                                          │
+└────────────────────────────────────────────────────────────────────────────┘
+
+Option 2: Run Quick RLS Fix (Faster)
+┌────────────────────────────────────────────────────────────────────────────┐
+│ 1. Open: https://supabase.com/dashboard/project/wemaymehbtnxkwxslhsu/editor
+│ 2. Run: supabase/FIX_RLS_POLICIES.sql (Just the RLS fix)                  │
+│ 3. Settings → API → Refresh Schema Cache                                  │
+│ 4. Wait 15 seconds                                                         │
+│ 5. Try creating collection again                                          │
+└────────────────────────────────────────────────────────────────────────────┘
+
+══════════════════════════════════════════════════════════════════════════════
+
+📋 WHAT THE FIX DOES
+━━━━━━━━━━━━━━━━━━━━
+
+The SQL script will:
+
+✅ Drop old restrictive RLS policies
+✅ Create new permissive policies:
+   - collections_public_read (SELECT - anyone can read)
+   - collections_public_insert (INSERT - anyone can create)
+   - collections_public_update (UPDATE - anyone can update)
+   - collections_public_delete (DELETE - anyone can delete)
+
+This allows your app to use the anon key to create collections.
+
+══════════════════════════════════════════════════════════════════════════════
+
+⚠️ SECURITY NOTE
+━━━━━━━━━━━━━━━━
+
+These policies are PERMISSIVE for development/testing.
+
+For production, you may want to restrict based on:
+- Authenticated users only
+- Creator address validation
+- Rate limiting
+
+But for now, this will make the app work.
+
+══════════════════════════════════════════════════════════════════════════════
+
+✅ AFTER FIXING
+━━━━━━━━━━━━━━
+
+You should see:
+✅ "💾 Saving collection to database..."
+✅ "✅ Collection saved to database"  <-- THIS WILL NOW APPEAR
+✅ Collection appears on your site
+✅ No more 401 errors
+
+══════════════════════════════════════════════════════════════════════════════
+
+🔍 VERIFY THE FIX
+━━━━━━━━━━━━━━━━━
+
+After running the SQL, check policies in Supabase:
+
+1. Go to: Database → Collections table → Policies tab
+2. Should see 4 policies:
+   - collections_public_read
+   - collections_public_insert
+   - collections_public_update
+   - collections_public_delete
+3. All should have "USING (true)" or "WITH CHECK (true)"
+
+══════════════════════════════════════════════════════════════════════════════
+
+Status: 🔴 CRITICAL - Blocks all collection creation
+Fix Time: ⏱️ 2 minutes
+Files: supabase/FIX_RLS_POLICIES.sql OR supabase/FIX_SCHEMA_ISSUES.sql (updated)
+
+══════════════════════════════════════════════════════════════════════════════
+
