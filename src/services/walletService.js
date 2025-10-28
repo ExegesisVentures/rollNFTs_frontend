@@ -194,6 +194,7 @@ class WalletService {
         return {
           address: account.address,
           pubKey: account.publicKey,
+          isLedger: false, // Cosmostation doesn't expose Ledger info
         };
       } else {
         // Keplr and Leap
@@ -202,11 +203,23 @@ class WalletService {
           address: key.bech32Address,
           pubKey: key.pubKey,
           name: key.name,
+          isLedger: key.isNanoLedger || false, // Detect Ledger
         };
       }
     } catch (error) {
       console.error('Error getting account:', error);
       throw error;
+    }
+  }
+
+  // Check if current wallet is using Ledger
+  async isLedgerWallet(walletType) {
+    try {
+      const account = await this.getAccount(walletType);
+      return account.isLedger || false;
+    } catch (error) {
+      console.error('Error checking Ledger status:', error);
+      return false;
     }
   }
 
@@ -322,7 +335,7 @@ class WalletService {
     }
   }
 
-  // Get signing client
+  // Get signing client with Ledger support
   async getSigningClient(walletType) {
     try {
       const provider = this.getWalletProvider(walletType);
@@ -331,10 +344,37 @@ class WalletService {
       }
 
       let offlineSigner;
+      
       if (walletType === WALLET_TYPES.COSMOSTATION) {
         offlineSigner = await provider.cosmos.getOfflineSigner(COREUM_CHAIN_CONFIG.chainId);
       } else {
-        offlineSigner = provider.getOfflineSigner(COREUM_CHAIN_CONFIG.chainId);
+        // Keplr and Leap support both Ledger and non-Ledger
+        // Try to get Amino signer first (for Ledger compatibility)
+        if (provider.getOfflineSignerOnlyAmino) {
+          try {
+            // Check if this is a Ledger connection
+            const key = await provider.getKey(COREUM_CHAIN_CONFIG.chainId);
+            const isLedger = key.isNanoLedger || false;
+            
+            if (isLedger) {
+              console.log('🔐 Ledger detected - using Amino signing mode');
+              // Use Amino-only signer for Ledger
+              offlineSigner = provider.getOfflineSignerOnlyAmino(COREUM_CHAIN_CONFIG.chainId);
+            } else {
+              // Use Auto signer for non-Ledger (supports both Direct and Amino)
+              offlineSigner = provider.getOfflineSignerAuto 
+                ? await provider.getOfflineSignerAuto(COREUM_CHAIN_CONFIG.chainId)
+                : provider.getOfflineSigner(COREUM_CHAIN_CONFIG.chainId);
+            }
+          } catch (error) {
+            console.warn('Could not detect Ledger, using default signer:', error);
+            // Fallback to default signer
+            offlineSigner = provider.getOfflineSigner(COREUM_CHAIN_CONFIG.chainId);
+          }
+        } else {
+          // Fallback to default signer if getOfflineSignerOnlyAmino not available
+          offlineSigner = provider.getOfflineSigner(COREUM_CHAIN_CONFIG.chainId);
+        }
       }
 
       const client = await SigningStargateClient.connectWithSigner(
@@ -342,6 +382,8 @@ class WalletService {
         offlineSigner,
         {
           registry: new Registry([...defaultRegistryTypes, ...coreumRegistry]),
+          // Amino converter for better Ledger compatibility
+          aminoTypes: undefined, // Let CosmJS use default amino types
         }
       );
 
