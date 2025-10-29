@@ -3,19 +3,20 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import InfiniteNFTGrid from '../components/InfiniteNFTGrid';
+import CollectionGrid from '../components/CollectionGrid';
 import toast, { Toaster } from 'react-hot-toast';
 import './Home.scss';
 
 const Home = () => {
   const navigate = useNavigate();
   const [stats] = useState({
-    totalCollections: 5,
+    totalCollections: '∞',
     creators: 2
   });
 
-  const handleNFTClick = (nft) => {
-    navigate(`/nft/${nft.id}`);
+  const handleCollectionClick = (collection) => {
+    console.log('📦 Navigating to collection:', collection.name);
+    navigate(`/collection/${collection.collection_id || collection.id}`);
   };
 
   return (
@@ -35,23 +36,23 @@ const Home = () => {
       <div className="home__hero">
         <div className="home__hero-content">
           <div className="home__hero-inner">
-            <h1>Discover, Collect, and Sell NFTs</h1>
+            <h1>Discover, Collect, and Sell NFT Collections</h1>
             <p>
               The premier multi-chain NFT marketplace on XRP and Coreum. 
-              Experience the future of digital collectibles with seamless trading and advanced features.
+              Browse collections, explore unique digital art, and find your next treasure.
             </p>
             <div className="home__hero-actions">
               <button
                 onClick={() => navigate('/collections')}
                 className="home__hero-btn home__hero-btn--primary"
               >
-                Explore Collections
+                Browse All Collections
               </button>
               <button
-                onClick={() => navigate('/create')}
+                onClick={() => navigate('/create-collection')}
                 className="home__hero-btn home__hero-btn--secondary"
               >
-                Create NFT
+                Create Collection
               </button>
             </div>
           </div>
@@ -63,16 +64,16 @@ const Home = () => {
         <div className="home__stats-container">
           <div className="home__stats-grid">
             <div className="home__stats-item">
-              <p className="home__stats-item-value">∞</p>
-              <p className="home__stats-item-label">NFTs on Coreum</p>
-            </div>
-            <div className="home__stats-item">
               <p className="home__stats-item-value">{stats.totalCollections}</p>
-              <p className="home__stats-item-label">Collections</p>
+              <p className="home__stats-item-label">Collections on Coreum</p>
             </div>
             <div className="home__stats-item">
-              <p className="home__stats-item-value">12</p>
-              <p className="home__stats-item-label">Per Batch</p>
+              <p className="home__stats-item-value">20</p>
+              <p className="home__stats-item-label">Per Page</p>
+            </div>
+            <div className="home__stats-item">
+              <p className="home__stats-item-value">Fast</p>
+              <p className="home__stats-item-label">Load Times</p>
             </div>
             <div className="home__stats-item">
               <p className="home__stats-item-value">{stats.creators}</p>
@@ -82,18 +83,16 @@ const Home = () => {
         </div>
       </div>
 
-      {/* NFTs Grid - Infinite Scroll */}
-      <div className="home__nfts">
-        <div className="home__nfts-header">
-          <h2 className="home__nfts-title">NFTs from Coreum Blockchain</h2>
-          <p className="home__nfts-subtitle">
-            Scroll down to load more • Images optimized & cached
+      {/* Collections Grid */}
+      <div className="home__collections">
+        <div className="home__collections-header">
+          <h2 className="home__collections-title">Featured Collections</h2>
+          <p className="home__collections-subtitle">
+            Browse curated NFT collections • Click to explore
           </p>
         </div>
 
-        <InfiniteNFTGrid
-          onNFTClick={handleNFTClick}
-        />
+        <CollectionGrid onCollectionClick={handleCollectionClick} />
       </div>
     </div>
   );

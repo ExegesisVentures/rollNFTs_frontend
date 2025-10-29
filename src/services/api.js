@@ -61,14 +61,20 @@ api.interceptors.request.use((config) => {
 
 // Collections API
 export const collectionsAPI = {
-  // Get all collections
-  getAll: async () => {
+  // Get all collections with pagination
+  getAll: async (params = {}) => {
     try {
-      const response = await api.get('/collections');
+      const response = await api.get('/collections/all', { params });
       return response.data;
     } catch (error) {
       console.error('API Error:', error);
-      return { success: false, data: [], message: error.message };
+      // Fallback to old endpoint
+      try {
+        const fallbackResponse = await api.get('/collections', { params });
+        return fallbackResponse.data;
+      } catch (fallbackError) {
+        return { success: false, data: [], message: error.message };
+      }
     }
   },
 
