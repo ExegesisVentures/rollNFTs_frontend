@@ -2,50 +2,61 @@
 // File: src/utils/ipfs.js
 
 // Multiple IPFS gateways for failover and load balancing
+// Rotating through different gateways to avoid rate limits
 const IPFS_GATEWAYS = [
-  'https://gateway.pinata.cloud/ipfs/', // Public Pinata gateway (primary - more reliable)
-  'https://magenta-certain-scallop-951.mypinata.cloud/ipfs/', // Your custom Pinata gateway (fallback)
-  'https://cloudflare-ipfs.com/ipfs/',
-  'https://ipfs.io/ipfs/',
-  'https://dweb.link/ipfs/',
-  'https://gateway.ipfs.io/ipfs/',
+  'https://cloudflare-ipfs.com/ipfs/', // Cloudflare (most reliable, high limits)
+  'https://ipfs.io/ipfs/', // Official IPFS gateway
+  'https://dweb.link/ipfs/', // Protocol Labs gateway
+  'https://gateway.ipfs.io/ipfs/', // Alternative official gateway
+  'https://w3s.link/ipfs/', // Web3.Storage gateway
+  'https://nftstorage.link/ipfs/', // NFT.Storage gateway (NFT-focused)
+  'https://gateway.pinata.cloud/ipfs/', // Pinata (but rate limited)
 ];
 
-// Get primary gateway from env or use public Pinata gateway as default (more reliable)
-// FORCE use of reliable gateway - ignore VITE_IPFS_GATEWAY if it points to old gateway
+// Use Cloudflare as primary gateway (most reliable, highest rate limits)
 const envGateway = import.meta.env.VITE_IPFS_GATEWAY;
-const PRIMARY_GATEWAY = (envGateway && !envGateway.includes('magenta-certain-scallop-951')) 
-  ? envGateway 
-  : IPFS_GATEWAYS[0]; // Always use reliable public gateway
+const PRIMARY_GATEWAY = envGateway || IPFS_GATEWAYS[0]; // Default to Cloudflare
+
+// Gateway rotation index for load balancing
+let currentGatewayIndex = 0;
+
+// Get next gateway in rotation (load balancing)
+export const getNextGateway = () => {
+  currentGatewayIndex = (currentGatewayIndex + 1) % IPFS_GATEWAYS.length;
+  return IPFS_GATEWAYS[currentGatewayIndex];
+};
 
 /**
- * Convert IPFS URI to HTTP URL with primary gateway
+ * Convert IPFS URI to HTTP URL with rotating gateway (load balancing)
  * @param {string} uri - IPFS URI (ipfs://...)
  * @returns {string} HTTP URL
  */
 export const ipfsToHttp = (uri) => {
   if (!uri) return '';
   
+  // Use rotating gateway to distribute load and avoid rate limits
+  const gateway = getNextGateway();
+  
   if (uri.startsWith('ipfs://')) {
     const hash = uri.replace('ipfs://', '');
-    const result = `${PRIMARY_GATEWAY}${hash}`;
-    console.log(`🔗 IPFS Conversion: ${uri} -> ${result} (gateway: ${PRIMARY_GATEWAY})`);
+    const result = `${gateway}${hash}`;
+    // Reduced console logging to avoid spam
+    if (Math.random() < 0.1) { // Only log 10% of conversions
+      console.log(`🔗 IPFS: ${hash.slice(0, 15)}... -> ${gateway.split('/')[2]}`);
+    }
     return result;
   }
   
   if (uri.startsWith('Qm') || uri.startsWith('bafy')) {
-    const result = `${PRIMARY_GATEWAY}${uri}`;
-    console.log(`🔗 IPFS Conversion: ${uri} -> ${result} (gateway: ${PRIMARY_GATEWAY})`);
+    const result = `${gateway}${uri}`;
     return result;
   }
   
   // If it's already an HTTP URL, return as is
   if (uri.startsWith('http://') || uri.startsWith('https://')) {
-    console.log(`🔗 IPFS Conversion: ${uri} -> ${uri} (already HTTP)`);
     return uri;
   }
   
-  console.log(`🔗 IPFS Conversion: ${uri} -> ${uri} (unchanged)`);
   return uri;
 };
 

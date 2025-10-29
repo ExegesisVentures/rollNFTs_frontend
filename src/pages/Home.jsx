@@ -26,7 +26,8 @@ const Home = () => {
   const loadNFTs = async () => {
     try {
       setLoading(true);
-      const response = await nftsAPI.getListed({ page: 1, limit: 20 });
+      // Reduced from 20 to 12 to avoid rate limiting on IPFS gateways
+      const response = await nftsAPI.getListed({ page: 1, limit: 12 });
       if (response.success) {
         setNfts(response.data);
         // Update stats from response

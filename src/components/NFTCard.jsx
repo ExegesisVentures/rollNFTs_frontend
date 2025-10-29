@@ -21,7 +21,12 @@ const NFTCard = ({ nft, onClick }) => {
             loading="lazy"
             decoding="async"
             onError={(e) => {
-              e.target.src = 'https://via.placeholder.com/400x400?text=NFT';
+              // Prevent infinite error loop
+              if (e.target.dataset.fallbackAttempted) return;
+              e.target.dataset.fallbackAttempted = 'true';
+              
+              // Use a data URI as fallback (always works)
+              e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect fill="%23222" width="400" height="400"/%3E%3Ctext fill="%23666" font-family="sans-serif" font-size="24" x="50%25" y="50%25" text-anchor="middle" dominant-baseline="middle"%3ENFT%3C/text%3E%3C/svg%3E';
             }}
           />
         ) : (

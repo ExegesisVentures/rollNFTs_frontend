@@ -23,7 +23,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { page = 1, limit = 20, collection_id } = req.query;
+    const { page = 1, limit = 12, collection_id } = req.query;
     
     console.log(`📡 Fetching NFTs from Coreum blockchain - Page: ${page}, Limit: ${limit}`);
 
