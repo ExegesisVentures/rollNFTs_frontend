@@ -1,0 +1,121 @@
+// Infinite NFT Grid Styles
+// File: src/components/InfiniteNFTGrid.scss
+
+.infinite-grid {
+  width: 100%;
+  padding: 2rem 0;
+
+  &__items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+
+  &__item {
+    opacity: 0;
+    animation: fadeIn 0.3s ease-in forwards;
+  }
+
+  &__loading,
+  &__error,
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  &__spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #00d4ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+
+  &__loading p,
+  &__error p,
+  &__empty p {
+    color: #888;
+    font-size: 1rem;
+    margin-top: 1rem;
+  }
+
+  &__retry-btn {
+    margin-top: 1rem;
+    padding: 0.75rem 2rem;
+    background: #00d4ff;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #00b8e6;
+      transform: translateY(-2px);
+    }
+  }
+
+  &__load-more {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100px;
+    padding: 2rem;
+  }
+
+  &__loading-more {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    p {
+      color: #00d4ff;
+      font-size: 0.9rem;
+    }
+  }
+
+  &__end {
+    color: #666;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
