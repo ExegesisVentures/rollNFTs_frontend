@@ -22,6 +22,12 @@ class ImageCacheService {
   async getOptimizedUrl(ipfsUrl, nftId, size = 'thumbnail') {
     if (!ipfsUrl || !nftId) return ipfsUrl;
 
+    // Validate URL first
+    if (!this.isValidImageUrl(ipfsUrl)) {
+      console.warn(`⚠️ Skipping optimization for invalid URL: ${ipfsUrl}`);
+      return null; // Return null for invalid URLs
+    }
+
     const cacheKey = `${nftId}-${size}`;
 
     // Check memory cache
@@ -37,8 +43,11 @@ class ImageCacheService {
     // Extract IPFS hash
     const hash = this.extractIPFSHash(ipfsUrl);
     if (!hash) {
-      // Not an IPFS URL, return as is
-      return ipfsUrl;
+      // Not an IPFS URL or invalid, return as is if it's a valid HTTP URL
+      if (ipfsUrl.startsWith('http://') || ipfsUrl.startsWith('https://')) {
+        return ipfsUrl;
+      }
+      return null;
     }
 
     // Use proxy endpoint (edge function, faster)
@@ -83,21 +92,56 @@ class ImageCacheService {
 
     // Handle ipfs:// protocol
     if (url.startsWith('ipfs://')) {
-      return url.replace('ipfs://', '');
+      const hash = url.replace('ipfs://', '');
+      // Validate hash (must be Qm... or bafy... format)
+      if (!hash || hash.length < 10 || hash === 'test') {
+        console.warn(`⚠️ Invalid IPFS hash: ${hash}`);
+        return null;
+      }
+      return hash;
     }
 
     // Handle raw hash
-    if (url.match(/^(Qm[a-zA-Z0-9]{44}|bafy[a-zA-Z0-9]+)$/)) {
+    if (url.match(/^(Qm[a-zA-Z0-9]{44}|bafy[a-zA-Z0-9]{48,})$/)) {
       return url;
     }
 
     // Handle gateway URL
     const match = url.match(/\/ipfs\/([^/?#]+)/);
-    if (match) {
+    if (match && match[1] && match[1].length > 10) {
       return match[1];
     }
 
     return null;
+  }
+
+  /**
+   * Validate if URL is optimizable
+   * @param {string} url - Image URL
+   * @returns {boolean} - True if can be optimized
+   */
+  isValidImageUrl(url) {
+    if (!url || typeof url !== 'string') return false;
+    
+    // Check for invalid URLs
+    const invalidPatterns = [
+      /^ipfs:\/\/?$/,           // Empty IPFS
+      /^ipfs:\/\/test$/,        // Test IPFS
+      /^www\./,                 // Relative URLs
+      /^drive\.google\.com/,    // Google Drive
+      /^docs\.google\.com/,     // Google Docs
+      /coreum\.com\/\d+$/,      // Test URLs like coreum.com/1
+    ];
+
+    for (const pattern of invalidPatterns) {
+      if (pattern.test(url)) {
+        console.warn(`⚠️ Invalid/unsupported image URL: ${url}`);
+        return false;
+      }
+    }
+
+    // Must be IPFS or HTTP(S)
+    return url.startsWith('ipfs://') || url.startsWith('http://') || url.startsWith('https://');
   }
 
   /**
@@ -110,9 +154,21 @@ class ImageCacheService {
     const cacheKey = `${nftId}-${size}`;
     if (this.optimizing.has(cacheKey)) return;
 
+    // Validate URL before attempting optimization
+    if (!this.isValidImageUrl(ipfsUrl)) {
+      console.warn(`⚠️ Skipping optimization for invalid URL: ${ipfsUrl}`);
+      return;
+    }
+
     const optimizationPromise = (async () => {
       try {
         const httpUrl = ipfsToHttp(ipfsUrl);
+        
+        // Don't optimize obviously broken URLs
+        if (!httpUrl || httpUrl === ipfsUrl && !ipfsUrl.startsWith('http')) {
+          console.warn(`⚠️ Cannot convert to HTTP URL: ${ipfsUrl}`);
+          return;
+        }
         
         const response = await fetch(`${API_BASE}/images/optimize`, {
           method: 'POST',
@@ -127,7 +183,8 @@ class ImageCacheService {
         });
 
         if (!response.ok) {
-          console.warn(`⚠️ ${size} optimization failed for ${nftId}`);
+          const errorText = await response.text().catch(() => 'Unknown error');
+          console.warn(`⚠️ ${size} optimization failed for ${nftId}: ${response.status} - ${errorText}`);
           return;
         }
 
