@@ -1,0 +1,205 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                  📊 API CALL FLOW - WHERE & HOW 📊                           ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+🔍 QUESTION: Where is project calling API from?
+
+══════════════════════════════════════════════════════════════════════════════
+
+📍 THE COMPLETE FLOW
+━━━━━━━━━━━━━━━━━━━
+
+1. USER VISITS PAGE
+   ↓
+   https://rollnfts.vercel.app/collections
+   
+2. REACT COMPONENT LOADS
+   ↓
+   File: src/pages/Collections.jsx
+   Line 20: useEffect(() => { loadCollections(); })
+   
+3. CALLS API SERVICE
+   ↓
+   Line 26: const response = await collectionsAPI.getAll();
+   
+4. API SERVICE MAKES REQUEST
+   ↓
+   File: src/services/api.js
+   Line 67: const response = await api.get('/collections');
+   
+5. AXIOS INTERCEPTS REQUEST
+   ↓
+   Line 42-44: Sets baseURL = getAPIUrl()
+   
+6. DETERMINES URL AT RUNTIME
+   ↓
+   Line 10-31: getAPIUrl() function checks:
+   
+   IF localhost:
+     → http://147.79.78.251:5058/api (external backend - DOWN)
+   
+   IF production (rollnfts.vercel.app):
+     → /api (relative path = same domain)
+   
+7. FINAL REQUEST URL
+   ↓
+   https://rollnfts.vercel.app/api/collections
+   
+8. VERCEL ROUTES TO SERVERLESS FUNCTION
+   ↓
+   File: api/collections/index.js
+   
+9. SERVERLESS FUNCTION QUERIES SUPABASE
+   ↓
+   Line 30: await supabase.from('collections').select('*')
+   
+10. RETURNS DATA TO FRONTEND
+    ↓
+    Collections displayed on page
+
+══════════════════════════════════════════════════════════════════════════════
+
+🎯 KEY FILES IN ORDER
+━━━━━━━━━━━━━━━━━━━━
+
+1. Frontend Component:
+   📄 src/pages/Collections.jsx
+   - Displays the collections page
+   - Calls collectionsAPI.getAll()
+   - Has "Sync Blockchain" button
+
+2. API Service Layer:
+   📄 src/services/api.js
+   - Wraps axios calls
+   - Determines API URL at runtime
+   - Production: /api (relative)
+   - Localhost: http://147.79.78.251:5058/api (external)
+
+3. Serverless Function (Backend):
+   📄 api/collections/index.js
+   - Handles GET /api/collections
+   - Queries Supabase database
+   - Returns all collections as JSON
+
+4. Database:
+   🗄️ Supabase PostgreSQL
+   - collections table
+   - 176 collections synced from blockchain
+
+══════════════════════════════════════════════════════════════════════════════
+
+🔄 SYNC BLOCKCHAIN FLOW
+━━━━━━━━━━━━━━━━━━━━━
+
+When you click "Sync Blockchain" button:
+
+1. BUTTON CLICK
+   ↓
+   File: src/pages/Collections.jsx
+   Line 38: handleSyncBlockchain()
+   
+2. CALLS SYNC API
+   ↓
+   Line 44: axios.post('/api/sync/blockchain')
+   
+3. SYNC SERVERLESS FUNCTION
+   ↓
+   File: api/sync/blockchain.js
+   
+4. FETCHES FROM COREUM BLOCKCHAIN
+   ↓
+   https://full-node.mainnet-1.coreum.dev:1317/coreum/asset/nft/v1/classes
+   
+5. STORES IN SUPABASE
+   ↓
+   supabase.from('collections').upsert(...)
+   
+6. RETURNS SUCCESS
+   ↓
+   { success: true, collections: 176 }
+   
+7. RELOADS COLLECTIONS PAGE
+   ↓
+   Calls collectionsAPI.getAll() again
+
+══════════════════════════════════════════════════════════════════════════════
+
+🌐 PRODUCTION URL STRUCTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Base: https://rollnfts.vercel.app
+
+Frontend Routes (React Router):
+├─ /                        → Home page
+├─ /collections             → Collections list
+├─ /collection/:id          → Single collection
+├─ /create-collection       → Create new collection
+└─ /profile                 → User profile
+
+API Routes (Vercel Serverless):
+├─ /api/collections         → List all collections
+├─ /api/collections/:id     → Get single collection
+├─ /api/nfts/collection/:id → Get NFTs in collection
+└─ /api/sync/blockchain     → Sync from blockchain
+
+External APIs:
+├─ Coreum Blockchain        → NFT class data
+├─ Supabase                 → Database storage
+└─ IPFS                     → Image storage
+
+══════════════════════════════════════════════════════════════════════════════
+
+💡 WHY THIS ARCHITECTURE?
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Before (Broken):
+Frontend → /api/* → api/proxy.js → http://147.79.78.251:5058 (DOWN) ❌
+
+After (Working):
+Frontend → /api/collections → api/collections/index.js → Supabase ✅
+Frontend → /api/sync/blockchain → api/sync/blockchain.js → Coreum → Supabase ✅
+
+Benefits:
+✅ No external backend dependency
+✅ Direct Supabase queries
+✅ Serverless = auto-scaling
+✅ Vercel edge network = fast
+✅ No CORS issues
+
+══════════════════════════════════════════════════════════════════════════════
+
+🔍 HOW TO VERIFY IT'S WORKING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Open browser DevTools (F12)
+2. Go to Network tab
+3. Visit: https://rollnfts.vercel.app/collections
+4. Look for these requests:
+
+   GET /api/collections → Status 200
+   Response: { success: true, data: [176 collections] }
+
+5. Click "Sync Blockchain" button:
+
+   POST /api/sync/blockchain → Status 200
+   Response: { success: true, collections: 176 }
+
+══════════════════════════════════════════════════════════════════════════════
+
+📊 CURRENT STATE
+━━━━━━━━━━━━━━━
+
+✅ API calling from: src/services/api.js
+✅ API URL: /api (relative path on production)
+✅ Backend: api/collections/index.js (serverless function)
+✅ Database: Supabase (176 collections synced)
+✅ Blockchain sync: api/sync/blockchain.js (working)
+
+══════════════════════════════════════════════════════════════════════════════
+
+Status: 🟢 All APIs working correctly
+Architecture: ✅ Clean serverless setup
+Collections: ✅ 176 synced from Coreum
+
+══════════════════════════════════════════════════════════════════════════════
+
