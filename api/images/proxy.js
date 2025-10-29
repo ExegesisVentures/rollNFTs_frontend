@@ -7,7 +7,8 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
-const CACHE_BUCKET = 'nft-thumbnails';
+const THUMBNAIL_BUCKET = 'nft-thumbnails';
+const FULL_BUCKET = 'nft-images';
 
 // IPFS Gateways for fallback
 const IPFS_GATEWAYS = [
@@ -24,6 +25,7 @@ export default async function handler(req) {
   const { searchParams } = new URL(req.url);
   const nftId = searchParams.get('nftId');
   const ipfsHash = searchParams.get('hash');
+  const size = searchParams.get('size') || 'thumbnail'; // 'thumbnail' or 'full'
 
   if (!nftId || !ipfsHash) {
     return new Response(
@@ -37,12 +39,15 @@ export default async function handler(req) {
 
   try {
     const supabase = createClient(supabaseUrl, supabaseKey);
+    
+    // Choose bucket based on size request
+    const bucket = size === 'full' ? FULL_BUCKET : THUMBNAIL_BUCKET;
     const cacheKey = `${nftId}.webp`;
 
     // Check Supabase Storage cache
     const { data: publicUrl } = supabase
       .storage
-      .from(CACHE_BUCKET)
+      .from(bucket)
       .getPublicUrl(cacheKey);
 
     // Try to fetch from cache
@@ -57,13 +62,15 @@ export default async function handler(req) {
           headers: {
             'Content-Type': 'image/webp',
             'Cache-Control': 'public, max-age=31536000, immutable',
-            'X-Cache': 'HIT'
+            'X-Cache': 'HIT',
+            'X-Bucket': bucket,
+            'X-Size': size
           }
         });
       }
     } catch (cacheError) {
       // Cache miss, continue to IPFS
-      console.log('Cache miss, fetching from IPFS');
+      console.log(`Cache miss for ${size}, fetching from IPFS`);
     }
 
     // Fallback: Fetch from IPFS gateways

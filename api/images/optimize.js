@@ -10,9 +10,12 @@ const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const THUMBNAIL_SIZE = 256; // 256x256px thumbnails
+const THUMBNAIL_SIZE = 256; // 256x256px thumbnails for grid
+const FULL_SIZE = 1024; // 1024px max for detail views
 const THUMBNAIL_QUALITY = 80;
-const CACHE_BUCKET = 'nft-thumbnails';
+const FULL_QUALITY = 90;
+const THUMBNAIL_BUCKET = 'nft-thumbnails';
+const FULL_BUCKET = 'nft-images';
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -32,7 +35,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { ipfsUrl, nftId } = req.body;
+    const { ipfsUrl, nftId, size = 'thumbnail' } = req.body;
 
     if (!ipfsUrl || !nftId) {
       return res.status(400).json({
@@ -41,30 +44,38 @@ export default async function handler(req, res) {
       });
     }
 
-    // Generate cache key
+    // Determine which bucket and size to use
+    const isFullSize = size === 'full';
+    const targetSize = isFullSize ? FULL_SIZE : THUMBNAIL_SIZE;
+    const quality = isFullSize ? FULL_QUALITY : THUMBNAIL_QUALITY;
+    const bucket = isFullSize ? FULL_BUCKET : THUMBNAIL_BUCKET;
     const cacheKey = `${nftId}.webp`;
+
+    console.log(`📸 Optimizing ${size}: ${nftId} (target: ${targetSize}px, quality: ${quality}%)`);
 
     // Check if already cached in Supabase Storage
     const { data: existingFile } = await supabase
       .storage
-      .from(CACHE_BUCKET)
+      .from(bucket)
       .list('', { search: cacheKey });
 
     if (existingFile && existingFile.length > 0) {
       // Return cached URL
       const { data: publicUrl } = supabase
         .storage
-        .from(CACHE_BUCKET)
+        .from(bucket)
         .getPublicUrl(cacheKey);
 
       return res.status(200).json({
         success: true,
         optimizedUrl: publicUrl.publicUrl,
-        cached: true
+        cached: true,
+        size: size,
+        bucket: bucket
       });
     }
 
-    console.log(`📥 Optimizing image: ${ipfsUrl}`);
+    console.log(`📥 Fetching from IPFS: ${ipfsUrl}`);
 
     // Fetch original image from IPFS
     const imageResponse = await fetch(ipfsUrl, {
@@ -80,21 +91,34 @@ export default async function handler(req, res) {
 
     const imageBuffer = await imageResponse.arrayBuffer();
     
-    // Optimize image with sharp
-    const optimizedBuffer = await sharp(Buffer.from(imageBuffer))
-      .resize(THUMBNAIL_SIZE, THUMBNAIL_SIZE, {
+    // Optimize image with sharp based on size
+    let sharpInstance = sharp(Buffer.from(imageBuffer));
+    
+    if (isFullSize) {
+      // Full size: maintain aspect ratio, max 1024px on longest side
+      sharpInstance = sharpInstance.resize(targetSize, targetSize, {
+        fit: 'inside', // Maintain aspect ratio
+        withoutEnlargement: true // Don't upscale small images
+      });
+    } else {
+      // Thumbnail: square crop, center
+      sharpInstance = sharpInstance.resize(targetSize, targetSize, {
         fit: 'cover',
         position: 'center'
-      })
-      .webp({ quality: THUMBNAIL_QUALITY })
+      });
+    }
+    
+    const optimizedBuffer = await sharpInstance
+      .webp({ quality })
       .toBuffer();
 
-    console.log(`✅ Optimized: ${imageBuffer.byteLength} -> ${optimizedBuffer.length} bytes`);
+    const savings = Math.round((1 - optimizedBuffer.length / imageBuffer.byteLength) * 100);
+    console.log(`✅ Optimized ${size}: ${imageBuffer.byteLength} → ${optimizedBuffer.length} bytes (${savings}% savings)`);
 
-    // Upload to Supabase Storage
+    // Upload to appropriate Supabase Storage bucket
     const { data: uploadData, error: uploadError } = await supabase
       .storage
-      .from(CACHE_BUCKET)
+      .from(bucket)
       .upload(cacheKey, optimizedBuffer, {
         contentType: 'image/webp',
         cacheControl: '31536000', // 1 year
@@ -109,18 +133,20 @@ export default async function handler(req, res) {
     // Get public URL
     const { data: publicUrl } = supabase
       .storage
-      .from(CACHE_BUCKET)
+      .from(bucket)
       .getPublicUrl(cacheKey);
 
-    console.log(`✅ Cached to Supabase: ${publicUrl.publicUrl}`);
+    console.log(`✅ Cached to ${bucket}: ${publicUrl.publicUrl}`);
 
     return res.status(200).json({
       success: true,
       optimizedUrl: publicUrl.publicUrl,
       cached: false,
+      size: size,
+      bucket: bucket,
       originalSize: imageBuffer.byteLength,
       optimizedSize: optimizedBuffer.length,
-      savings: Math.round((1 - optimizedBuffer.length / imageBuffer.byteLength) * 100)
+      savings: savings
     });
 
   } catch (error) {

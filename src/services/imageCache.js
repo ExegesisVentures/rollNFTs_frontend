@@ -16,19 +16,22 @@ class ImageCacheService {
    * Get optimized image URL (cached or proxy)
    * @param {string} ipfsUrl - Original IPFS URL
    * @param {string} nftId - NFT identifier
+   * @param {string} size - 'thumbnail' or 'full' (default: 'thumbnail')
    * @returns {Promise<string>} - Optimized or original URL
    */
-  async getOptimizedUrl(ipfsUrl, nftId) {
+  async getOptimizedUrl(ipfsUrl, nftId, size = 'thumbnail') {
     if (!ipfsUrl || !nftId) return ipfsUrl;
 
+    const cacheKey = `${nftId}-${size}`;
+
     // Check memory cache
-    if (this.cache.has(nftId)) {
-      return this.cache.get(nftId);
+    if (this.cache.has(cacheKey)) {
+      return this.cache.get(cacheKey);
     }
 
     // Check if already optimizing
-    if (this.optimizing.has(nftId)) {
-      return this.optimizing.get(nftId);
+    if (this.optimizing.has(cacheKey)) {
+      return this.optimizing.get(cacheKey);
     }
 
     // Extract IPFS hash
@@ -39,15 +42,35 @@ class ImageCacheService {
     }
 
     // Use proxy endpoint (edge function, faster)
-    const proxyUrl = `${API_BASE}/images/proxy?nftId=${encodeURIComponent(nftId)}&hash=${encodeURIComponent(hash)}`;
+    const proxyUrl = `${API_BASE}/images/proxy?nftId=${encodeURIComponent(nftId)}&hash=${encodeURIComponent(hash)}&size=${size}`;
     
     // Cache the URL
-    this.cache.set(nftId, proxyUrl);
+    this.cache.set(cacheKey, proxyUrl);
     
     // Trigger background optimization (fire and forget)
-    this.optimizeInBackground(ipfsUrl, nftId);
+    this.optimizeInBackground(ipfsUrl, nftId, size);
 
     return proxyUrl;
+  }
+
+  /**
+   * Get thumbnail URL (256x256) - for grid/card views
+   * @param {string} ipfsUrl - Original IPFS URL
+   * @param {string} nftId - NFT identifier
+   * @returns {Promise<string>} - Thumbnail URL
+   */
+  async getThumbnailUrl(ipfsUrl, nftId) {
+    return this.getOptimizedUrl(ipfsUrl, nftId, 'thumbnail');
+  }
+
+  /**
+   * Get full-size URL (1024px) - for detail views
+   * @param {string} ipfsUrl - Original IPFS URL
+   * @param {string} nftId - NFT identifier
+   * @returns {Promise<string>} - Full-size URL
+   */
+  async getFullSizeUrl(ipfsUrl, nftId) {
+    return this.getOptimizedUrl(ipfsUrl, nftId, 'full');
   }
 
   /**
@@ -81,9 +104,11 @@ class ImageCacheService {
    * Optimize image in background (async, no await)
    * @param {string} ipfsUrl - Original IPFS URL
    * @param {string} nftId - NFT identifier
+   * @param {string} size - 'thumbnail' or 'full'
    */
-  async optimizeInBackground(ipfsUrl, nftId) {
-    if (this.optimizing.has(nftId)) return;
+  async optimizeInBackground(ipfsUrl, nftId, size = 'thumbnail') {
+    const cacheKey = `${nftId}-${size}`;
+    if (this.optimizing.has(cacheKey)) return;
 
     const optimizationPromise = (async () => {
       try {
@@ -97,11 +122,12 @@ class ImageCacheService {
           body: JSON.stringify({
             ipfsUrl: httpUrl,
             nftId,
+            size, // Pass size parameter
           }),
         });
 
         if (!response.ok) {
-          console.warn(`⚠️ Optimization failed for ${nftId}`);
+          console.warn(`⚠️ ${size} optimization failed for ${nftId}`);
           return;
         }
 
@@ -109,17 +135,17 @@ class ImageCacheService {
         
         if (data.success && data.optimizedUrl) {
           // Update cache with optimized URL
-          this.cache.set(nftId, data.optimizedUrl);
-          console.log(`✅ Optimized ${nftId}: ${data.savings}% smaller`);
+          this.cache.set(cacheKey, data.optimizedUrl);
+          console.log(`✅ Optimized ${size} ${nftId}: ${data.savings}% smaller (${data.bucket})`);
         }
       } catch (error) {
-        console.warn(`⚠️ Optimization error for ${nftId}:`, error.message);
+        console.warn(`⚠️ ${size} optimization error for ${nftId}:`, error.message);
       } finally {
-        this.optimizing.delete(nftId);
+        this.optimizing.delete(cacheKey);
       }
     })();
 
-    this.optimizing.set(nftId, optimizationPromise);
+    this.optimizing.set(cacheKey, optimizationPromise);
   }
 
   /**
