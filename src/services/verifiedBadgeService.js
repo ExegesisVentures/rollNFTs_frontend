@@ -12,6 +12,15 @@ const ADMIN_ADDRESSES = [
 class VerifiedBadgeService {
   // Check if entity is verified
   async isVerified(entityType, entityId) {
+    // TEMPORARILY DISABLED - Waiting for verified_badges table creation
+    // Run supabase/fix-verified-badges.sql to enable this feature
+    return {
+      success: true,
+      verified: false,
+      badge: null,
+    };
+    
+    /* Original code - restore after running SQL script
     try {
       const { data, error } = await supabase
         .from('verified_badges')
@@ -34,10 +43,15 @@ class VerifiedBadgeService {
       console.error('Failed to check verification:', error);
       return { success: false, verified: false };
     }
+    */
   }
 
   // Get badge for entity
   async getBadge(entityType, entityId) {
+    // TEMPORARILY DISABLED - Waiting for verified_badges table creation
+    return { success: true, badge: null };
+    
+    /* Original code - restore after running SQL script
     try {
       const { data, error } = await supabase
         .from('verified_badges')
@@ -55,6 +69,7 @@ class VerifiedBadgeService {
       console.error('Failed to get badge:', error);
       return { success: false, badge: null };
     }
+    */
   }
 
   // Request verification
