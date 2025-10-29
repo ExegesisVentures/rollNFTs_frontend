@@ -1,0 +1,123 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                 ⚠️  CONFLICTING RLS POLICIES DETECTED ⚠️                     ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+ISSUE: Multiple policies on 'nfts' table causing conflicts
+
+══════════════════════════════════════════════════════════════════════════════
+
+🔍 WHAT'S WRONG
+━━━━━━━━━━━━━━━
+
+Your nfts table has BOTH old restrictive policies AND new permissive policy:
+
+OLD (Restrictive):
+❌ "NFTs are viewable by everyone" (SELECT only)
+❌ "NFTs can be created by authenticated users" (INSERT only - requires auth!)
+❌ "NFTs can be updated by owner" (UPDATE only - requires ownership!)
+
+NEW (Permissive):
+✅ "nfts_allow_all" (ALL operations - anyone can do anything)
+
+Problem: When multiple policies exist, PostgreSQL uses OR logic:
+- SELECT: Works (viewable by everyone OR allow_all)
+- INSERT: BLOCKED unless authenticated (restrictive policy blocks!)
+- UPDATE: BLOCKED unless you're owner (restrictive policy blocks!)
+
+This is why your blockchain sync might fail when trying to INSERT NFTs!
+
+══════════════════════════════════════════════════════════════════════════════
+
+✅ THE FIX
+━━━━━━━━━━
+
+Run this SQL to remove the conflicting policies:
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 1. Open Supabase SQL Editor:                                                │
+│    https://supabase.com/dashboard/project/wemaymehbtnxkwxslhsu/editor       │
+│                                                                              │
+│ 2. Open file: supabase/CLEANUP_CONFLICTING_POLICIES.sql                     │
+│                                                                              │
+│ 3. Copy ALL contents                                                        │
+│                                                                              │
+│ 4. Paste into SQL Editor                                                    │
+│                                                                              │
+│ 5. Click RUN                                                                │
+│                                                                              │
+│ 6. Wait for success message                                                 │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+══════════════════════════════════════════════════════════════════════════════
+
+📊 VERIFY THE FIX
+━━━━━━━━━━━━━━━━
+
+After running the cleanup SQL, verify with this query:
+
+```sql
+SELECT tablename, policyname, cmd
+FROM pg_policies
+WHERE tablename = 'nfts';
+```
+
+Expected result (only ONE policy):
+```
+tablename | policyname      | cmd
+----------|-----------------|-----
+nfts      | nfts_allow_all  | ALL
+```
+
+If you see more than one policy, the old ones are still there!
+
+══════════════════════════════════════════════════════════════════════════════
+
+🎯 WHY THIS MATTERS
+━━━━━━━━━━━━━━━━━━
+
+Without fixing this:
+❌ Blockchain sync INSERT will fail (requires auth)
+❌ NFT updates will fail (requires ownership check)
+❌ Your serverless functions can't write to nfts table
+
+After fixing:
+✅ Blockchain sync can INSERT NFTs
+✅ Anyone can read/write NFTs (for now)
+✅ All API operations work smoothly
+
+Note: For production, you might want more restrictive policies later,
+but for now we need permissive policies to get everything working!
+
+══════════════════════════════════════════════════════════════════════════════
+
+⚡ CURRENT STATUS OF ALL TABLES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+collections:
+✅ collections_allow_all (ALL) - Good!
+
+nfts:
+❌ Multiple conflicting policies - FIX NEEDED!
+
+verified_badges:
+✅ verified_badges_allow_all (ALL) - Good!
+
+══════════════════════════════════════════════════════════════════════════════
+
+🚀 ACTION REQUIRED
+━━━━━━━━━━━━━━━━━
+
+1. Run supabase/CLEANUP_CONFLICTING_POLICIES.sql
+2. Verify only one policy remains
+3. Test blockchain sync again
+
+This should fix any remaining INSERT/UPDATE issues!
+
+══════════════════════════════════════════════════════════════════════════════
+
+Status: ⚠️  CRITICAL - Fix now to enable blockchain sync
+Priority: 🔴 HIGH
+Time: 1 minute
+
+══════════════════════════════════════════════════════════════════════════════
+
