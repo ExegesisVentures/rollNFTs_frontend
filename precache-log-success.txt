@@ -1,0 +1,40 @@
+⚠️  Using ANON_KEY instead of SERVICE_ROLE_KEY. Upload permissions may be limited.
+
+
+╔════════════════════════════════════════════════════════╗
+║  🖼️  COLLECTION COVER IMAGE PRE-CACHING SCRIPT  🖼️   ║
+║         Fetching from Coreum Blockchain + IPFS         ║
+╚════════════════════════════════════════════════════════╝
+
+🔗 Fetching NFT classes from Coreum blockchain...
+
+  📄 Fetching page 1...
+  ✅ Fetched 100 classes (total: 100)
+  📄 Fetching page 2...
+  ✅ Fetched 81 classes (total: 181)
+
+✅ Total NFT classes found: 181
+
+────────────────────────────────────────────────────────────
+
+[1/181] 📦 Processing: tested
+  ID: tested-core1p3lcsyzk9cawgyv7a6xdnwzp3tgljkcevnrc6m
+  🔍 Fetching metadata for image URL...
+  📥 Fetching metadata: https://cloudflare-ipfs.com/ipfs/QmR3kKdHeC6StCgzKfHhojNkWfGZP7LTiYyGP...
+  ⚠️  Error (gateway 1/3): request to https://cloudflare-ipfs.com/ipfs/QmR3kKdHeC6StCgzKfHhojNkWfGZP7LTiYyGPtrv8N28i8 failed, reason: getaddrinfo ENOTFOUND cloudflare-ipfs.com
+  📥 Fetching metadata: https://ipfs.io/ipfs/QmR3kKdHeC6StCgzKfHhojNkWfGZP7LTiYyGPtrv8N28i8...
+  ✅ Metadata fetched successfully
+  🖼️  Image: ipfs://QmVBJMy7LrmGFVZfcHAZn9qAvHawLuxpqSu2evbTzXSngj...
+  📥 Fetching from gateway 1/4...
+  ⚠️  Gateway 1 error: request to https://cloudflare-ipfs.com/ipfs/QmVBJMy7LrmGFVZfcHAZn9qAvHawLuxpqSu2evbTzXSngj failed, reason: getaddrinfo ENOTFOUND cloudflare-ipfs.com
+  📥 Fetching from gateway 2/4...
+  ✅ Downloaded: 4694 bytes from https://ipfs.io/ipfs/
+  ✅ Optimized: 4694 → 1232 bytes (74% savings)
+  ✅ Cached: https://wemaymehbtnxkwxslhsu.supabase.co/storage/v1/object/public/collection-covers/tested-core1p3lcsyzk9cawgyv7a6xdnwzp3tgljkcevnrc6m.webp
+
+[2/181] 📦 Processing: Service Animal Verification Express
+  ID: save-core1pc7t2gxa4s32e4zsfxu3f6say3gvl9f9d4cpuz
+  🔍 Fetching metadata for image URL...
+  📥 Fetching metadata: https://www.transportation.gov/individuals/aviation-consumer-protectio...
+  ⚠️  Error (gateway 1/3): network timeout at: https://www.transportation.gov/individuals/aviation-consumer-protection/service-animals/Air_Transportation_Form
+  📥 Fetching metadata: https://www.transportation.gov/individuals/aviation-consumer-protectio...
