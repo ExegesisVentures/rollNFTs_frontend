@@ -80,11 +80,47 @@ export default async function handler(req, res) {
       });
     }
 
+    // Transform NFT data to ensure image URLs are properly formatted
+    const transformedNFTs = (data || []).map(nft => {
+      // Get image from metadata or direct image field
+      let imageUrl = null;
+      
+      // Priority 1: Check metadata object for image
+      if (nft.metadata && typeof nft.metadata === 'object') {
+        imageUrl = nft.metadata.image || nft.metadata.imageUrl || nft.metadata.image_url;
+      }
+      
+      // Priority 2: Check direct image field
+      if (!imageUrl && nft.image) {
+        imageUrl = nft.image;
+      }
+      
+      // Priority 3: Check metadata_uri field
+      if (!imageUrl && nft.metadata_uri) {
+        imageUrl = nft.metadata_uri;
+      }
+      
+      // Log if no image found (helps debugging)
+      if (!imageUrl) {
+        console.warn(`⚠️ No image for NFT ${nft.id} (token: ${nft.token_id}) in collection ${collectionId}`);
+      }
+      
+      return {
+        ...nft,
+        // Ensure image field is populated
+        image: imageUrl,
+        // Ensure metadata is properly formatted
+        metadata: nft.metadata || {},
+        // Add helpful fields
+        collection_id: collectionId,
+      };
+    });
+
     const hasMore = offset + limitNum < (totalCount || 0);
 
     return res.status(200).json({ 
       success: true, 
-      data: data || [],
+      data: transformedNFTs,
       pagination: {
         page: pageNum,
         limit: limitNum,

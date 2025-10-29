@@ -53,6 +53,47 @@ export default async function handler(req, res) {
       });
     }
 
+    // Transform NFT data to ensure image URLs are properly formatted
+    const transformedNFTs = (nfts || []).map(nft => {
+      // Get image from metadata or direct image field
+      let imageUrl = null;
+      
+      // Priority 1: Check metadata object for image
+      if (nft.metadata && typeof nft.metadata === 'object') {
+        imageUrl = nft.metadata.image || nft.metadata.imageUrl || nft.metadata.image_url;
+      }
+      
+      // Priority 2: Check direct image field
+      if (!imageUrl && nft.image) {
+        imageUrl = nft.image;
+      }
+      
+      // Priority 3: Check metadata_uri field
+      if (!imageUrl && nft.metadata_uri) {
+        imageUrl = nft.metadata_uri;
+      }
+      
+      // Priority 4: Check collection cover_image as fallback
+      if (!imageUrl && nft.collections?.cover_image) {
+        imageUrl = nft.collections.cover_image;
+      }
+      
+      // Log if no image found
+      if (!imageUrl) {
+        console.warn(`⚠️ No image found for NFT ${nft.id} (token: ${nft.token_id})`);
+      }
+      
+      return {
+        ...nft,
+        // Ensure image field is populated
+        image: imageUrl,
+        // Ensure metadata is properly formatted
+        metadata: nft.metadata || {},
+        // Add collection name for display
+        collection_name: nft.collections?.name || nft.collection_id,
+      };
+    });
+
     // Calculate pagination metadata
     const total = count || 0;
     const totalPages = Math.ceil(total / parseInt(limit));
@@ -63,7 +104,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      data: nfts || [],
+      data: transformedNFTs,
       pagination: {
         page: parseInt(page),
         limit: parseInt(limit),

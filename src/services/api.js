@@ -108,14 +108,20 @@ export const collectionsAPI = {
 
 // NFTs API
 export const nftsAPI = {
-  // Get all listed NFTs
+  // Get all listed NFTs from blockchain (LIVE DATA)
   getListed: async (params = {}) => {
     try {
-      const response = await api.get('/nfts/listed', { params });
+      const response = await api.get('/nfts/blockchain-all', { params });
       return response.data;
     } catch (error) {
       console.error('API Error:', error);
-      return { success: false, data: [], message: error.message };
+      // Fallback to database if blockchain fetch fails
+      try {
+        const fallbackResponse = await api.get('/nfts/listed', { params });
+        return fallbackResponse.data;
+      } catch (fallbackError) {
+        return { success: false, data: [], message: error.message };
+      }
     }
   },
 
