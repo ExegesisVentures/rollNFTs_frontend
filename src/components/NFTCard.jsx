@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ipfsToHttp } from '../utils/ipfs';
+import imageCache from '../services/imageCache';
 import './NFTCard.scss';
 
 const NFTCard = ({ nft, onClick }) => {
@@ -14,24 +15,51 @@ const NFTCard = ({ nft, onClick }) => {
   const name = nft.metadata?.name || nft.name || 'Unnamed NFT';
   const price = nft.price || 'Not listed';
 
-  // Load image - simplified for reliability
+  // Load image with proper caching strategy
   useEffect(() => {
     if (!rawImageUrl) {
+      console.warn(`⚠️ No image URL for NFT: ${name}`);
       setImageLoading(false);
       setImageError(true);
       return;
     }
 
-    // Directly convert IPFS to HTTP for immediate display
-    const httpUrl = ipfsToHttp(rawImageUrl);
-    console.log(`🖼️ Loading image for ${name}:`, rawImageUrl, '→', httpUrl);
-    setImageSrc(httpUrl);
-  }, [rawImageUrl, name]);
+    let mounted = true;
+
+    const loadImage = async () => {
+      try {
+        console.log(`🖼️ Loading image for ${name}:`, rawImageUrl);
+
+        // Try to get optimized/cached version first
+        const nftId = nft.id || `${nft.collection_id}-${nft.token_id}`;
+        const optimizedUrl = await imageCache.getThumbnailUrl(rawImageUrl, nftId);
+
+        if (mounted) {
+          // Use optimized URL if available, fallback to direct IPFS conversion
+          const finalUrl = optimizedUrl || ipfsToHttp(rawImageUrl);
+          console.log(`✅ Using URL: ${finalUrl.substring(0, 60)}...`);
+          setImageSrc(finalUrl);
+        }
+      } catch (error) {
+        console.error(`❌ Failed to load image for ${name}:`, error);
+        if (mounted) {
+          // Fallback to direct IPFS conversion
+          setImageSrc(ipfsToHttp(rawImageUrl));
+        }
+      }
+    };
+
+    loadImage();
+
+    return () => {
+      mounted = false;
+    };
+  }, [rawImageUrl, name, nft.id, nft.collection_id, nft.token_id]);
 
   const handleImageLoad = () => {
     setImageLoading(false);
     setImageError(false);
-    console.log(`✅ Image loaded: ${name}`);
+    console.log(`✅ Image loaded successfully: ${name}`);
   };
 
   const handleImageError = (e) => {
@@ -50,6 +78,7 @@ const NFTCard = ({ nft, onClick }) => {
     if (rawImageUrl && rawImageUrl.startsWith('ipfs://')) {
       const hash = rawImageUrl.replace('ipfs://', '');
       // Try Cloudflare gateway as fallback
+      console.log(`🔄 Trying fallback gateway for: ${name}`);
       e.target.src = `https://cloudflare-ipfs.com/ipfs/${hash}`;
     } else {
       // Use SVG placeholder

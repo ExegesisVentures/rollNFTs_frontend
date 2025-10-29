@@ -243,6 +243,42 @@ async function fetchAllNFTClasses() {
   return allClasses;
 }
 
+// Helper: Fetch metadata from IPFS URI
+async function fetchMetadataFromURI(uri) {
+  if (!uri) return {};
+
+  try {
+    // Convert IPFS URI to HTTP
+    let httpUrl = uri;
+    if (uri.startsWith('ipfs://')) {
+      const hash = uri.replace('ipfs://', '');
+      httpUrl = `https://cloudflare-ipfs.com/ipfs/${hash}`;
+    }
+
+    console.log(`📥 Fetching metadata from: ${httpUrl}`);
+
+    const response = await fetch(httpUrl, {
+      timeout: 10000,
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      console.warn(`⚠️ Failed to fetch metadata: ${response.status}`);
+      return {};
+    }
+
+    const metadata = await response.json();
+    console.log(`✅ Fetched metadata:`, metadata.name || 'Unnamed');
+    
+    return metadata;
+  } catch (error) {
+    console.warn(`⚠️ Error fetching metadata from ${uri}:`, error.message);
+    return {};
+  }
+}
+
 // Helper: Parse NFT data with metadata fetching
 async function parseNFTData(nftData, classId) {
   try {
@@ -257,25 +293,35 @@ async function parseNFTData(nftData, classId) {
       }
     }
 
-    // If no image and URI exists, try to fetch metadata
-    // Note: This can be slow, so we might want to fetch lazily
+    // If no image in embedded data but URI exists, fetch full metadata
     if (!metadata.image && nftData.uri) {
-      // For now, just store the URI - frontend will handle conversion
-      metadata.image = nftData.uri;
+      console.log(`🔍 Fetching metadata for NFT ${nftData.id} from URI...`);
+      const fetchedMetadata = await fetchMetadataFromURI(nftData.uri);
+      // Merge fetched metadata with existing
+      metadata = { ...metadata, ...fetchedMetadata };
     }
 
-    return {
+    const nft = {
       id: `${classId}-${nftData.id}`, // Composite ID for uniqueness
       collection_id: classId,
       token_id: nftData.id,
       name: metadata.name || nftData.name || `NFT #${nftData.id}`,
       description: metadata.description || '',
-      image: metadata.image || nftData.uri || '',
+      image: metadata.image || nftData.uri || '', // Use fetched image or fall back to URI
       metadata: metadata,
       metadata_uri: nftData.uri || '',
       owner_address: nftData.owner || '',
       source: 'blockchain'
     };
+
+    // Log for debugging
+    if (nft.image) {
+      console.log(`✅ NFT ${nft.name}: has image ${nft.image.substring(0, 50)}...`);
+    } else {
+      console.warn(`⚠️ NFT ${nft.name}: no image found`);
+    }
+
+    return nft;
   } catch (error) {
     console.error('Failed to parse NFT:', error);
     return null;
