@@ -41,6 +41,13 @@
       color: $slate;
       font-size: 1.125rem;
     }
+    
+    &-actions {
+      display: flex;
+      gap: $spacing-md;
+      align-items: center;
+      flex-wrap: wrap;
+    }
   }
   
   &__content {
@@ -100,6 +107,29 @@
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba($purple, 0.4);
+  }
+}
+
+.btn-sync-blockchain {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: none;
+  border-radius: $radius-lg;
+  color: white;
+  font-weight: $font-semibold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(#10b981, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 

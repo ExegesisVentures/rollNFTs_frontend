@@ -4,14 +4,17 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { collectionsAPI } from '../services/api';
+import blockchainSyncService from '../services/blockchainSyncService';
 import CollectionCard from '../components/CollectionCard';
 import toast, { Toaster } from 'react-hot-toast';
+import axios from 'axios';
 import './Collections.scss';
 
 const Collections = () => {
   const navigate = useNavigate();
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
 
   useEffect(() => {
     loadCollections();
@@ -29,6 +32,33 @@ const Collections = () => {
       toast.error('Failed to load collections');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSyncBlockchain = async () => {
+    try {
+      setSyncing(true);
+      toast.loading('Syncing collections from Coreum blockchain...', { id: 'sync' });
+      
+      // Call blockchain sync API
+      const response = await axios.post('/api/sync/blockchain');
+      
+      if (response.data.success) {
+        toast.success(
+          `✅ Synced ${response.data.collections} collections from blockchain!`,
+          { id: 'sync' }
+        );
+        
+        // Reload collections
+        await loadCollections();
+      } else {
+        toast.error('Failed to sync blockchain', { id: 'sync' });
+      }
+    } catch (error) {
+      console.error('Error syncing blockchain:', error);
+      toast.error('Failed to sync blockchain', { id: 'sync' });
+    } finally {
+      setSyncing(false);
     }
   };
 
@@ -57,15 +87,24 @@ const Collections = () => {
               NFT Collections
             </h1>
             <p className="collections__header-subtitle">
-              Explore unique collections from talented creators
+              Explore all collections from Coreum blockchain
             </p>
           </div>
-          <button 
-            className="btn-create-collection"
-            onClick={() => navigate('/create-collection')}
-          >
-            ✨ Create Collection
-          </button>
+          <div className="collections__header-actions">
+            <button 
+              className="btn-sync-blockchain"
+              onClick={handleSyncBlockchain}
+              disabled={syncing}
+            >
+              {syncing ? '🔄 Syncing...' : '🔄 Sync Blockchain'}
+            </button>
+            <button 
+              className="btn-create-collection"
+              onClick={() => navigate('/create-collection')}
+            >
+              ✨ Create Collection
+            </button>
+          </div>
         </div>
       </div>
 
