@@ -21,7 +21,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: undefined, // Don't split - fixes blockchain lib circular deps
+        manualChunks: undefined,
       },
     },
   },
