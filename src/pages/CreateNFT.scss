@@ -117,10 +117,25 @@
     font-weight: $font-medium;
     margin-bottom: $spacing-xs;
   }
+
+  &__upload-recommendation {
+    color: rgba(77, 156, 255, 0.95);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.6rem 1.25rem;
+    background: rgba(77, 156, 255, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(77, 156, 255, 0.3);
+    margin-top: $spacing-sm;
+    text-align: center;
+  }
   
   &__upload-hint {
     color: $slate;
     font-size: 0.875rem;
+    text-align: center;
+    line-height: 1.5;
+    margin-top: $spacing-xs;
   }
   
   &__image-preview {

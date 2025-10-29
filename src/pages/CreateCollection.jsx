@@ -270,7 +270,12 @@ const CreateCollection = () => {
                   <div className="upload-placeholder">
                     <span className="icon">🖼️</span>
                     <span>Click to upload cover image</span>
-                    <small>Recommended: 1200x400px</small>
+                    <small className="size-recommendation">
+                      📐 Recommended: 1200×400px (banner format)
+                    </small>
+                    <small className="size-note">
+                      Max 10MB • PNG, JPG, GIF, WEBP
+                    </small>
                   </div>
                 </label>
               )}

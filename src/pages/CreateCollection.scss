@@ -157,6 +157,25 @@
 
           small {
             color: $text-muted;
+            display: block;
+            margin-top: 0.5rem;
+          }
+
+          .size-recommendation {
+            color: rgba(77, 156, 255, 0.95);
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            background: rgba(77, 156, 255, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(77, 156, 255, 0.3);
+            margin-top: 0.75rem;
+          }
+
+          .size-note {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 0.25rem;
           }
         }
       }

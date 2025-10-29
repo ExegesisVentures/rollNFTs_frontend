@@ -455,8 +455,11 @@ const CreateNFT = () => {
                   <span className="create-nft__upload-text">
                     Click to upload or drag and drop
                   </span>
+                  <span className="create-nft__upload-recommendation">
+                    📐 Recommended: 1024×1024px or larger (square format)
+                  </span>
                   <span className="create-nft__upload-hint">
-                    PNG, JPG, GIF, WEBP. Max 10MB.
+                    PNG, JPG, GIF, WEBP • Max 10MB • Best quality at 1024px+
                   </span>
                 </label>
               )}
