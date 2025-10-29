@@ -1,0 +1,92 @@
+// Virtual NFT Grid Styles
+// File: src/components/VirtualNFTGrid.scss
+
+.virtual-nft-grid {
+  width: 100%;
+  height: calc(100vh - 300px); // Adjust based on your header height
+  min-height: 600px;
+
+  &__list {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 0 1.5rem 1.5rem;
+    width: 100%;
+
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.25rem;
+      padding: 0 1.25rem 1.25rem;
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      padding: 0 1rem 1rem;
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      padding: 0 0.75rem 0.75rem;
+    }
+  }
+
+  &__item {
+    width: 100%;
+  }
+
+  &__loading {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  &__empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    font-size: 1.125rem;
+    color: #6b7280;
+  }
+}
+
+// Skeleton loading animation
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.nft-card__image-skeleton {
+  width: 100%;
+  aspect-ratio: 1;
+  background: linear-gradient(
+    90deg,
+    #1b1d23 0%,
+    #252830 50%,
+    #1b1d23 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+  border-radius: 12px;
+}
+
+.skeleton-shimmer {
+  width: 100%;
+  height: 100%;
+}
+
+.nft-card__image-img {
+  transition: opacity 0.3s ease-in-out;
+}
+

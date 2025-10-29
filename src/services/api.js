@@ -131,9 +131,9 @@ export const nftsAPI = {
   },
 
   // Get NFTs by collection
-  getByCollection: async (collectionId) => {
+  getByCollection: async (collectionId, params = {}) => {
     try {
-      const response = await api.get(`/nfts/collection/${collectionId}`);
+      const response = await api.get(`/nfts/collection/${collectionId}`, { params });
       return response.data;
     } catch (error) {
       console.error('API Error:', error);

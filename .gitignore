@@ -23,7 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
-# Documentation folder
+# Documentation files (temporary guides and explanations)
+*.md
+!README.md
 docs/
 
 # Supabase database files

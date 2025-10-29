@@ -152,11 +152,51 @@ class BlockchainSyncService {
   }
 
   /**
+   * Fetch metadata from URI
+   */
+  async fetchMetadataFromURI(uri) {
+    if (!uri) return {};
+    
+    try {
+      // Convert IPFS URI to HTTP if needed
+      let httpUrl = uri;
+      if (uri.startsWith('ipfs://')) {
+        const hash = uri.replace('ipfs://', '');
+        httpUrl = `https://gateway.pinata.cloud/ipfs/${hash}`;
+      } else if (uri.startsWith('Qm') || uri.startsWith('bafy')) {
+        httpUrl = `https://gateway.pinata.cloud/ipfs/${uri}`;
+      }
+      
+      console.log(`📥 Fetching metadata from: ${httpUrl}`);
+      
+      const response = await fetch(httpUrl, {
+        headers: {
+          'Accept': 'application/json',
+        },
+        timeout: 10000, // 10 second timeout
+      });
+      
+      if (!response.ok) {
+        console.warn(`⚠️ Failed to fetch metadata: ${response.status}`);
+        return {};
+      }
+      
+      const metadata = await response.json();
+      console.log(`✅ Metadata fetched successfully`);
+      return metadata;
+      
+    } catch (error) {
+      console.warn(`⚠️ Failed to fetch metadata from ${uri}:`, error.message);
+      return {};
+    }
+  }
+
+  /**
    * Parse NFT data to database format
    */
-  parseNFTData(nftData, classId) {
+  async parseNFTData(nftData, classId) {
     try {
-      // Parse metadata if it's JSON
+      // First, try to parse embedded metadata from data field
       let metadata = {};
       if (nftData.data) {
         try {
@@ -166,12 +206,20 @@ class BlockchainSyncService {
         }
       }
       
+      // If no image in embedded metadata, fetch from URI
+      if (!metadata.image && nftData.uri) {
+        console.log(`🔄 Fetching metadata from URI for NFT: ${nftData.id}`);
+        const uriMetadata = await this.fetchMetadataFromURI(nftData.uri);
+        metadata = { ...metadata, ...uriMetadata };
+      }
+      
       return {
         collection_id: classId,
         token_id: nftData.id,
         name: metadata.name || nftData.name || nftData.id,
         description: metadata.description || '',
         image: metadata.image || '',
+        metadata: metadata, // Store full metadata as JSONB
         metadata_uri: nftData.uri || '',
         owner_address: nftData.owner || '',
         synced_from_blockchain: true,
@@ -263,9 +311,15 @@ class BlockchainSyncService {
       
       // Fetch NFTs in this collection
       const nfts = await this.fetchNFTsInClass(classId);
-      const parsedNFTs = nfts
-        .map(nft => this.parseNFTData(nft, classId))
-        .filter(Boolean);
+      
+      // Parse NFTs with metadata fetching (async)
+      const parsedNFTs = [];
+      for (const nft of nfts) {
+        const parsed = await this.parseNFTData(nft, classId);
+        if (parsed) {
+          parsedNFTs.push(parsed);
+        }
+      }
       
       console.log(`✅ Synced collection ${classId}: ${parsedNFTs.length} NFTs`);
       
